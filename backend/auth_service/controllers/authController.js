@@ -4,8 +4,6 @@ const jwt = require('jsonwebtoken');
 
 const registerUser = async (req, res) => {
     const {username, password, email} = req.body;
-    console.log(username);
-    console.log(password);
     
     try{
         const userExists = await User.findOne({username})
@@ -22,7 +20,6 @@ const registerUser = async (req, res) => {
             email: email
         })
         await newUser.save()
-        console.log("User created")
         res.status(201).json({message: "User registered"})
     }
     catch (error) {
@@ -43,22 +40,16 @@ const loginUser = async (req, res) => {
             return res.status(400).json({message: "Wrong password"})
         }
 
-        const token = jwt.sign({user_Id: user._id}, process.env.JWT_KEY, {expiresIn: '1d'});
+        const token = jwt.sign({user_Id: user._id} , process.env.JWT_KEY);
 
-        res.status(200).json({message: "Login succesfull"})
+        res.status(200).json({message: "Login succesfull", token: token})
     }
     catch (error){
         res.status(500).json({message: "Server error"})
     }
 }
 
-const logoutUser = async (req, res) => {
-    res.clearCookie('token')
-    res.status(200).json({message: "Logout successfull"})
-}
-
 module.exports = {
     registerUser,
-    loginUser,
-    logoutUser
+    loginUser
 } 

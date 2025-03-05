@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
+import { LogoutComponent } from '../logout/logout.component';
 
 @Component({
   selector: 'app-main',
-  imports: [],
+  imports: [LogoutComponent],
   templateUrl: './main.component.html',
   styleUrl: './main.component.css'
 })
 export class MainComponent {
-
 }

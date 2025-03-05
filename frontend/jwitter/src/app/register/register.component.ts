@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { UserServiceService } from '../services/user-service.service';
 
 @Component({
   selector: 'app-register',
@@ -9,13 +10,23 @@ import { RouterLink } from '@angular/router';
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {
+  constructor(private us: UserServiceService, private router: Router){}
+  
   username: string = ''
   password: string = ''
   email: string = ''
+  message: string = ''
   register(){
-    console.log(this.username);
-    console.log(this.password);
-    console.log(this.email);
+    this.us.register(this.username, this.password, this.email).subscribe(
+      (response: any) => {
+        this.router.navigate(['/login'])
+        console.log("Registration successfull", response.message);
+      },
+      (error) => {
+        console.log("Failed to register");
+        this.message = error.error.message
+      }
+    )
     
   }
 

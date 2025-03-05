@@ -1,0 +1,28 @@
+services:
+  auth-service:
+    build: ./backend/auth_service
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/authdb
+      - JWT_SECRET=your_secret_key
+    depends_on:
+      - mongo
+
+  frontend:
+    build: ./frontend/jwitter
+    ports:
+      - "3000:80"
+    depends_on:
+      - auth-service
+
+  mongo:
+    image: mongo
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
