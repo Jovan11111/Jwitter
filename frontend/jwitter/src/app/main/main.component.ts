@@ -8,4 +8,9 @@ import { LogoutComponent } from '../logout/logout.component';
   styleUrl: './main.component.css'
 })
 export class MainComponent {
+
+  posts: Post[] = []
+  ngOnInit(){
+    
+  }
 }

@@ -20,7 +20,7 @@ const registerUser = async (req, res) => {
             email: email
         })
         await newUser.save()
-        res.status(201).json({message: "User registered"})
+        res.status(201).json(newUser)
     }
     catch (error) {
         res.status(500).json({message: `Server error: ${error}`})
@@ -49,7 +49,16 @@ const loginUser = async (req, res) => {
     }
 }
 
+const getUser = async (req, res) => {
+    try{
+        const user = await User.findById(req.params.id);
+        res.status(200).json(user);
+    } catch (error){
+        return res.status(500).json({message: "Server error: " + error.message})
+    }
+}
 module.exports = {
     registerUser,
-    loginUser
+    loginUser,
+    getUser
 } 
