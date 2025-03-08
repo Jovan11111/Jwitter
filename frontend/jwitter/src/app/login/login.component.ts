@@ -31,7 +31,6 @@ export class LoginComponent {
         this.router.navigate(['/main'])
         localStorage.setItem('auth_token', response.token);
         console.log(jwtDecode(response.token));
-        
       },
       (error) => {
         console.log("login failed");

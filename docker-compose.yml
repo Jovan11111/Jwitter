@@ -4,7 +4,7 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - MONGO_URI=mongodb://mongo:27017/authdb
+      - MONGO_URI=mongodb://mongo:27017/jwitter_db_users
     depends_on:
       - mongo
 
@@ -13,7 +13,7 @@ services:
     ports:
       - "5001:5001"
     environment:
-      - MONGO_URI=mongodb://mongo:27017/postdb
+      - MONGO_URI=mongodb://mongo:27017/jwitter_db_posts
     depends_on:
       - mongo
     

@@ -1,5 +1,6 @@
 const Post = require("../models/Post")
 const axios = require('axios')
+const mongoose = require('mongoose')
 
 const allPosts = async(req, res) => {
     try {
@@ -31,8 +32,7 @@ const createPost = async(req, res) => {
             res.status(400).json("Provide needed info for post")
         }
 
-        const userExists =  await axios.get(`http://localhost:5000/api/auth/getUser/${user}`)
-        console.log(userExists);
+        const userExists =  await axios.get(`http://auth-service:5000/api/auth/getUser/${user}`)
         if(! userExists.data){
             return res.status(400).json({message: "User not found"})
         }

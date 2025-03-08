@@ -1,6 +1,10 @@
 
-class Post{
+export class Post{
+    _id: string = ""
     title: string = ""
     content: string = ""
-    user_id: string = ""
+    user: string = ""
+    createdAt: Date = new Date()
+    __v: number = 0
 }
+

@@ -18,7 +18,4 @@ export class UserServiceService {
     return this.http.post(`${this.apiUrl}/register`, {username, password, email});
   }
 
-  logout(){
-    return this.http.post(`${this.apiUrl}/logout`, {});
-  }
 }
