@@ -3,8 +3,13 @@
 <div *ngFor="let post of posts;">
     <h3>{{post.title}}</h3>
     <br>
+    <a [routerLink] = "['/userdetails', post.user]">{{post.username}}</a>
+    <br>
     {{post.content}}
     <hr>
+    <form (ngSubmit)="deletePost(post._id)">
+        <button type="submit">Delete Post</button>
+    </form>
 </div>
 
 <hr>
@@ -14,4 +19,11 @@
     <input type="text" placeholder="Content" [(ngModel)] = "newPostContent" required name = newPostContent>
     <button type="submit">Add a Post</button>
 </form>
+<hr>
+<div *ngFor="let frreq of friendshipRequests">
+    {{frreq.sender}}
+    <br>
+    <button (click)="acceptfrreq(frreq._id)">Accept</button>
+    <button (click)="declinefrreq(frreq._id)">Decline</button>
+</div>
 <app-logout></app-logout>

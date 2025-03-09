@@ -16,6 +16,13 @@ services:
       - MONGO_URI=mongodb://mongo:27017/jwitter_db_posts
     depends_on:
       - mongo
+  
+  friendship-service:
+    build: ./backend/friendship_service
+    ports:
+      - "5002:5002"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/jwitter_db_friends
     
   frontend:
     build: ./frontend/jwitter
@@ -24,6 +31,7 @@ services:
     depends_on:
       - auth-service
       - post-service
+      - friendship-service
   mongo:
     image: mongo
     container_name: mongo

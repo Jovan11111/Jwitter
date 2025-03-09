@@ -26,4 +26,8 @@ export class PostService {
   deletePost(postid: string){
     return this.http.delete(`${this.apiUrl}/deletePost/${postid}`)
   }
+
+  userPosts(userid: string){
+    return this.http.get<Post[]>(`${this.apiUrl}/userPosts/${userid}`)
+  }
 }

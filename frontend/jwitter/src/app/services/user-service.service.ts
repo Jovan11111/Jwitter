@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { User } from '../models/User';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,10 @@ export class UserServiceService {
 
   register(username: string, password:string, email:string){
     return this.http.post(`${this.apiUrl}/register`, {username, password, email});
+  }
+
+  getUserById(user_id: string){
+    return this.http.get<User>(`${this.apiUrl}/getUser/${user_id}`)
   }
 
 }

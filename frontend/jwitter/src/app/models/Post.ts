@@ -6,5 +6,6 @@ export class Post{
     user: string = ""
     createdAt: Date = new Date()
     __v: number = 0
+    username: string = ""
 }
 

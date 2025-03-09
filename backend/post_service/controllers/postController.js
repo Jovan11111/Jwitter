@@ -5,7 +5,34 @@ const mongoose = require('mongoose')
 const allPosts = async(req, res) => {
     try {
         const posts = await Post.find();
-        res.status(200).json(posts)
+        const postsWithUserNames = await Promise.all(posts.map(async (post) => {
+            try {
+                const userResp = await axios.get(`http://auth-service:5000/api/auth/getUser/${post.user}`)
+                const username = userResp.data.username
+                
+                return {
+                    _id: post._id,
+                    _v: post._v,
+                    title: post.title ,
+                    content: post.content, 
+                    user: post.user,
+                    createdAt: post.createdAt,
+                    username: username 
+                }
+            }catch{
+                console.log("Failed to find user");
+                return {
+                    _id: post._id,
+                    _v: post._v,
+                    title: post.title ,
+                    content: post.content, 
+                    user: post.user,
+                    createdAt: post.createdAt,
+                    username: "Unknown user"
+                }
+            }
+        }))
+        res.status(200).json(postsWithUserNames)
     } catch (error){
         return res.status(500).json({ message: "Server error: " + error.message });
     }
@@ -59,9 +86,19 @@ const getPost = async(req, res) => {
     }
 }
 
+const userPosts = async(req, res) => {
+    try{
+        const posts = await Post.find({ user: req.params.id });
+        return res.status(200).json(posts)
+    } catch(error){
+        return res.status(500).json({message: "Server error : " + error.message});
+    }
+}
+
 module.exports = {
     allPosts,
     deletePost,
     createPost,
-    getPost
+    getPost,
+    userPosts
 }

@@ -1,0 +1,13 @@
+<h2>User details page</h2>
+username : {{user.username}}
+email : {{user.email}}
+<hr>
+<div *ngIf = "usersarefriends == false">
+    <button (click) = "sendFrReq()">Send Friend Reuest</button>
+</div>
+<hr>
+<h2>Posts by {{user.username}}</h2>
+<div *ngFor = "let post of user_posts">
+    <h4>{{post.title}}</h4>
+    <hr>
+</div>

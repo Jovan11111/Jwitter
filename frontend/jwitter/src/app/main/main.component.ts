@@ -5,6 +5,9 @@ import { PostService } from '../services/post.service';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { FriendshipRequest } from '../models/FriendshipRequest';
+import { FriendshipService } from '../services/friendship.service';
 
 interface CustomJwtPayload extends JwtPayload {
   user_Id: string;
@@ -13,18 +16,20 @@ interface CustomJwtPayload extends JwtPayload {
 
 @Component({
   selector: 'app-main',
-  imports: [LogoutComponent, FormsModule, CommonModule],
+  imports: [LogoutComponent, FormsModule, CommonModule, RouterModule],
   templateUrl: './main.component.html',
   styleUrl: './main.component.css'
 })
 export class MainComponent{
 
-  constructor(private postServ: PostService){}
+  constructor(private postServ: PostService, private friendServ: FriendshipService){}
   posts: Post[] = []
 
   newPostTitle: string = ""
   newPostContent: string = ""
   logged_user_id: string = ""
+  friendshipRequests: FriendshipRequest[] = []
+
   ngOnInit(){
     this.postServ.allPosts().subscribe({
       next: (data: Post[]) => {
@@ -40,10 +45,14 @@ export class MainComponent{
       const decoded = jwtDecode<CustomJwtPayload>(authToken);
       this.logged_user_id = decoded.user_Id;
     }
+    this.friendServ.getPendingFrReq(this.logged_user_id).subscribe({
+      next: (frreq: FriendshipRequest[]) => {
+        this.friendshipRequests = frreq
+      }
+    })
   }
 
   addPost(){
-    
     this.postServ.createPost(this.newPostTitle, this.newPostContent, this.logged_user_id).subscribe({
       next: (data: boolean) => {
         if(data){
@@ -54,5 +63,22 @@ export class MainComponent{
         }
       }
     })
+  }
+
+  deletePost(id: string){
+    this.postServ.deletePost(id).subscribe({
+      next: () => {
+        this.ngOnInit();
+      }
+    })
+  }
+
+  acceptfrreq(id: string){
+    this.friendServ.acceptFrReq(id)
+  }
+
+  declinefrreq(id: string){
+    this.friendServ.declineFrReq(id)
+
   }
 }
