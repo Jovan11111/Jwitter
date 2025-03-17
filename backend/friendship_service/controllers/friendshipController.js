@@ -61,14 +61,14 @@ const declineFrReq = async(req, res) => {
 
 const getPendingFrReq = async(req, res) => {
     try{
-        const frReqs = await FriendshipRequest.find({receiver: req.params.user_id})
+        const frReqs = await FriendshipRequest.find({receiver: req.params.user_id, status: "pending"})
         return res.status(200).json(frReqs)
     } catch(error){
         return res.status(500).json({message: "Server error" + error.message})
     }
 }
 
-const getUserFriends = async(req, ress) => {
+const getUserFriends = async(req, res) => {
     try{
         const user_id = req.params.user_id
 
@@ -76,11 +76,16 @@ const getUserFriends = async(req, ress) => {
             $or: [{user1: user_id}, {user2: user_id}]
         })
         const friendids = friendships.map((friendship) => {
-            return friendship.user1 === user_id ? friendship.user2 : friendship.user1
+            return friendship.user1.toString() === user_id ? friendship.user2 : friendship.user1
         })
+        console.log(user_id);
+        console.log(friendids);
+        
+        
         const friends = await Promise.all(friendids.map(async (fid) => {
             try {
                 const userResp = await axios.get(`http://auth-service:5000/api/auth/getUser/${fid}`)
+                console.log(userResp.data);
                 return userResp.data
             } catch {
                 console.log("Failed to find user");
@@ -106,15 +111,49 @@ const areTheyFriends = async(req, res) => {
             $or: [{user1: us1, user2: us2}, {user2: us1, user1: us2}]
         })
 
-        if (friendshipExists){
-            return res.status(200).json({friendshipExists: true})
+        if (friendshipExists){            
+            return res.status(200).json({friendshipexists: true})
         }else{
-            return res.status(200).json({friendshipExists: false})
+            const frReqExists = await FriendshipRequest.findOne({
+                $or: [{sender: us1, receiver: us2}, {sender: us2, receiver: us1}]
+            })
+            if (frReqExists){
+                res.status(200).json({frreqexists: true})
+            } else{
+                res.status(200).json({frreqexists: false})
+            }
         }
     } catch {
         return res.status(500).json({message: "Server error" + error.message})
     }
 }
+
+const removeFriend = async(req, res) => {
+    try{
+        us1 = req.params.id1
+        us2 = req.params.id2
+        
+        const friendshipExists = await Friendship.findOne({
+            $or: [{user1: us1, user2: us2}, {user2: us1, user1: us2}]
+
+        })
+        if (!friendshipExists) {
+            return res.status(404).json({ message: "Friendship not found" });
+        }
+
+        await Friendship.deleteOne({
+            $or: [
+                { user1: us1, user2: us2 },
+                { user2: us1, user1: us2 }
+            ]
+        });
+
+        return res.status(200).json({ message: "Friendship removed successfully" });
+    } catch {
+        return res.status(500).json({message: "Server error" + error.message})
+    }
+}
+
 
 module.exports = {
     sendFrReq,
@@ -122,5 +161,6 @@ module.exports = {
     declineFrReq,
     getPendingFrReq,
     getUserFriends,
-    areTheyFriends
+    areTheyFriends,
+    removeFriend
 }

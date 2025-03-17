@@ -27,7 +27,10 @@ export class FriendshipService {
     return this.http.get<User[]>(`${this.apiUrl}/getUserFriends/${user_id}`)
   }
   areTheyFriends(user1: string, user2: string){
-    return this.http.get<boolean>(`${this.apiUrl}/areTheyFriends/${user1}/${user2}`)
+    return this.http.get(`${this.apiUrl}/areTheyFriends/${user1}/${user2}`)
+  }
+  removeFriend(user1: string, user2: string){
+    return this.http.delete(`${this.apiUrl}/removeFriend/${user1}/${user2}`)
   }
 
 }

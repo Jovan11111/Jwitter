@@ -1,8 +1,9 @@
 <h2>User details page</h2>
 username : {{user.username}}
 email : {{user.email}}
+
 <hr>
-<div *ngIf = "usersarefriends == false">
+<div *ngIf = "showbutton == true && myprofile == false">
     <button (click) = "sendFrReq()">Send Friend Reuest</button>
 </div>
 <hr>
@@ -10,4 +11,11 @@ email : {{user.email}}
 <div *ngFor = "let post of user_posts">
     <h4>{{post.title}}</h4>
     <hr>
+</div>
+<hr>
+<h2>User Friends</h2>
+<div *ngFor = "let fr of friends">
+    <h4>{{fr.username}}</h4>
+
+    <button (click) = "removeFriend(fr._id)" *ngIf ="myprofile == true">Remove Friend</button>
 </div>

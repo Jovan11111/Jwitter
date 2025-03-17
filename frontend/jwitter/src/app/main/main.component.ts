@@ -74,11 +74,21 @@ export class MainComponent{
   }
 
   acceptfrreq(id: string){
-    this.friendServ.acceptFrReq(id)
+    console.log("USAO");
+    
+    this.friendServ.acceptFrReq(id).subscribe({
+      next: () => {
+        this.ngOnInit();
+      }
+    })
   }
 
   declinefrreq(id: string){
-    this.friendServ.declineFrReq(id)
+    this.friendServ.declineFrReq(id).subscribe({
+      next: () => {
+        this.ngOnInit();
+      }
+    })
 
   }
 }
