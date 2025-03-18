@@ -24,6 +24,12 @@ services:
     environment:
       - MONGO_URI=mongodb://mongo:27017/jwitter_db_friends
     
+  message-service:
+    build: ./backend/message_service
+    ports:
+      - "5003:5003"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/jwitter_db_messages
   frontend:
     build: ./frontend/jwitter
     ports:
