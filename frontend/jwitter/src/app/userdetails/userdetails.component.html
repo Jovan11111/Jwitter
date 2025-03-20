@@ -6,6 +6,9 @@ email : {{user.email}}
 <div *ngIf = "showbutton == true && myprofile == false">
     <button (click) = "sendFrReq()">Send Friend Reuest</button>
 </div>
+    <div *ngIf = "showbutton == false && myprofile == false">
+        <a [routerLink] = "['/messages', user_id]">Send message</a>
+    </div>
 <hr>
 <h2>Posts by {{user.username}}</h2>
 <div *ngFor = "let post of user_posts">

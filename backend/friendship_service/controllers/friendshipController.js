@@ -78,9 +78,6 @@ const getUserFriends = async(req, res) => {
         const friendids = friendships.map((friendship) => {
             return friendship.user1.toString() === user_id ? friendship.user2 : friendship.user1
         })
-        console.log(user_id);
-        console.log(friendids);
-        
         
         const friends = await Promise.all(friendids.map(async (fid) => {
             try {
@@ -123,7 +120,7 @@ const areTheyFriends = async(req, res) => {
                 res.status(200).json({frreqexists: false})
             }
         }
-    } catch {
+    } catch (error){
         return res.status(500).json({message: "Server error" + error.message})
     }
 }
@@ -149,7 +146,7 @@ const removeFriend = async(req, res) => {
         });
 
         return res.status(200).json({ message: "Friendship removed successfully" });
-    } catch {
+    } catch (error){
         return res.status(500).json({message: "Server error" + error.message})
     }
 }

@@ -1,0 +1,10 @@
+<h3>Message</h3>
+<hr>
+<div *ngFor = "let msg of messages">
+    {{msg.content}}
+    <hr>
+</div>
+<form action="">
+    <input type="text" placeholder="Enter a message" [(ngModel)] = "newContent" required name="newContent">
+    <button (click) = "sendMessage()">Send</button>
+</form>

@@ -11,8 +11,8 @@ export class MessageService {
 
   constructor(private http: HttpClient) {}
 
-  sendMessage(id1: string, id2: string){
-    return this.http.post<boolean>(`${this.apiUrl}/sendMessage/${id1}/${id2}`, null)
+  sendMessage(id1: string, id2: string, cont: string){
+    return this.http.post<boolean>(`${this.apiUrl}/sendMessage/${id1}/${id2}`, {content: cont})
   }
 
   getMessages(id1:string, id2: string){

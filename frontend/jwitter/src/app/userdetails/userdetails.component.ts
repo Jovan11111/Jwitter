@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { UserServiceService } from '../services/user-service.service';
 import { User } from '../models/User';
 import { Post } from '../models/Post';
@@ -16,13 +16,13 @@ interface CustomJwtPayload extends JwtPayload {
 
 @Component({
   selector: 'app-userdetails',
-  imports: [FormsModule, CommonModule, RouterModule, BrowserModule],
+  imports: [FormsModule, CommonModule, RouterModule],
   templateUrl: './userdetails.component.html',
   styleUrl: './userdetails.component.css'
 })
 export class UserdetailsComponent implements OnInit{
 
-  constructor(private actRoute: ActivatedRoute, private userServ: UserServiceService, private postServ: PostService, private friendServ: FriendshipService){}
+  constructor(private actRoute: ActivatedRoute, private userServ: UserServiceService, private postServ: PostService, private friendServ: FriendshipService, private router: Router){}
   logged_user_id: string = ""
   user_id: string = ""
   user: User = new User()

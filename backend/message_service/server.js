@@ -20,7 +20,7 @@ mongoose.connect(process.env.MONGO_URI)
     })
 
 const messageRoutes = require("./routes/messageRoutes")
-app.use('api/message', messageRoutes)
+app.use('/api/message', messageRoutes)
 
 const port = process.env.PORT || 5003
 app.listen(5003, () => {
