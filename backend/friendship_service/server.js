@@ -14,17 +14,16 @@ app.use(bodyParser.json());
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
-    console.log("Connected to a database");
+    console.log('Connected to a database');
   })
   .catch(err => {
-    console.log("Failed to connect to DB", err);
-    
+    console.log('Failed to connect to DB', err);
   });
 
-const friendshipRoutes = require("./routes/friendshipRoutes")
-app.use('/api/friend/', friendshipRoutes)
+const friendshipRoutes = require("./routes/friendshipRoutes");
+app.use('/api/friend/', friendshipRoutes);
 
-const port = process.env.PORT || 5002
+const port = process.env.PORT || 5002;
 app.listen(5002, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

@@ -18,13 +18,12 @@ mongoose.connect(process.env.MONGO_URI)
   })
   .catch(err => {
     console.log("Failed to connect to DB", err);
-    
   });
 
-const authRoutes = require("./routes/authRoutes")
-app.use('/api/auth/', authRoutes)
+const authRoutes = require("./routes/authRoutes");
+app.use('/api/auth/', authRoutes);
 
-const port = process.env.PORT || 5000
+const port = process.env.PORT || 5000;
 app.listen(5000, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
