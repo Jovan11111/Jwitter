@@ -1,13 +1,56 @@
-const express = require('express');
-const { sendFrReq, declineFrReq, acceptFrReq, getPendingFrReq, getUserFriends, areTheyFriends, removeFriend } = require('../controllers/friendshipController');
+const express = require("express");
+const { 
+    sendFrReq, 
+    declineFrReq, 
+    acceptFrReq, 
+    getPendingFrReq, 
+    getUserFriends, 
+    areTheyFriends, 
+    removeFriend 
+} = require("../controllers/friendshipController");
 
 const router = express.Router();
 
-router.post('/sendFrReq/:sender/:receiver', sendFrReq);
-router.post('/declineFrReq/:id', declineFrReq);
-router.post('/acceptFrReq/:id', acceptFrReq);
-router.get('/getPendingFrReq/:user_id', getPendingFrReq);
-router.get('/getUserFriends/:user_id', getUserFriends);
-router.get('/areTheyFriends/:id1/:id2', areTheyFriends);
-router.delete('/removeFriend/:id1/:id2', removeFriend);
+/**
+ * @route POST /api/friend/request/:sender/:receiver
+ * @desc Send a friend request
+ */
+router.post("/sendFrReq/:sender/:receiver", sendFrReq);
+
+/**
+ * @route POST /api/friend/request/:id/decline
+ * @desc Decline a friend request
+ */
+router.post("/declineFrReq/:id", declineFrReq);
+
+/**
+ * @route POST /api/friend/request/:id/accept
+ * @desc Accept a friend request
+ */
+router.post("/acceptFrReq/:id", acceptFrReq);
+
+/**
+ * @route GET /api/friend/requests/:userId
+ * @desc Get pending friend requests for a user
+ */
+router.get("/getPendingFrReq/:userId", getPendingFrReq);
+
+/**
+ * @route GET /api/friend/list/:userId
+ * @desc Get a user's friends list
+ */
+router.get("/getUserFriends/:userId", getUserFriends);
+
+/**
+ * @route GET /api/friend/check/:id1/:id2
+ * @desc Check if two users are friends
+ */
+router.get("/areTheyFriends/:id1/:id2", areTheyFriends);
+
+/**
+ * @route DELETE /api/friend/remove/:id1/:id2
+ * @desc Remove a friend connection
+ */
+router.delete("/removeFriend/:id1/:id2", removeFriend);
+
 module.exports = router;

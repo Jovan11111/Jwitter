@@ -1,8 +1,28 @@
 <h1>Login</h1>
+
 <form (ngSubmit)="login()">
-    <input type="text" placeholder="username" [(ngModel)] = "username" required name="username"> <br>
-    <input type="text" placeholder="password" [(ngModel)] = "password" required name="password"> <br>
-    <button type="submit">Login</button>
+  <input
+    type="text"
+    name="username"
+    [(ngModel)]="username"
+    placeholder="Username"
+    required
+  /><br />
+
+  <input
+    type="password"
+    name="password"
+    [(ngModel)]="password"
+    placeholder="Password"
+    required
+  /><br />
+
+  <button type="submit">Login</button>
 </form>
-{{message}} <br>
-Don't have an account? <a routerLink="/register">Register</a>
+
+<p *ngIf="message">{{ message }}</p>
+
+<p>
+  Don't have an account?
+  <a routerLink="/register">Register</a>
+</p>

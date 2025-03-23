@@ -1,29 +1,29 @@
-const express = require('express');
-const dotenv = require('dotenv');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-
+const express = require("express");
+const dotenv = require("dotenv");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const bodyParser = require("body-parser");
 
 dotenv.config();
 
 const app = express();
 
-app.use(cors());  
-app.use(bodyParser.json()); 
+// Middleware
+app.use(cors());
+app.use(bodyParser.json());
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("Connected to a database");
-  })
-  .catch(err => {
-    console.log("Failed to connect to DB", err);
-  });
+// Database Connection
+mongoose
+    .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log("Connected to the database"))
+    .catch((err) => console.error("Database connection failed:", err));
 
+// Routes
 const authRoutes = require("./routes/authRoutes");
-app.use('/api/auth/', authRoutes);
+app.use("/api/auth", authRoutes);
 
+// Server Setup
 const port = process.env.PORT || 5000;
-app.listen(5000, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
 });

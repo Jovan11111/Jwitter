@@ -1,50 +1,82 @@
 import { Component, OnInit } from '@angular/core';
-import { FormsModule, NgControl } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { Message } from '../models/Message';
-import { MessageService } from '../services/message.service';
+import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 
+import { MessageService } from '../services/message.service';
+import { Message } from '../models/Message';
+
 interface CustomJwtPayload extends JwtPayload {
-  user_Id: string;
+  userId: string;
 }
 
 @Component({
   selector: 'app-message',
-  imports: [RouterModule, CommonModule, FormsModule],
+  standalone: true,
   templateUrl: './message.component.html',
-  styleUrl: './message.component.css'
+  styleUrls: ['./message.component.css'],
+  imports: [RouterModule, CommonModule, FormsModule]
 })
-export class MessageComponent implements OnInit{
+export class MessageComponent implements OnInit {
+  messages: Message[] = [];
+  newContent: string = '';
+  loggedInUserId: string = '';
+  recipientUserId: string = '';
 
-  constructor(private actRoute: ActivatedRoute, private msgSer: MessageService){}
-  messages: Message[] = []
-  user_id: string = ""
-  logged_user_id: string = ""
-  newContent: string = ""
+  constructor(
+    private route: ActivatedRoute,
+    private messageService: MessageService
+  ) {}
 
+  /**
+   * Initialize component:
+   * - decode logged-in user ID
+   * - get recipient user ID from route
+   * - load message history
+   */
   ngOnInit(): void {
-    this.user_id = this.actRoute.snapshot.paramMap.get('id') ?? ''
-    const authToken = localStorage.getItem("auth_token");
-    if(authToken){
-      const decoded = jwtDecode<CustomJwtPayload>(authToken)
-      this.logged_user_id = decoded.user_Id
+    this.recipientUserId = this.route.snapshot.paramMap.get('id') || '';
+
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+      const decoded = jwtDecode<CustomJwtPayload>(token);
+      this.loggedInUserId = decoded.userId;
     }
 
-    this.msgSer.getMessages(this.user_id, this.logged_user_id).subscribe({
-      next: (msgs: Message[]) => {
-        this.messages = msgs
-      }
-    })
+    this.loadMessages();
   }
 
-  sendMessage(){
-    this.msgSer.sendMessage(this.logged_user_id, this.user_id, this.newContent).subscribe({
-      next: (issent: boolean) => {
-        this.ngOnInit();
-      }
-    })
+  /**
+   * Fetches messages between logged-in user and recipient.
+   */
+  private loadMessages(): void {
+    this.messageService
+      .getMessages(this.recipientUserId, this.loggedInUserId)
+      .subscribe({
+        next: (msgs: Message[]) => (this.messages = msgs),
+        error: (err) => console.error('Failed to load messages:', err)
+      });
   }
 
+  /**
+   * Sends a message and reloads message list.
+   */
+  sendMessage(): void {
+    if (!this.newContent.trim()) return;
+
+    this.messageService
+      .sendMessage(this.loggedInUserId, this.recipientUserId, this.newContent)
+      .subscribe({
+        next: (success: boolean) => {
+          if (success) {
+            this.newContent = '';
+            this.loadMessages();
+          } else {
+            console.warn('Failed to send message');
+          }
+        },
+        error: (err) => console.error('Error sending message:', err)
+      });
+  }
 }

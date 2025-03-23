@@ -7,7 +7,7 @@ const allPosts = async(req, res) => {
         const posts = await Post.find();
         const postsWithUserNames = await Promise.all(posts.map(async (post) => {
             try {
-                const userResp = await axios.get(`http://auth-service:5000/api/auth/getUser/${post.user}`)
+                const userResp = await axios.get(`http://auth-service:5000/api/auth/user/${post.user}`)
                 const username = userResp.data.username
                 
                 return {
@@ -55,11 +55,12 @@ const deletePost = async(req, res) => {
 const createPost = async(req, res) => {
     try {
         const {title, content, user} = req.body;
+        
         if(! title || !content || ! user){
             res.status(400).json("Provide needed info for post")
         }
 
-        const userExists =  await axios.get(`http://auth-service:5000/api/auth/getUser/${user}`)
+        const userExists =  await axios.get(`http://auth-service:5000/api/auth/user/${user}`)
         if(! userExists.data){
             return res.status(400).json({message: "User not found"})
         }

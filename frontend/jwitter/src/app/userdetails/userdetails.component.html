@@ -1,24 +1,37 @@
-<h2>User details page</h2>
-username : {{user.username}}
-email : {{user.email}}
+<h2>User Details Page</h2>
 
-<hr>
-<div *ngIf = "showbutton == true && myprofile == false">
-    <button (click) = "sendFrReq()">Send Friend Reuest</button>
+<p><strong>Username:</strong> {{ user.username }}</p>
+<p><strong>Email:</strong> {{ user.email }}</p>
+
+<hr />
+
+<!-- Show Send Friend Request button or Message link based on conditions -->
+<div *ngIf="!myProfile">
+  <button *ngIf="showAddFriendButton" (click)="sendFriendRequest()">
+    Send Friend Request
+  </button>
+  <a *ngIf="!showAddFriendButton" [routerLink]="['/messages', userId]">
+    Send Message
+  </a>
 </div>
-    <div *ngIf = "showbutton == false && myprofile == false">
-        <a [routerLink] = "['/messages', user_id]">Send message</a>
-    </div>
-<hr>
-<h2>Posts by {{user.username}}</h2>
-<div *ngFor = "let post of user_posts">
-    <h4>{{post.title}}</h4>
-    <hr>
+
+<hr />
+
+<h2>Posts by {{ user.username }}</h2>
+<div *ngFor="let post of userPosts">
+  <h4>{{ post.title }}</h4>
+  <hr />
 </div>
-<hr>
+
+<hr />
+
 <h2>User Friends</h2>
-<div *ngFor = "let fr of friends">
-    <h4>{{fr.username}}</h4>
-
-    <button (click) = "removeFriend(fr._id)" *ngIf ="myprofile == true">Remove Friend</button>
+<div *ngFor="let friend of friends">
+  <h4>{{ friend.username }}</h4>
+  <button
+    *ngIf="myProfile"
+    (click)="removeFriend(friend._id)"
+  >
+    Remove Friend
+  </button>
 </div>

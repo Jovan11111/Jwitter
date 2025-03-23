@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
+// Define the post schema
 const postSchema = new mongoose.Schema({
-
     title: {
         type: String,
         required: true
@@ -20,6 +20,8 @@ const postSchema = new mongoose.Schema({
     }
 });
 
-const Post = mongoose.model('Post', postSchema)
+// Create the Post model
+const Post = mongoose.model('Post', postSchema);
 
+// Export the Post model
 module.exports = Post;

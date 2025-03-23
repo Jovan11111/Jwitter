@@ -3,31 +3,45 @@ import { Injectable } from '@angular/core';
 import { Message } from '../models/Message';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MessageService {
-
-  apiUrl = "http://localhost:5003/api/message"
+  private apiUrl = 'http://localhost:5003/api/message';
 
   constructor(private http: HttpClient) {}
 
-  sendMessage(id1: string, id2: string, cont: string){
-    return this.http.post<boolean>(`${this.apiUrl}/sendMessage/${id1}/${id2}`, {content: cont})
+  /**
+   * Sends a message from id1 to id2.
+   */
+  sendMessage(senderId: string, receiverId: string, content: string) {
+    return this.http.post<boolean>(`${this.apiUrl}/sendMessage/${senderId}/${receiverId}`, { content });
   }
 
-  getMessages(id1:string, id2: string){
-    return this.http.get<Message[]>(`${this.apiUrl}/getMessages/${id1}/${id2}`)
+  /**
+   * Retrieves all messages between two users.
+   */
+  getMessages(id1: string, id2: string) {
+    return this.http.get<Message[]>(`${this.apiUrl}/getMessages/${id1}/${id2}`);
   }
 
-  editMessage(id:string){
-    return this.http.post<boolean>(`${this.apiUrl}/editMessage/${id}`, null)
+  /**
+   * Edits a message by its ID.
+   */
+  editMessage(messageId: string) {
+    return this.http.post<boolean>(`${this.apiUrl}/editMessage/${messageId}`, null);
   }
 
-  deleteMessage(id:string){
-    return this.http.delete<boolean>(`${this.apiUrl}/deleteMessage/${id}`)
+  /**
+   * Deletes a message by its ID.
+   */
+  deleteMessage(messageId: string) {
+    return this.http.delete<boolean>(`${this.apiUrl}/deleteMessage/${messageId}`);
   }
 
-  deleteChat(id1:string, id2:string){
-    return this.http.delete<boolean>(`${this.apiUrl}/deleteChat/${id1}/${id2}`)
+  /**
+   * Deletes the entire chat between two users.
+   */
+  deleteChat(userId1: string, userId2: string) {
+    return this.http.delete<boolean>(`${this.apiUrl}/deleteChat/${userId1}/${userId2}`);
   }
 }

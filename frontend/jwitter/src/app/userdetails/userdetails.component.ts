@@ -4,83 +4,127 @@ import { UserServiceService } from '../services/user-service.service';
 import { User } from '../models/User';
 import { Post } from '../models/Post';
 import { PostService } from '../services/post.service';
-import { CommonModule } from '@angular/common';
-import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { FriendshipService } from '../services/friendship.service';
-import { BrowserModule } from '@angular/platform-browser';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 interface CustomJwtPayload extends JwtPayload {
-  user_Id: string;
+  userId: string;
 }
 
 @Component({
   selector: 'app-userdetails',
-  imports: [FormsModule, CommonModule, RouterModule],
   templateUrl: './userdetails.component.html',
-  styleUrl: './userdetails.component.css'
+  imports: [FormsModule, CommonModule, RouterModule],
+  styleUrls: ['./userdetails.component.css']
 })
-export class UserdetailsComponent implements OnInit{
+export class UserDetailsComponent implements OnInit {
+  userId: string = '';
+  loggedInUserId: string = '';
+  user: User = new User();
+  userPosts: Post[] = [];
+  friends: User[] = [];
+  showAddFriendButton: boolean = true;
+  myProfile: boolean = false;
 
-  constructor(private actRoute: ActivatedRoute, private userServ: UserServiceService, private postServ: PostService, private friendServ: FriendshipService, private router: Router){}
-  logged_user_id: string = ""
-  user_id: string = ""
-  user: User = new User()
-  user_posts: Post[] = []
-  showbutton: boolean = true
-  friends: User[] = []
-  myprofile: boolean = false
-  ngOnInit() {
-    
-    this.user_id = this.actRoute.snapshot.paramMap.get('id') ?? ''
-    this.userServ.getUserById(this.user_id).subscribe({
-      next: (userResp: User) => {
-        this.user = userResp
-      }
-    })
+  constructor(
+    private route: ActivatedRoute,
+    private userService: UserServiceService,
+    private postService: PostService,
+    private friendshipService: FriendshipService,
+    private router: Router
+  ) {}
 
-    this.postServ.userPosts(this.user_id).subscribe({
-      next: (userPosts: Post[]) =>{
-        this.user_posts = userPosts
-      }
-    })
+  /**
+   * On component init:
+   * - Decodes logged-in user from token
+   * - Fetches viewed user data, posts, and friends
+   * - Checks friendship status
+   */
+  ngOnInit(): void {
+    this.userId = this.route.snapshot.paramMap.get('id') ?? '';
 
-    const authToken = localStorage.getItem("auth_token");
-    if (authToken) {
-      const decoded = jwtDecode<CustomJwtPayload>(authToken);
-      console.log(authToken);
-      this.logged_user_id = decoded.user_Id;
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+      const decoded = jwtDecode<CustomJwtPayload>(token);
+      this.loggedInUserId = decoded.userId;
+      this.myProfile = this.userId === this.loggedInUserId;
     }
-    if(this.user_id === this.logged_user_id) this.myprofile = true;
-    
-    this.friendServ.areTheyFriends(this.user_id, this.logged_user_id).subscribe({
-      next: (aretheyfriends: any) => {
-        if(aretheyfriends.friendshipexists) this.showbutton = false
-        if(aretheyfriends.frreqexists) this.showbutton = false
-      }
-    })
 
-    this.friendServ.getUserFriends(this.user_id).subscribe({
-      next: (fr: User[]) => {
-        this.friends = fr
-      }
-    })
+    this.loadUserDetails();
+    this.loadUserPosts();
+    this.loadFriendshipStatus();
+    this.loadUserFriends();
   }
 
-  sendFrReq(){
-    this.friendServ.sendFrReq(this.logged_user_id, this.user_id).subscribe({
-      next: (sent: Object) => {
-        this.ngOnInit()
-      }
-    })
+  /**
+   * Loads user details by ID.
+   */
+  private loadUserDetails(): void {
+    this.userService.getUserById(this.userId).subscribe({
+      next: (user: User) => (this.user = user),
+      error: (err) => console.error('Failed to load user', err)
+    });
   }
 
-  removeFriend(frid: string){
-    this.friendServ.removeFriend(this.logged_user_id, frid).subscribe({
-      next: (obj: any) => {
-        this.ngOnInit();
-      }
-    })
+  /**
+   * Loads posts made by the user.
+   */
+  private loadUserPosts(): void {
+    this.postService.getUserPosts(this.userId).subscribe({
+      next: (posts: Post[]) => (this.userPosts = posts),
+      error: (err) => console.error('Failed to load user posts', err)
+    });
   }
 
+  /**
+   * Loads friendship status with the viewed user.
+   */
+  private loadFriendshipStatus(): void {
+    if (this.myProfile) {
+      this.showAddFriendButton = false;
+      return;
+    }
+
+    this.friendshipService.areTheyFriends(this.userId, this.loggedInUserId).subscribe({
+      next: (status: any) => {
+        if (status.friendshipExists || status.frReqExists) {
+          this.showAddFriendButton = false;
+        }
+      },
+      error: (err) => console.error('Failed to check friendship status', err)
+    });
+  }
+
+  /**
+   * Loads the list of friends for the viewed user.
+   */
+  private loadUserFriends(): void {
+    this.friendshipService.getUserFriends(this.userId).subscribe({
+      next: (friends: User[]) => (this.friends = friends),
+      error: (err) => console.error('Failed to load friends', err)
+    });
+  }
+
+  /**
+   * Sends a friend request from the logged-in user to the viewed user.
+   */
+  sendFriendRequest(): void {
+    this.friendshipService.sendFriendRequest(this.loggedInUserId, this.userId).subscribe({
+      next: () => this.ngOnInit(), // refresh state
+      error: (err) => console.error('Failed to send friend request', err)
+    });
+  }
+
+  /**
+   * Removes a friend from the logged-in user's friend list.
+   * @param friendId - ID of the friend to remove
+   */
+  removeFriend(friendId: string): void {
+    this.friendshipService.removeFriend(this.loggedInUserId, friendId).subscribe({
+      next: () => this.ngOnInit(), // refresh state
+      error: (err) => console.error('Failed to remove friend', err)
+    });
+  }
 }

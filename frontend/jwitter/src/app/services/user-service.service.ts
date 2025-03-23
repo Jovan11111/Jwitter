@@ -3,24 +3,31 @@ import { Injectable } from '@angular/core';
 import { User } from '../models/User';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
 export class UserServiceService {
-  private apiUrl = 'http://localhost:5000/api/auth'
+  private apiUrl = 'http://localhost:5000/api/auth';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  login(username: string, password: string){
-    return this.http.post<{message: string, token: string}>(`${this.apiUrl}/login`, {username, password});
+  /**
+   * Authenticates a user with provided credentials.
+   */
+  login(username: string, password: string) {
+    return this.http.post<{ message: string; token: string }>(`${this.apiUrl}/login`, { username, password });
   }
 
-  register(username: string, password:string, email:string){
-    return this.http.post(`${this.apiUrl}/register`, {username, password, email});
+  /**
+   * Registers a new user.
+   */
+  register(username: string, password: string, email: string) {
+    return this.http.post(`${this.apiUrl}/register`, { username, password, email });
   }
 
-  getUserById(user_id: string){
-    return this.http.get<User>(`${this.apiUrl}/getUser/${user_id}`)
+  /**
+   * Retrieves a user by their ID.
+   */
+  getUserById(userId: string) {
+    return this.http.get<User>(`${this.apiUrl}/user/${userId}`);
   }
-
 }

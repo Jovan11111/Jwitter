@@ -1,40 +1,50 @@
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
-import { log } from 'console';
+import { Component, OnInit } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { UserServiceService } from '../services/user-service.service';
 import { jwtDecode } from 'jwt-decode';
-import { Token } from '@angular/compiler';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
-  imports: [RouterLink, FormsModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  imports: [RouterLink, FormsModule, CommonModule],
+  styleUrls: ['./login.component.css'],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
+  username: string = '';
+  password: string = '';
+  message: string = '';
 
-  constructor(private us: UserServiceService, private router: Router){}
+  constructor(
+    private userService: UserServiceService,
+    private router: Router
+  ) {}
 
-  ngOnInit(){
-    if(localStorage.getItem('auth_token')){
+  /**
+   * Redirects to /main if already authenticated.
+   */
+  ngOnInit(): void {
+    if (localStorage.getItem('auth_token')) {
       this.router.navigate(['/main']);
     }
   }
 
-  username: string = ''
-  password: string = ''
-  message: string = ''
-  login() {
-    this.us.login(this.username, this.password).subscribe(
+  /**
+   * Attempts to log in the user using the entered credentials.
+   * On success, stores the token and redirects to /main.
+   * On failure, shows error message.
+   */
+  login(): void {
+    this.userService.login(this.username, this.password).subscribe(
       (response) => {
-        this.router.navigate(['/main'])
         localStorage.setItem('auth_token', response.token);
         console.log(jwtDecode(response.token));
+        this.router.navigate(['/main']);
       },
       (error) => {
-        console.log("login failed");
-        this.message = error.error.message
+        console.error('Login failed:', error);
+        this.message = error.error.message || 'Login failed. Please try again.';
       }
     );
   }

@@ -1,10 +1,20 @@
-<h3>Message</h3>
-<hr>
-<div *ngFor = "let msg of messages">
-    {{msg.content}}
-    <hr>
+<h3>Messages</h3>
+<hr />
+
+<!-- Display Messages -->
+<div *ngFor="let msg of messages">
+  <p>{{ msg.content }}</p>
+  <hr />
 </div>
-<form action="">
-    <input type="text" placeholder="Enter a message" [(ngModel)] = "newContent" required name="newContent">
-    <button (click) = "sendMessage()">Send</button>
+
+<!-- Send a Message -->
+<form (ngSubmit)="sendMessage()">
+  <input
+    type="text"
+    name="newContent"
+    placeholder="Enter a message"
+    [(ngModel)]="newContent"
+    required
+  />
+  <button type="submit">Send</button>
 </form>

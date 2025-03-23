@@ -1,33 +1,41 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { UserServiceService } from '../services/user-service.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-register',
-  imports: [RouterLink, FormsModule],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.css'
+  imports: [RouterLink, FormsModule, CommonModule],
+  styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
-  constructor(private us: UserServiceService, private router: Router){}
-  
-  username: string = ''
-  password: string = ''
-  email: string = ''
-  message: string = ''
-  register(){
-    this.us.register(this.username, this.password, this.email).subscribe(
+  username: string = '';
+  password: string = '';
+  email: string = '';
+  message: string = '';
+
+  constructor(
+    private userService: UserServiceService,
+    private router: Router
+  ) {}
+
+  /**
+   * Handles user registration.
+   * On success, navigates to login page.
+   * On failure, displays an error message.
+   */
+  register(): void {
+    this.userService.register(this.username, this.password, this.email).subscribe(
       (response: any) => {
-        this.router.navigate(['/login'])
-        console.log("Registration successfull", response.message);
+        console.log('Registration successful:', response.message);
+        this.router.navigate(['/login']);
       },
       (error) => {
-        console.log("Failed to register");
-        this.message = error.error.message
+        console.error('Failed to register:', error);
+        this.message = error.error.message || 'Registration failed. Please try again.';
       }
-    )
-    
+    );
   }
-
 }

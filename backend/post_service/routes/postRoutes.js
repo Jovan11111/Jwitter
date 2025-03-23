@@ -1,12 +1,42 @@
 const express = require('express');
-const {allPosts, deletePost, createPost, getPost, userPosts} = require("../controllers/postController");
+const { allPosts, deletePost, createPost, getPost, userPosts } = require("../controllers/postController");
 
 const router = express.Router();
 
-router.get('/allPosts', allPosts);
-router.get('/getPost/:id', getPost);
-router.delete('/deletePost/:id', deletePost);
-router.post('/createPost', createPost);
-router.get('/userPosts/:id', userPosts);
+/**
+ * @route GET /api/post/allPosts
+ * @desc Get all posts
+ * @access Public
+ */
+router.get('/allPosts', allPosts); // Get all posts
 
+/**
+ * @route GET /api/post/getPost/:id
+ * @desc Get a single post by ID
+ * @access Public
+ */
+router.get('/getPost/:id', getPost); // Get a single post by ID
+
+/**
+ * @route DELETE /api/post/deletePost/:id
+ * @desc Delete a post by ID
+ * @access Private (Only the post owner or admin should be allowed)
+ */
+router.delete('/deletePost/:id', deletePost); // Delete a post by ID
+
+/**
+ * @route POST /api/post/createPost
+ * @desc Create a new post
+ * @access Private (Only authenticated users should be allowed)
+ */
+router.post('/createPost', createPost); // Create a new post
+
+/**
+ * @route GET /api/post/userPosts/:id
+ * @desc Get all posts by a specific user
+ * @access Public
+ */
+router.get('/userPosts/:id', userPosts); // Get all posts by a specific user
+
+// Export the router
 module.exports = router;

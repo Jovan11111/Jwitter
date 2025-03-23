@@ -1,16 +1,23 @@
-const axios = require("axios")
-const Message = require("../models/Message")
+const axios = require("axios");
+const Message = require("../models/Message");
 
+/**
+ * Send a new message from one user to another.
+ * 
+ * @param {Object} req - The request object, containing the sender, receiver, and message content.
+ * @param {Object} res - The response object used to send back the result.
+ * @returns {Object} JSON response with the newly created message.
+ */
 const sendMessage = async (req, res) => {
     try {
-        const send = req.params.id1;
-        const rec = req.params.id2;
-        const cont = req.body.content;
+        const sender = req.params.id1;
+        const receiver = req.params.id2;
+        const content = req.body.content;
 
         const newMessage = new Message({
-            sender: send,
-            receiver: rec,
-            content: cont
+            sender,
+            receiver,
+            content
         });
 
         await newMessage.save();
@@ -20,7 +27,13 @@ const sendMessage = async (req, res) => {
     }
 };
 
-
+/**
+ * Get all messages exchanged between two users.
+ * 
+ * @param {Object} req - The request object containing sender and receiver IDs.
+ * @param {Object} res - The response object used to send back the result.
+ * @returns {Object} JSON response with the list of messages between the two users.
+ */
 const getMessages = async (req, res) => {
     try {
         const sender = req.params.id1;
@@ -43,10 +56,16 @@ const getMessages = async (req, res) => {
     }
 };
 
-
+/**
+ * Edit the content of an existing message.
+ * 
+ * @param {Object} req - The request object containing the message ID and new content.
+ * @param {Object} res - The response object used to send back the result.
+ * @returns {Object} JSON response with the updated message.
+ */
 const editMessage = async (req, res) => {
     try {
-        const newContent = req.body.content; 
+        const newContent = req.body.content;
 
         const message = await Message.findById(req.params.id);
 
@@ -54,22 +73,33 @@ const editMessage = async (req, res) => {
             return res.status(404).json({ message: "Message not found" });
         }
 
-        message.content = newContent; 
-        await message.save(); 
+        message.content = newContent;
+        await message.save();
 
-        return res.status(200).json({ message: "Message updated successfully", updatedMessage: message });
-
+        return res.status(200).json({
+            message: "Message updated successfully",
+            updatedMessage: message
+        });
     } catch (error) {
         return res.status(500).json({ message: "Server error: " + error.message });
     }
 };
 
+/**
+ * Delete a message by its ID.
+ * 
+ * @param {Object} req - The request object containing the message ID to be deleted.
+ * @param {Object} res - The response object used to send back the result.
+ * @returns {Object} JSON response indicating whether the deletion was successful.
+ */
 const deleteMessage = async (req, res) => {
     try {
         const message = await Message.findById(req.params.id);
+
         if (!message) {
             return res.status(404).json({ message: "Message not found" });
         }
+
         await message.deleteOne();
         res.status(200).json({ message: "Message deleted successfully" });
     } catch (error) {
@@ -77,7 +107,13 @@ const deleteMessage = async (req, res) => {
     }
 };
 
-
+/**
+ * Delete all messages between two users.
+ * 
+ * @param {Object} req - The request object containing sender and receiver IDs.
+ * @param {Object} res - The response object used to send back the result.
+ * @returns {Object} JSON response indicating whether the chat was deleted successfully.
+ */
 const deleteChat = async (req, res) => {
     try {
         const sender = req.params.id1;
@@ -95,12 +131,10 @@ const deleteChat = async (req, res) => {
         }
 
         return res.status(200).json({ message: "Chat deleted successfully" });
-
     } catch (error) {
         return res.status(500).json({ message: "Server error: " + error.message });
     }
 };
-
 
 module.exports = {
     sendMessage,
@@ -108,4 +142,4 @@ module.exports = {
     editMessage,
     deleteMessage,
     deleteChat
-}
+};

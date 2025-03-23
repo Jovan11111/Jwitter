@@ -3,7 +3,7 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { NgModule } from '@angular/core';
 import { MainComponent } from './main/main.component';
-import { UserdetailsComponent } from './userdetails/userdetails.component';
+import { UserDetailsComponent } from './userdetails/userdetails.component';
 import { MessageComponent } from './message/message.component';
 
 export const routes: Routes = [
@@ -13,5 +13,5 @@ export const routes: Routes = [
     {path : '', redirectTo:'/login', pathMatch: 'full'},
     {path : 'main', component: MainComponent},
     {path : 'messages/:id', component: MessageComponent},
-    {path : 'userdetails/:id', component: UserdetailsComponent}
+    {path : 'userdetails/:id', component: UserDetailsComponent}
 ];

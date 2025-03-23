@@ -1,29 +1,47 @@
-<h1>Main page</h1>
+<h1>Main Page</h1>
 
-<div *ngFor="let post of posts;">
-    <h3>{{post.title}}</h3>
-    <br>
-    <a [routerLink] = "['/userdetails', post.user]">{{post.username}}</a>
-    <br>
-    {{post.content}}
-    <hr>
-    <form (ngSubmit)="deletePost(post._id)">
-        <button type="submit">Delete Post</button>
-    </form>
+<!-- Posts List -->
+<div *ngFor="let post of posts">
+  <h3>{{ post.title }}</h3>
+  <p>
+    <a [routerLink]="['/userdetails', post.user]">{{ post.username }}</a>
+  </p>
+  <p>{{ post.content }}</p>
+
+  <form (ngSubmit)="deletePost(post._id)">
+    <button type="submit">Delete Post</button>
+  </form>
+  <hr />
 </div>
 
-<hr>
-<h2>Add a post</h2>
+<!-- Add a New Post -->
+<h2>Add a Post</h2>
 <form (ngSubmit)="addPost()">
-    <input type="text" placeholder="Title" [(ngModel)] = "newPostTitle" required name = "newPostTitle">
-    <input type="text" placeholder="Content" [(ngModel)] = "newPostContent" required name = newPostContent>
-    <button type="submit">Add a Post</button>
+  <input
+    type="text"
+    name="newPostTitle"
+    placeholder="Title"
+    [(ngModel)]="newPostTitle"
+    required
+  />
+  <input
+    type="text"
+    name="newPostContent"
+    placeholder="Content"
+    [(ngModel)]="newPostContent"
+    required
+  />
+  <button type="submit">Add Post</button>
 </form>
-<hr>
-<div *ngFor="let frreq of friendshipRequests">
-    {{frreq.sender}}
-    <br>
-    <button (click)="acceptfrreq(frreq._id)">Accept</button>
-    <button (click)="declinefrreq(frreq._id)">Decline</button>
+
+<hr />
+
+<!-- Friendship Requests -->
+<div *ngFor="let request of friendshipRequests">
+  <p>{{ request.sender }}</p>
+  <button (click)="acceptFriendRequest(request._id)">Accept</button>
+  <button (click)="declineFriendRequest(request._id)">Decline</button>
 </div>
+
+<!-- Logout Component -->
 <app-logout></app-logout>

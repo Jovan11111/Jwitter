@@ -3,31 +3,46 @@ import { Injectable } from '@angular/core';
 import { Post } from '../models/Post';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PostService {
+  private apiUrl = 'http://localhost:5001/api/post';
 
-  apiUrl = 'http://localhost:5001/api/post'
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  allPosts(){
-    return this.http.get<Post[]>(`${this.apiUrl}/allPosts`)
+  /**
+   * Retrieves all posts.
+   */
+  getAllPosts() {
+    return this.http.get<Post[]>(`${this.apiUrl}/allPosts`);
   }
 
-  getPost(postid: string){
-    return this.http.get<Post>(`${this.apiUrl}/getPost/${postid}`)
+  /**
+   * Retrieves a specific post by its ID.
+   */
+  getPostById(postId: string) {
+    return this.http.get<Post>(`${this.apiUrl}/getPost/${postId}`);
   }
 
-  createPost(title: string, content: string, user: string){
-    console.log(user);
-    return this.http.post<boolean>(`${this.apiUrl}/createPost`, {title, content, user})
+  /**
+   * Creates a new post.
+   */
+  createPost(title: string, content: string, userId: string) {
+    console.log(title, content, userId);
+    return this.http.post<boolean>(`${this.apiUrl}/createPost`, { title, content, user: userId });
   }
 
-  deletePost(postid: string){
-    return this.http.delete(`${this.apiUrl}/deletePost/${postid}`)
+  /**
+   * Deletes a post by its ID.
+   */
+  deletePost(postId: string) {
+    return this.http.delete(`${this.apiUrl}/deletePost/${postId}`);
   }
 
-  userPosts(userid: string){
-    return this.http.get<Post[]>(`${this.apiUrl}/userPosts/${userid}`)
+  /**
+   * Retrieves all posts by a specific user.
+   */
+  getUserPosts(userId: string) {
+    return this.http.get<Post[]>(`${this.apiUrl}/userPosts/${userId}`);
   }
 }
