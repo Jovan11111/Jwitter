@@ -1,20 +1,28 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Message } from '../models/Message';
+import { io, Socket } from 'socket.io-client';  
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MessageService {
   private apiUrl = 'http://localhost:5003/api/message';
+  private socket: Socket;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+  ) {
+    this.socket = io('http://localhost:5003');
+  }
 
   /**
    * Sends a message from id1 to id2.
    */
   sendMessage(senderId: string, receiverId: string, content: string) {
-    return this.http.post<boolean>(`${this.apiUrl}/sendMessage/${senderId}/${receiverId}`, { content });
+    const msgData = {sender: senderId, receiver: receiverId, content: content};
+    this.socket.emit('sendMessage', msgData);
   }
 
   /**
@@ -43,5 +51,13 @@ export class MessageService {
    */
   deleteChat(userId1: string, userId2: string) {
     return this.http.delete<boolean>(`${this.apiUrl}/deleteChat/${userId1}/${userId2}`);
+  }
+
+  listenForMessages(): Observable<Message> {
+    return new Observable((observer) => {
+      this.socket.on('newMsg', (newMsg: Message) => {
+        observer.next(newMsg);
+      })
+    })
   }
 }

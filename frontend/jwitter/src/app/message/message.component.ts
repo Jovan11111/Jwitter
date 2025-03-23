@@ -45,6 +45,17 @@ export class MessageComponent implements OnInit {
     }
 
     this.loadMessages();
+
+    this.messageService.listenForMessages().subscribe((newMsg: Message) => {
+      console.log("DOSLA PORUKA DING DONG");
+      
+      if(
+        (newMsg.sender === this.loggedInUserId && newMsg.receiver === this.recipientUserId) ||
+        (newMsg.sender === this.recipientUserId && newMsg.receiver === this.loggedInUserId)
+      ) {
+        this.messages.push(newMsg);
+      }
+    })
   }
 
   /**
@@ -64,19 +75,7 @@ export class MessageComponent implements OnInit {
    */
   sendMessage(): void {
     if (!this.newContent.trim()) return;
-
-    this.messageService
-      .sendMessage(this.loggedInUserId, this.recipientUserId, this.newContent)
-      .subscribe({
-        next: (success: boolean) => {
-          if (success) {
-            this.newContent = '';
-            this.loadMessages();
-          } else {
-            console.warn('Failed to send message');
-          }
-        },
-        error: (err) => console.error('Error sending message:', err)
-      });
+    this.newContent = '';
+    this.messageService.sendMessage(this.loggedInUserId, this.recipientUserId, this.newContent)
   }
 }
