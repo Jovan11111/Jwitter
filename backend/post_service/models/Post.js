@@ -14,6 +14,14 @@ const postSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },
+    numLikes: {
+        type: Number,
+        default: 0
+    },
+    numDislikes: {
+        type: Number,
+        default: 0
+    },
     createdAt: {
         type: Date,
         default: Date.now

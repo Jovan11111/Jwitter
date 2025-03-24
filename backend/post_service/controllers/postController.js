@@ -1,6 +1,7 @@
 const Post = require("../models/Post")
 const axios = require('axios')
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const Reaction = require("../models/Reaction");
 
 const allPosts = async(req, res) => {
     try {
@@ -96,10 +97,79 @@ const userPosts = async(req, res) => {
     }
 }
 
+const likePost = async (req, res) => {
+    try {
+        const { userId, postId } = req.body;
+
+        const reaction = await Reaction.findOne({ user: userId, post: postId });
+
+        if (reaction) {
+            if (reaction.reaction === "liked") {
+                await Reaction.deleteOne({ _id: reaction._id });
+                await Post.findByIdAndUpdate(postId, { $inc: { numLikes: -1 } });
+
+                return res.status(200).json({ message: "Unliked post successfully" });
+            } else {
+                reaction.reaction = "liked";
+                await reaction.save();
+
+                await Post.findByIdAndUpdate(postId, { $inc: { numLikes: 1, numDislikes: -1 } });
+
+                return res.status(200).json({ message: "Liked post successfully" });
+            }
+        } else {
+            await Post.findByIdAndUpdate(postId, { $inc: { numLikes: 1 } });
+
+            const newReaction = new Reaction({ user: userId, post: postId, reaction: "liked" });
+            await newReaction.save();
+
+            return res.status(200).json({ message: "Liked post successfully" });
+        }
+    } catch (error) {
+        return res.status(500).json({ message: "Server error: " + error.message });
+    }
+};
+
+
+const dislikePost = async (req, res) => {
+    try {
+        const { userId, postId } = req.body;
+        const reaction = await Reaction.findOne({ user: userId, post: postId });
+
+        if (reaction) {
+            if (reaction.reaction === "disliked") {
+                await Reaction.deleteOne({ _id: reaction._id });
+                await Post.findByIdAndUpdate(postId, { $inc: { numDislikes: -1 } });
+
+                return res.status(200).json({ message: "Undisliked post successfully" });
+            } else {
+                reaction.reaction = "disliked";
+                await reaction.save();
+
+                await Post.findByIdAndUpdate(postId, { $inc: { numLikes: -1, numDislikes: 1 } });
+
+                return res.status(200).json({ message: "Disliked post successfully" });
+            }
+        } else {
+            await Post.findByIdAndUpdate(postId, { $inc: { numDislikes: 1 } });
+
+            const newReaction = new Reaction({ user: userId, post: postId, reaction: "disliked" });
+            await newReaction.save();
+
+            return res.status(200).json({ message: "Disliked post successfully" });
+        }
+    } catch (error) {
+        return res.status(500).json({ message: "Server error: " + error.message });
+    }
+};
+
+
 module.exports = {
     allPosts,
     deletePost,
     createPost,
     getPost,
-    userPosts
+    userPosts,
+    likePost,
+    dislikePost
 }

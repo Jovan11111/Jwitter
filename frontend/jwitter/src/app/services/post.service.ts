@@ -45,4 +45,18 @@ export class PostService {
   getUserPosts(userId: string) {
     return this.http.get<Post[]>(`${this.apiUrl}/userPosts/${userId}`);
   }
+
+  /**
+   * Updates the database so like is added or removed
+   */
+  likePost(user: string, post: string){
+    return this.http.post(`${this.apiUrl}/like`, {userId: user, postId: post});
+  }
+
+  /**
+   * Updates the database so dislike is added or removed
+   */
+  dislikePost(user: string, post: string){
+    return this.http.post(`${this.apiUrl}/dislike`, {userId: user, postId: post});
+  }
 }

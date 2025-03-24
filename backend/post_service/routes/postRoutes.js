@@ -1,5 +1,5 @@
 const express = require('express');
-const { allPosts, deletePost, createPost, getPost, userPosts } = require("../controllers/postController");
+const { allPosts, deletePost, createPost, getPost, userPosts, likePost, dislikePost } = require("../controllers/postController");
 
 const router = express.Router();
 
@@ -37,6 +37,20 @@ router.post('/createPost', createPost); // Create a new post
  * @access Public
  */
 router.get('/userPosts/:id', userPosts); // Get all posts by a specific user
+
+/**
+ * @route POST /api/post/like 
+ * @desc Like a post, or remove a like
+ * @access Public
+ */
+router.post('/like', likePost);
+
+/**
+ * @route POST /api/post/dislike 
+ * @desc Disike a post, or remove a dislike
+ * @access Public
+ */
+router.post('/dislike', dislikePost);
 
 // Export the router
 module.exports = router;
