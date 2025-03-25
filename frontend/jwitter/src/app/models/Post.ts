@@ -7,5 +7,7 @@ export class Post{
     createdAt: Date = new Date()
     __v: number = 0
     username: string = ""
+    numLikes: number = 0
+    numDislikes: number = 0
 }
 

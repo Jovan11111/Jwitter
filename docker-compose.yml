@@ -30,6 +30,14 @@ services:
       - "5003:5003"
     environment:
       - MONGO_URI=mongodb://mongo:27017/jwitter_db_messages
+  
+  comment-service:
+    build: ./backend/comment_service
+    ports:
+      - "5004:5004"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/jwitter_db_comments
+      
   frontend:
     build: ./frontend/jwitter
     ports:

@@ -1,5 +1,5 @@
-const Post = require("../models/Post")
-const axios = require('axios')
+const Post = require("../models/Post");
+const axios = require('axios');
 const mongoose = require('mongoose');
 const Reaction = require("../models/Reaction");
 
@@ -18,7 +18,9 @@ const allPosts = async(req, res) => {
                     content: post.content, 
                     user: post.user,
                     createdAt: post.createdAt,
-                    username: username 
+                    username: username,
+                    numLikes: post.numLikes,
+                    numDislikes: post.numDislikes
                 }
             }catch{
                 console.log("Failed to find user");
@@ -29,7 +31,10 @@ const allPosts = async(req, res) => {
                     content: post.content, 
                     user: post.user,
                     createdAt: post.createdAt,
-                    username: "Unknown user"
+                    username: "Unknown user",
+                    numLikes: post.numLikes,
+                    numDislikes: post.numDislikes
+
                 }
             }
         }))
@@ -46,7 +51,7 @@ const deletePost = async(req, res) => {
             return res.status(400).json("Post not found")
         }
         await post.deleteOne();
-        res.status(200).json("Deleted a post")
+        res.status(200).json({message: "Deleted a post"})
         
     } catch (error){
         return res.status(500).json({ message: "Server error: " + error.message });
@@ -58,7 +63,7 @@ const createPost = async(req, res) => {
         const {title, content, user} = req.body;
         
         if(! title || !content || ! user){
-            res.status(400).json("Provide needed info for post")
+            return res.status(400).json("Provide needed info for post");
         }
 
         const userExists =  await axios.get(`http://auth-service:5000/api/auth/user/${user}`)

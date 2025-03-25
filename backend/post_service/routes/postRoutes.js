@@ -2,7 +2,7 @@ const express = require('express');
 const { allPosts, deletePost, createPost, getPost, userPosts, likePost, dislikePost } = require("../controllers/postController");
 
 const router = express.Router();
-
+ 
 /**
  * @route GET /api/post/allPosts
  * @desc Get all posts

@@ -54,11 +54,9 @@ export class MainComponent implements OnInit {
    */
   private decodeToken(): void {
     const token = localStorage.getItem('auth_token');
-    console.log(token);
     if (token) {
       const decoded = jwtDecode<CustomJwtPayload>(token);
       this.loggedInUserId = decoded.userId;
-      console.log(this.loggedInUserId);
     }
   }
 
@@ -140,5 +138,26 @@ export class MainComponent implements OnInit {
   private resetForm(): void {
     this.newPostTitle = '';
     this.newPostContent = '';
+  }
+
+  /**
+   * 
+   */
+  likePost(postId: string): void{
+    this.postService.likePost(this.loggedInUserId, postId).subscribe({
+      next: () => this.ngOnInit(),
+      error: (err) => console.log('Error handling request: ', err)
+    });
+  }
+
+  /**
+   * 
+   */
+  dislikePost(postId: string): void{
+    this.postService.dislikePost(this.loggedInUserId, postId).subscribe({
+      next: () => this.ngOnInit(),
+      error: (err) => {console.log('Error handling request: ', err);
+      }
+    });
   }
 }

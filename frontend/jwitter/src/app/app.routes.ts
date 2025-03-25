@@ -5,6 +5,7 @@ import { NgModule } from '@angular/core';
 import { MainComponent } from './main/main.component';
 import { UserDetailsComponent } from './userdetails/userdetails.component';
 import { MessageComponent } from './message/message.component';
+import { PostdetailsComponent } from './postdetails/postdetails.component';
 
 export const routes: Routes = [
 
@@ -13,5 +14,6 @@ export const routes: Routes = [
     {path : '', redirectTo:'/login', pathMatch: 'full'},
     {path : 'main', component: MainComponent},
     {path : 'messages/:id', component: MessageComponent},
-    {path : 'userdetails/:id', component: UserDetailsComponent}
+    {path : 'userdetails/:id', component: UserDetailsComponent},
+    {path : 'postdetails/:id', component: PostdetailsComponent}
 ];

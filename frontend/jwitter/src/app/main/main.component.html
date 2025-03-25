@@ -2,7 +2,7 @@
 
 <!-- Posts List -->
 <div *ngFor="let post of posts">
-  <h3>{{ post.title }}</h3>
+  <h3><a [routerLink] = "['/postdetails', post._id]">{{ post.title }}</a></h3>
   <p>
     <a [routerLink]="['/userdetails', post.user]">{{ post.username }}</a>
   </p>
@@ -11,6 +11,11 @@
   <form (ngSubmit)="deletePost(post._id)">
     <button type="submit">Delete Post</button>
   </form>
+  <br>
+  broj lajkova: {{post.numLikes}} | broj dislajkova: {{post.numDislikes}}
+  <br>  
+  <button (click) = "likePost(post._id)">Like</button>
+  <button (click) = "dislikePost(post._id)">Dislike</button>
   <hr />
 </div>
 

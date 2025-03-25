@@ -1,0 +1,24 @@
+<h1>postdetails works!</h1>
+<h2>{{openedPost.title}}</h2>
+<hr>
+<h3>{{openedPost.content}}</h3>
+<hr>
+numLikes: {{openedPost.numLikes}} | numDislikes: {{openedPost.numDislikes}}
+<hr>
+<h2>comments</h2>
+<div *ngFor = "let com of comments">
+    {{com.user}}
+    <br>
+    {{com.content}}
+    <hr>
+</div>
+
+<form (ngSubmit)="addComment()">
+    <input type="text" 
+      placeholder="Enter comment..." 
+      name="newCommentContent" 
+      [(ngModel)]="newCommentContent" 
+      required
+    />
+    <button type="submit">Add Comment</button>
+</form>
