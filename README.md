@@ -11,3 +11,5 @@
 - Used for managind friendships and friendship requests
 ## Message
 - Used for private messaging between 2 users
+## Comment
+- Used for leaving comments and replies to posts
