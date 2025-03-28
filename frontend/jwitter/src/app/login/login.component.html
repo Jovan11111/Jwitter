@@ -1,28 +1,39 @@
-<h1>Login</h1>
+<div class="min-h-screen flex items-center justify-center bg-background text-white">
+  <div class="w-full max-w-md p-8 bg-surface rounded-2xl shadow-lg">
+    <h1 class="text-3xl font-bold mb-6 text-center text-primary">Jwitter Login</h1>
 
-<form (ngSubmit)="login()">
-  <input
-    type="text"
-    name="username"
-    [(ngModel)]="username"
-    placeholder="Username"
-    required
-  /><br />
+    <form (ngSubmit)="login()" class="space-y-4">
+      <input
+        type="text"
+        name="username"
+        [(ngModel)]="username"
+        placeholder="Username"
+        required
+        class="jwitterinput"
+      />
 
-  <input
-    type="password"
-    name="password"
-    [(ngModel)]="password"
-    placeholder="Password"
-    required
-  /><br />
+      <input
+        type="password"
+        name="password"
+        [(ngModel)]="password"
+        placeholder="Password"
+        required
+        class="jwitterinput"
+      />
 
-  <button type="submit">Login</button>
-</form>
+      <button
+        type="submit"
+        class="jwitterbutton"
+      >
+        Login
+      </button>
+    </form>
 
-<p *ngIf="message">{{ message }}</p>
+    <p *ngIf="message" class="text-red-500 mt-4 text-center">{{ message }}</p>
 
-<p>
-  Don't have an account?
-  <a routerLink="/register">Register</a>
-</p>
+    <p class="mt-6 text-center text-gray-400">
+      Don't have an account?
+      <a routerLink="/register" class="text-primary hover:underline">Register</a>
+    </p>
+  </div>
+</div>

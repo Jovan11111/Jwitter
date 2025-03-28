@@ -1,36 +1,48 @@
-<h1>Register</h1>
+<div class="min-h-screen flex items-center justify-center bg-background text-white">
+  <div class="w-full max-w-md p-8 bg-surface rounded-2xl shadow-lg">
+    <h1 class="text-3xl font-bold mb-6 text-center text-primary">Create Account</h1>
 
-<form (ngSubmit)="register()">
-  <input
-    type="text"
-    name="username"
-    [(ngModel)]="username"
-    placeholder="Username"
-    required
-  /><br />
+    <form (ngSubmit)="register()" class="space-y-4">
+      <input
+        type="text"
+        name="username"
+        [(ngModel)]="username"
+        placeholder="Username"
+        required
+        class="jwitterinput"
+      />
 
-  <input
-    type="password"
-    name="password"
-    [(ngModel)]="password"
-    placeholder="Password"
-    required
-  /><br />
+      <input
+        type="password"
+        name="password"
+        [(ngModel)]="password"
+        placeholder="Password"
+        required
+        class="jwitterinput"
+      />
 
-  <input
-    type="email"
-    name="email"
-    [(ngModel)]="email"
-    placeholder="Email"
-    required
-  /><br />
+      <input
+        type="email"
+        name="email"
+        [(ngModel)]="email"
+        placeholder="Email"
+        required
+        class="jwitterinput"
+      />
 
-  <button type="submit">Register</button>
-</form>
+      <button
+        type="submit"
+        class="jwitterbutton"
+      >
+        Register
+      </button>
+    </form>
 
-<p *ngIf="message">{{ message }}</p>
+    <p *ngIf="message" class="text-red-500 mt-4 text-center">{{ message }}</p>
 
-<p>
-  Already have an account?
-  <a routerLink="/login">Login</a>
-</p>
+    <p class="mt-6 text-center text-gray-400">
+      Already have an account?
+      <a routerLink="/login" class="text-primary hover:underline">Login</a>
+    </p>
+  </div>
+</div>

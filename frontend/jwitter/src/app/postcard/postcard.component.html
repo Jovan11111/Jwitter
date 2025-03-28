@@ -1,0 +1,39 @@
+<div class="max-w-2xl mx-auto bg-surface text-white rounded-xl shadow-lg p-6 space-y-4 mb-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center">
+      <div>
+        <a [routerLink]="['/postdetails', post._id]" 
+           class="text-primary text-xl font-semibold hover:brightness-90">
+          {{ post.title }}
+        </a>
+        <span class="text-gray-400 text-sm"> ~
+          <a [routerLink]="['/userdetails', post.user]" 
+             class="hover:text-primary">
+            {{ post.username }}
+          </a>
+        </span>
+      </div>
+      <ng-container *ngIf="isOwner()">
+        <button (click)="onDelete()" class="text-red-500 hover:text-red-400">✖</button>
+      </ng-container>
+    </div>
+  
+    <!-- Content -->
+    <p class="text-gray-300 text-base">
+      {{ post.content }}
+    </p>
+  
+    <!-- Footer (Likes & Dislikes) -->
+    <div class="flex justify-between items-center border-t border-gray-700 pt-4">
+      <span class="text-gray-400 text-sm">Likes: {{ post.numLikes }} | Dislikes: {{ post.numDislikes }}</span>
+      <div class="flex space-x-4">
+        <button (click)="onLike()" class="text-gray-400 hover:text-primary">
+          👍
+        </button>
+        <button (click)="onDislike()" class="text-gray-400 hover:text-red-500">
+          👎
+        </button>
+      </div>
+    </div>
+  </div>
+  

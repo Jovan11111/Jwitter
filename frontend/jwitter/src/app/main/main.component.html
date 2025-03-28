@@ -1,52 +1,51 @@
+<div class="flex">
+  <app-sidebar [loggedInUserId]="loggedInUserId"></app-sidebar>
+
+  <div class="flex-1 p-6">
+    <div *ngFor="let post of posts">
+      <app-postcard
+        [post]="post" 
+        [loggedInUserId]="loggedInUserId" 
+        (deletePost)="deletePost($event)" 
+        (like)="likePost($event)" 
+        (dislike)="dislikePost($event)"
+      >
+      </app-postcard>
+    </div>
+    
+    <!-- Add a New Post -->
+    <h2>Add a Post</h2>
+    <form (ngSubmit)="addPost()">
+      <input
+        type="text"
+        name="newPostTitle"
+        placeholder="Title"
+        [(ngModel)]="newPostTitle"
+        required
+      />
+      <input
+        type="text"
+        name="newPostContent"
+        placeholder="Content"
+        [(ngModel)]="newPostContent"
+        required
+      />
+      <button type="submit">Add Post</button>
+    </form>
+    
+    <hr />
+    
+    <!-- Friendship Requests -->
+    <div *ngFor="let request of friendshipRequests">
+      <p>{{ request.sender }}</p>
+      <button (click)="acceptFriendRequest(request._id)">Accept</button>
+      <button (click)="declineFriendRequest(request._id)">Decline</button>
+    </div>
+    
+    <!-- Logout Component -->
+    <app-logout></app-logout>    
+  </div>
+</div>
+
 <h1>Main Page</h1>
 
-<!-- Posts List -->
-<div *ngFor="let post of posts">
-  <h3><a [routerLink] = "['/postdetails', post._id]">{{ post.title }}</a></h3>
-  <p>
-    <a [routerLink]="['/userdetails', post.user]">{{ post.username }}</a>
-  </p>
-  <p>{{ post.content }}</p>
-
-  <form (ngSubmit)="deletePost(post._id)">
-    <button type="submit">Delete Post</button>
-  </form>
-  <br>
-  broj lajkova: {{post.numLikes}} | broj dislajkova: {{post.numDislikes}}
-  <br>  
-  <button (click) = "likePost(post._id)">Like</button>
-  <button (click) = "dislikePost(post._id)">Dislike</button>
-  <hr />
-</div>
-
-<!-- Add a New Post -->
-<h2>Add a Post</h2>
-<form (ngSubmit)="addPost()">
-  <input
-    type="text"
-    name="newPostTitle"
-    placeholder="Title"
-    [(ngModel)]="newPostTitle"
-    required
-  />
-  <input
-    type="text"
-    name="newPostContent"
-    placeholder="Content"
-    [(ngModel)]="newPostContent"
-    required
-  />
-  <button type="submit">Add Post</button>
-</form>
-
-<hr />
-
-<!-- Friendship Requests -->
-<div *ngFor="let request of friendshipRequests">
-  <p>{{ request.sender }}</p>
-  <button (click)="acceptFriendRequest(request._id)">Accept</button>
-  <button (click)="declineFriendRequest(request._id)">Decline</button>
-</div>
-
-<!-- Logout Component -->
-<app-logout></app-logout>

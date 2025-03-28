@@ -8,6 +8,8 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LogoutComponent } from '../logout/logout.component';
+import { PostcardComponent } from '../postcard/postcard.component';
+import { SidebarComponent } from '../sidebar/sidebar.component';
 
 interface CustomJwtPayload extends JwtPayload {
   userId: string;
@@ -22,7 +24,9 @@ interface CustomJwtPayload extends JwtPayload {
     LogoutComponent,
     FormsModule,
     CommonModule,
-    RouterModule
+    RouterModule,
+    PostcardComponent,
+    SidebarComponent
   ]
 })
 export class MainComponent implements OnInit {

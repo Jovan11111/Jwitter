@@ -1,0 +1,8 @@
+.sidebar {
+    @apply w-64 h-screen bg-surface text-white fixed left-0 top-0;
+  }
+  
+  .sidebar-link {
+    @apply block p-3 rounded-lg hover:bg-background transition;
+  }
+  

@@ -1,1 +1,15 @@
-/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.jwitterbutton {
+    @apply w-full py-3 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors;
+}
+
+.jwitterinput {
+    @apply w-full p-3 rounded-lg bg-background border border-gray-700 focus:outline-none focus:ring-2 focus:ring-primary;
+}
+
+html, body {
+    @apply bg-background text-white h-screen;
+}
