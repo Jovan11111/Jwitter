@@ -10,4 +10,9 @@ import { RouterModule } from '@angular/router';
 })
 export class SidebarComponent {
   @Input() loggedInUserId!: string;
+  sidebarCollapsed = false;
+
+  toggleSidebar() {
+    this.sidebarCollapsed = !this.sidebarCollapsed;
+  }
 }

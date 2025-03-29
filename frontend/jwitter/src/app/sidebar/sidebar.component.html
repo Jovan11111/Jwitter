@@ -1,11 +1,21 @@
-<div class="sidebar">
+<div 
+  [ngClass]="{'w-80': !sidebarCollapsed, 'w-16': sidebarCollapsed}" 
+  class="relative bg-surface h-screen flex-shrink-0 transition-all duration-300"
+>
+  <button 
+    class="absolute top-4 right-[-14px] bg-background border border-primary text-primary rounded-full w-8 h-8 shadow-md flex items-center justify-center hover:bg-surface transition-colors"
+    (click)="toggleSidebar()"
+  >
+    {{ sidebarCollapsed ? '>' : '<' }}
+  </button>
+
+  <div *ngIf="!sidebarCollapsed">
     <h2 class="text-primary text-xl font-bold p-4">Sidebar</h2>
     <ul class="space-y-4 p-4">
-      <li><a routerLink="/main" class="sidebar-link">🏠 Home</a></li>
-      <li><a routerLink="/chat" class="sidebar-link">💬 Chat</a></li>
-      <li><a routerLink="/userdetails/{{loggedInUserId}}" class="sidebar-link">👤 Profile</a></li>
-      <li><a routerLink="/messages" class="sidebar-link">📨 Messages</a></li>
-      <li><a routerLink="/settings" class="sidebar-link">⚙️ Settings</a></li>
+      <li><a routerLink="/main" class="sidebar-link">Home</a></li>
+      <li><a routerLink="/userdetails/{{loggedInUserId}}" class="sidebar-link">Profile</a></li>
+      <li><a routerLink="/messages" class="sidebar-link">Messages</a></li>
+      <li><a routerLink="/logout" class="sidebar-link">Logout</a></li>
     </ul>
   </div>
-  
+</div>

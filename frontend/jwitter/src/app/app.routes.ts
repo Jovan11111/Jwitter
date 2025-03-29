@@ -6,11 +6,13 @@ import { MainComponent } from './main/main.component';
 import { UserDetailsComponent } from './userdetails/userdetails.component';
 import { MessageComponent } from './message/message.component';
 import { PostdetailsComponent } from './postdetails/postdetails.component';
+import { LogoutComponent } from './logout/logout.component';
 
 export const routes: Routes = [
 
     {path : 'login', component: LoginComponent},
     {path : 'register', component: RegisterComponent},
+    {path : 'logout', component: LogoutComponent},
     {path : '', redirectTo:'/login', pathMatch: 'full'},
     {path : 'main', component: MainComponent},
     {path : 'messages/:id', component: MessageComponent},

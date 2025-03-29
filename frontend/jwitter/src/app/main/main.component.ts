@@ -35,6 +35,7 @@ export class MainComponent implements OnInit {
   newPostTitle: string = '';
   newPostContent: string = '';
   loggedInUserId: string = '';
+  sidebarCollapsed = false;
 
   constructor(
     private postService: PostService,
@@ -163,5 +164,9 @@ export class MainComponent implements OnInit {
       error: (err) => {console.log('Error handling request: ', err);
       }
     });
+  }
+
+  toggleSidebar() {
+    this.sidebarCollapsed = !this.sidebarCollapsed;
   }
 }
