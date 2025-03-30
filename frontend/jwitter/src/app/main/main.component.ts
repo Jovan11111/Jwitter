@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { LogoutComponent } from '../logout/logout.component';
 import { PostcardComponent } from '../postcard/postcard.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';
+import { AddpostmodalComponent } from '../addpostmodal/addpostmodal.component';
 
 interface CustomJwtPayload extends JwtPayload {
   userId: string;
@@ -21,12 +22,12 @@ interface CustomJwtPayload extends JwtPayload {
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css'],
   imports: [
-    LogoutComponent,
     FormsModule,
     CommonModule,
     RouterModule,
     PostcardComponent,
-    SidebarComponent
+    SidebarComponent,
+    AddpostmodalComponent
   ]
 })
 export class MainComponent implements OnInit {
@@ -36,6 +37,7 @@ export class MainComponent implements OnInit {
   newPostContent: string = '';
   loggedInUserId: string = '';
   sidebarCollapsed = false;
+  modalOpen = false;
 
   constructor(
     private postService: PostService,
@@ -51,7 +53,6 @@ export class MainComponent implements OnInit {
   ngOnInit(): void {
     this.decodeToken();
     this.loadPosts();
-    this.loadFriendRequests();
   }
 
   /**
@@ -76,16 +77,6 @@ export class MainComponent implements OnInit {
   }
 
   /**
-   * Loads pending friendship requests.
-   */
-  private loadFriendRequests(): void {
-    this.friendshipService.getPendingRequests(this.loggedInUserId).subscribe({
-      next: (requests: FriendshipRequest[]) => (this.friendshipRequests = requests),
-      error: (err) => console.error('Error fetching friend requests:', err)
-    });
-  }
-
-  /**
    * Adds a new post using form input.
    */
   addPost(): void {
@@ -95,46 +86,13 @@ export class MainComponent implements OnInit {
         next: (success: boolean) => {
           if (success) {
             this.resetForm();
-            this.ngOnInit(); // reload data
+            this.ngOnInit();
           } else {
             console.warn('Failed to create post');
           }
         },
         error: (err) => console.error('Error creating post:', err)
       });
-  }
-
-  /**
-   * Deletes a post by its ID.
-   * @param postId - ID of the post to delete
-   */
-  deletePost(postId: string): void {
-    this.postService.deletePost(postId).subscribe({
-      next: () => this.ngOnInit(),
-      error: (err) => console.error('Error deleting post:', err)
-    });
-  }
-
-  /**
-   * Accepts a friend request by ID.
-   * @param requestId - ID of the friend request
-   */
-  acceptFriendRequest(requestId: string): void {
-    this.friendshipService.acceptFriendRequest(requestId).subscribe({
-      next: () => this.ngOnInit(),
-      error: (err) => console.error('Error accepting friend request:', err)
-    });
-  }
-
-  /**
-   * Declines a friend request by ID.
-   * @param requestId - ID of the friend request
-   */
-  declineFriendRequest(requestId: string): void {
-    this.friendshipService.declineFriendRequest(requestId).subscribe({
-      next: () => this.ngOnInit(),
-      error: (err) => console.error('Error declining friend request:', err)
-    });
   }
 
   /**
@@ -145,28 +103,27 @@ export class MainComponent implements OnInit {
     this.newPostContent = '';
   }
 
-  /**
-   * 
-   */
-  likePost(postId: string): void{
-    this.postService.likePost(this.loggedInUserId, postId).subscribe({
-      next: () => this.ngOnInit(),
-      error: (err) => console.log('Error handling request: ', err)
-    });
+  openModal(): void {
+    this.modalOpen = true;
+  }
+  
+  closeModal(): void {
+    this.modalOpen = false;
   }
 
-  /**
-   * 
-   */
-  dislikePost(postId: string): void{
-    this.postService.dislikePost(this.loggedInUserId, postId).subscribe({
-      next: () => this.ngOnInit(),
-      error: (err) => {console.log('Error handling request: ', err);
-      }
-    });
+  submitPostFromModal(postData: { title: string; content: string }): void {
+    this.postService.createPost(postData.title, postData.content, this.loggedInUserId)
+      .subscribe({
+        next: (success: boolean) => {
+          if (success) {
+            this.loadPosts(); 
+            this.closeModal();
+          } else {
+            console.warn('Failed to create post');
+          }
+        },
+        error: (err) => console.error('Error creating post:', err)
+      });
   }
-
-  toggleSidebar() {
-    this.sidebarCollapsed = !this.sidebarCollapsed;
-  }
+  
 }

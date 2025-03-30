@@ -14,7 +14,7 @@
         </span>
       </div>
       <ng-container *ngIf="isOwner()">
-        <button (click)="onDelete()" class="text-red-500 hover:text-red-400">✖</button>
+        <button (click)="deletePost(post._id)" class="text-red-500 hover:text-red-400">✖</button>
       </ng-container>
     </div>
   
@@ -27,10 +27,10 @@
     <div class="flex justify-between items-center border-t border-gray-700 pt-4">
       <span class="text-gray-400 text-sm">Likes: {{ post.numLikes }} | Dislikes: {{ post.numDislikes }}</span>
       <div class="flex space-x-4">
-        <button (click)="onLike()" class="text-gray-400 hover:text-primary">
+        <button (click)="likePost(post._id)" class="text-gray-400 hover:text-primary">
           👍
         </button>
-        <button (click)="onDislike()" class="text-gray-400 hover:text-red-500">
+        <button (click)="dislikePost(post._id)" class="text-gray-400 hover:text-red-500">
           👎
         </button>
       </div>

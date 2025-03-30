@@ -8,6 +8,7 @@ import { FriendshipService } from '../services/friendship.service';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { SidebarComponent } from '../sidebar/sidebar.component';
 
 interface CustomJwtPayload extends JwtPayload {
   userId: string;
@@ -16,7 +17,7 @@ interface CustomJwtPayload extends JwtPayload {
 @Component({
   selector: 'app-userdetails',
   templateUrl: './userdetails.component.html',
-  imports: [FormsModule, CommonModule, RouterModule],
+  imports: [FormsModule, CommonModule, RouterModule, SidebarComponent],
   styleUrls: ['./userdetails.component.css']
 })
 export class UserDetailsComponent implements OnInit {
@@ -27,6 +28,7 @@ export class UserDetailsComponent implements OnInit {
   friends: User[] = [];
   showAddFriendButton: boolean = true;
   myProfile: boolean = false;
+  activeTab: string = 'posts';
 
   constructor(
     private route: ActivatedRoute,

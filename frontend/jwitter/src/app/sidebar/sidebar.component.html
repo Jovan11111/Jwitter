@@ -1,5 +1,8 @@
 <div 
-  [ngClass]="{'w-80': !sidebarCollapsed, 'w-16': sidebarCollapsed}" 
+  [ngClass]="{
+    'w-80': !sidebarCollapsed, 
+    'w-16': sidebarCollapsed,
+  }" 
   class="relative bg-surface h-screen flex-shrink-0 transition-all duration-300"
 >
   <button 
@@ -10,12 +13,39 @@
   </button>
 
   <div *ngIf="!sidebarCollapsed">
-    <h2 class="text-primary text-xl font-bold p-4">Sidebar</h2>
+    <h2 class="text-primary text-xl font-bold p-4">Jwitter</h2>
     <ul class="space-y-4 p-4">
       <li><a routerLink="/main" class="sidebar-link">Home</a></li>
       <li><a routerLink="/userdetails/{{loggedInUserId}}" class="sidebar-link">Profile</a></li>
       <li><a routerLink="/messages" class="sidebar-link">Messages</a></li>
       <li><a routerLink="/logout" class="sidebar-link">Logout</a></li>
+      <li>
+        <button (click)="toggleRequestsPanel()" class="sidebar-link">
+          Friendship Requests
+        </button>
+      </li>
     </ul>
   </div>
 </div>
+
+<div 
+  *ngIf="requestsPanelOpen" 
+  class="absolute top-0 left-48 h-screen w-64 bg-surface shadow-lg p-4 transition-all duration-300"
+>
+  <button 
+  class="absolute top-4 right-[-14px] bg-background border border-primary text-primary rounded-full w-8 h-8 shadow-md flex items-center justify-center hover:bg-surface transition-colors"
+  (click)="toggleSidebar()"
+  >
+    {{ sidebarCollapsed ? '>' : '<' }}
+  </button>
+  <h3 class="text-primary font-bold mb-4">Friend Requests</h3>
+  <div *ngFor="let request of friendshipRequests" class="mb-2">
+    <p class="text-sm">{{ request.sender }}</p>
+    <div class="flex space-x-2 mt-2">
+      <button (click)="acceptFriendRequest(request._id)" class="jwitterbutton">Accept</button>
+      <button (click)="declineFriendRequest(request._id)" class="jwitterbutton">Decline</button>
+    </div>
+    <hr class="my-2">
+  </div>
+</div>
+

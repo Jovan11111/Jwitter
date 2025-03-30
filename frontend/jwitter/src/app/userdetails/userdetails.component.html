@@ -1,37 +1,42 @@
-<h2>User Details Page</h2>
+<div class="flex">
+  <app-sidebar [loggedInUserId]="loggedInUserId" class="fixed"></app-sidebar>
 
-<p><strong>Username:</strong> {{ user.username }}</p>
-<p><strong>Email:</strong> {{ user.email }}</p>
+  <div class="flex-1 p-6 max-w-2xl mx-auto">
+    <div class="bg-surface p-6 rounded-lg border border-gray-700 shadow-lg w-500">
+      <h2 class="text-2xl font-bold text-primary">{{ user.username }}</h2>
+      <p class="text-gray-400">{{ user.email }}</p>
 
-<hr />
+      <div *ngIf="!myProfile" class="mt-4">
+        <button *ngIf="showAddFriendButton" class="jwitterbutton" (click)="sendFriendRequest()">
+          Send Friend Request
+        </button>
+        <a *ngIf="!showAddFriendButton" [routerLink]="['/messages', userId]" class="jwitterbutton">
+          Send Message
+        </a>
+      </div>
+    </div>
 
-<!-- Show Send Friend Request button or Message link based on conditions -->
-<div *ngIf="!myProfile">
-  <button *ngIf="showAddFriendButton" (click)="sendFriendRequest()">
-    Send Friend Request
-  </button>
-  <a *ngIf="!showAddFriendButton" [routerLink]="['/messages', userId]">
-    Send Message
-  </a>
-</div>
+    <div class="mt-6">
+      <div class="flex border-b border-gray-700">
+        <button class="flex-1 py-3 text-center" [ngClass]="{'border-b-2 border-primary text-primary': activeTab === 'posts'}" (click)="activeTab = 'posts'">Posts</button>
+        <button class="flex-1 py-3 text-center" [ngClass]="{'border-b-2 border-primary text-primary': activeTab === 'friends'}" (click)="activeTab = 'friends'">Friends</button>
+      </div>
 
-<hr />
+      <div *ngIf="activeTab === 'posts'" class="mt-4">
+        <h2 class="text-xl font-bold">Posts by {{ user.username }}</h2>
+        <div *ngFor="let post of userPosts" class="bg-background p-4 rounded-lg border border-gray-700 mt-2">
+          <h4 class="text-lg font-semibold">{{ post.title }}</h4>
+          <p class="text-gray-400">{{ post.content }}</p>
+        </div>
+      </div>
 
-<h2>Posts by {{ user.username }}</h2>
-<div *ngFor="let post of userPosts">
-  <h4>{{ post.title }}</h4>
-  <hr />
-</div>
-
-<hr />
-
-<h2>User Friends</h2>
-<div *ngFor="let friend of friends">
-  <h4>{{ friend.username }}</h4>
-  <button
-    *ngIf="myProfile"
-    (click)="removeFriend(friend._id)"
-  >
-    Remove Friend
-  </button>
+      <div *ngIf="activeTab === 'friends'" class="mt-4">
+        <h2 class="text-xl font-bold">Friends</h2>
+        <div *ngFor="let friend of friends" class="flex items-center justify-between bg-background p-4 rounded-lg border border-gray-700 mt-2">
+          <h4 class="text-lg">{{ friend.username }}</h4>
+          <button *ngIf="myProfile" class="jwitterbutton w-auto px-4 py-2" (click)="removeFriend(friend._id)">Remove</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Post } from '../models/Post';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { PostService } from '../services/post.service';
 
 @Component({
   selector: 'app-postcard',
@@ -10,24 +11,50 @@ import { RouterModule } from '@angular/router';
   templateUrl: './postcard.component.html',
   styleUrl: './postcard.component.css'
 })
-export class PostcardComponent {
+export class PostcardComponent{
+
+  constructor(private postService: PostService) {}
+  
+  
   @Input() post !: Post;
   @Input() loggedInUserId !: string;
 
-  @Output() deletePost = new EventEmitter<string>();
-  @Output() like = new EventEmitter<string>();
-  @Output() dislike = new EventEmitter<string>();
+
+  @Output() refresh = new EventEmitter<void>();
   
-  onDelete(): void {
-    this.deletePost.emit(this.post._id);
+  onRefresh(): void{
+    this.refresh.emit()
+  }
+  /**
+   * Deletes a post by its ID.
+   * @param postId - ID of the post to delete
+   */
+  deletePost(postId: string): void {
+    this.postService.deletePost(postId).subscribe({
+      next: () => this.onRefresh(),
+      error: (err) => console.error('Error deleting post:', err)
+    });
   }
 
-  onLike(): void {
-    this.like.emit(this.post._id);
+  /**
+   * 
+   */
+  likePost(postId: string): void{
+    this.postService.likePost(this.loggedInUserId, postId).subscribe({
+      next: () => this.onRefresh(),
+      error: (err) => console.log('Error handling request: ', err)
+    });
   }
 
-  onDislike(): void {
-    this.dislike.emit(this.post._id);
+  /**
+   * 
+   */
+  dislikePost(postId: string): void{
+    this.postService.dislikePost(this.loggedInUserId, postId).subscribe({
+      next: () => this.onRefresh(),
+      error: (err) => {console.log('Error handling request: ', err);
+      }
+    });
   }
 
   isOwner(): boolean {
