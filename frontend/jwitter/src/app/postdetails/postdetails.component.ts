@@ -8,6 +8,8 @@ import { Post } from '../models/Post';
 import { Comment } from '../models/Comment';
 import { CommentService } from '../services/comment.service';
 import { error } from 'console';
+import { SidebarComponent } from '../sidebar/sidebar.component';
+import { PostcardComponent } from '../postcard/postcard.component';
 
 interface CustomJwtPayload extends JwtPayload {
   userId: string;
@@ -15,7 +17,7 @@ interface CustomJwtPayload extends JwtPayload {
 
 @Component({
   selector: 'app-postdetails',
-  imports: [FormsModule, CommonModule, RouterModule],
+  imports: [FormsModule, CommonModule, RouterModule, SidebarComponent, PostcardComponent],
   templateUrl: './postdetails.component.html',
   styleUrl: './postdetails.component.css'
 })
@@ -26,6 +28,7 @@ export class PostdetailsComponent implements OnInit{
   openedPost: Post = new Post();
   comments: Comment[] = [];
   newCommentContent: string = "";
+  showAddComment: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -75,6 +78,11 @@ export class PostdetailsComponent implements OnInit{
       next: () => this.ngOnInit(),
       error: (err) => console.log('Failed to add content: ', err)
     });
+    this.newCommentContent = "";
+    this.showAddComment = false;
   }
 
+  toggleAddComment(): void{
+    this.showAddComment = !this.showAddComment;
+  }
 }

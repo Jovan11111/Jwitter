@@ -1,5 +1,6 @@
 export class Comment{
     user: string = ""
+    username: string = ""
     post: string = ""
     content: string = ""
     parent: string = ""

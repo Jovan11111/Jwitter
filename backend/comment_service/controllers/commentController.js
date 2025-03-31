@@ -48,7 +48,33 @@ const replyToComment = async(req, res) => {
 const getPostComments = async(req, res) => {
     try {
         const comments = await Comment.find({post: req.params.id});
-        res.status(200).json(comments);
+
+        const commentsWithUsernames = await Promise.all(comments.map(async (comm) => {
+            try {
+                const userResp = await axios.get(`http://auth-service:5000/api/auth/user/${comm.user}`)
+                const username = userResp.data.username;
+
+                return {
+                    user: comm.user,
+                    username: username,
+                    post: comm.post,
+                    content: comm.content,
+                    parent: comm.parent,
+                    createdAt: comm.createdAt
+                }
+            } catch{
+                console.log("Failed to find user");
+                return {
+                    user: comm.user,
+                    username: "Unknown",
+                    post: comm.post,
+                    content: comm.content,
+                    parent: comm.parent,
+                    createdAt: comm.createdAt
+                }
+            }
+        }))
+        res.status(200).json(commentsWithUsernames);
     } catch (error){
         return res.status(500).json({message: "Server error: " + error.message});
     }

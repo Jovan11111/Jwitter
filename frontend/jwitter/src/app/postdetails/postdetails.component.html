@@ -1,24 +1,43 @@
-<h1>postdetails works!</h1>
-<h2>{{openedPost.title}}</h2>
-<hr>
-<h3>{{openedPost.content}}</h3>
-<hr>
-numLikes: {{openedPost.numLikes}} | numDislikes: {{openedPost.numDislikes}}
-<hr>
-<h2>comments</h2>
-<div *ngFor = "let com of comments">
-    {{com.user}}
-    <br>
-    {{com.content}}
-    <hr>
+<div class="flex">
+  <app-sidebar [loggedInUserId]="loggedInUserId" class="fixed"></app-sidebar>
+
+  
+  <div class="flex-1 p-6 max-w-2xl mx-auto">
+    <app-postcard
+    [post]="openedPost"
+    [loggedInUserId]="loggedInUserId"
+    (refresh)="ngOnInit()"
+  > </app-postcard>
+    
+    <div *ngIf="showAddComment" class="mt-6">
+      <form (ngSubmit)="addComment()" class="mt-4">
+        <input type="text" 
+              placeholder="Enter your comment..." 
+              name="newCommentContent" 
+              [(ngModel)]="newCommentContent" 
+              required
+              class="jwitterinput w-full mb-4"
+        />
+        <div class="flex justify-end items-center space-x-4">
+          <button type="submit" class="py-3 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors w-1/4">Submit</button>
+          <button (click)="toggleAddComment()" class="py-3 bg-background border border-error text-error rounded-lg hover:bg-surface transition-colors w-1/4" >Cancel</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="mt-6">
+      <div class="flex justify-between items-center">
+        <h2 class="text-2xl font-semibold text-primary">Comments</h2>
+        <button (click)="toggleAddComment()" class="py-3 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors px-5" *ngIf="!showAddComment">Add Comment</button>
+      </div>
+      <div class="mt-4 space-y-4">
+        <div *ngFor="let com of comments" class="p-4 bg-surface rounded-lg border border-gray-700">
+          <h4 class="text-primary font-semibold">{{ com.username }}</h4>
+          <p class="text-gray-300">{{ com.content }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<form (ngSubmit)="addComment()">
-    <input type="text" 
-      placeholder="Enter comment..." 
-      name="newCommentContent" 
-      [(ngModel)]="newCommentContent" 
-      required
-    />
-    <button type="submit">Add Comment</button>
-</form>
+

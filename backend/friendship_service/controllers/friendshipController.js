@@ -96,7 +96,34 @@ const declineFrReq = async (req, res) => {
 const getPendingFrReq = async (req, res) => {
     try {
         const frReqs = await FriendshipRequest.find({ receiver: req.params.userId, status: 'pending' });
-        return res.status(200).json(frReqs);
+        
+        const frReqsWithUsernames =  await Promise.all(frReqs.map(async (frreq) => {
+            try{
+                const userResp = await axios.get(`http://auth-service:5000/api/auth/user/${frreq.sender}`)
+                const username = userResp.data.username;
+                
+                return {
+                    _id: frreq._id,
+                    sender: frreq.sender,
+                    senderUsername: username,
+                    receiver: frreq.receiver,
+                    status: frreq.status,
+                    createdAt: frreq.createdAt
+                }
+            } catch{
+                console.log("Failed to find user");
+                return {
+                    _id: frreq._id,
+                    sender: frreq.sender,
+                    senderUsername: "Unknown",
+                    receiver: frreq.receiver,
+                    status: frreq.status,
+                    createdAt: frreq.createdAt
+                }
+            }
+        }))
+        
+        return res.status(200).json(frReqsWithUsernames);
     } catch (error) {
         return res.status(500).json({ message: `Server error: ${error.message}` });
     }

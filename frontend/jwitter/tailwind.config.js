@@ -9,7 +9,8 @@ module.exports = {
       colors: {
         primary: '#00FF88',
         background: '#121212',
-        surface: '#1E1E1E'
+        surface: '#1E1E1E',
+        error: '#EE4B2B'
       }
     },
   },

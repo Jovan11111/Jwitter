@@ -45,19 +45,21 @@ export class UserDetailsComponent implements OnInit {
    * - Checks friendship status
    */
   ngOnInit(): void {
-    this.userId = this.route.snapshot.paramMap.get('id') ?? '';
+    this.route.paramMap.subscribe(params => {
+      this.userId = params.get('id') ?? '';
 
-    const token = localStorage.getItem('auth_token');
-    if (token) {
-      const decoded = jwtDecode<CustomJwtPayload>(token);
-      this.loggedInUserId = decoded.userId;
-      this.myProfile = this.userId === this.loggedInUserId;
-    }
-
-    this.loadUserDetails();
-    this.loadUserPosts();
-    this.loadFriendshipStatus();
-    this.loadUserFriends();
+      const token = localStorage.getItem('auth_token');
+      if (token) {
+        const decoded = jwtDecode<CustomJwtPayload>(token);
+        this.loggedInUserId = decoded.userId;
+        this.myProfile = this.userId === this.loggedInUserId;
+      }
+  
+      this.loadUserDetails();
+      this.loadUserPosts();
+      this.loadFriendshipStatus();
+      this.loadUserFriends();
+    });
   }
 
   /**

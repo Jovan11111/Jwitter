@@ -2,20 +2,23 @@
   <app-sidebar [loggedInUserId]="loggedInUserId" class="fixed"></app-sidebar>
 
   <div class="flex-1 p-6 max-w-2xl mx-auto">
-    <div class="bg-surface p-6 rounded-lg border border-gray-700 shadow-lg w-500">
-      <h2 class="text-2xl font-bold text-primary">{{ user.username }}</h2>
-      <p class="text-gray-400">{{ user.email }}</p>
-
-      <div *ngIf="!myProfile" class="mt-4">
-        <button *ngIf="showAddFriendButton" class="jwitterbutton" (click)="sendFriendRequest()">
-          Send Friend Request
-        </button>
-        <a *ngIf="!showAddFriendButton" [routerLink]="['/messages', userId]" class="jwitterbutton">
-          Send Message
-        </a>
+    <div class="bg-background p-6 rounded-lg border border-primary shadow-lg w-500">
+      <div class="flex justify-between items-center">
+        <div>
+          <h2 class="text-2xl font-bold text-primary">{{ user.username }}</h2>
+          <h5 class="text-gray-400">{{ user.email }}</h5>
+        </div>
+    
+        <div *ngIf="!myProfile">
+          <button *ngIf="showAddFriendButton" class="jwitterbutton px-5" (click)="sendFriendRequest()">
+            Send Friend Request
+          </button>
+          <a *ngIf="!showAddFriendButton" [routerLink]="['/messages', userId]" class="jwitterbutton px-5">
+            Send Message
+          </a>
+        </div>
       </div>
     </div>
-
     <div class="mt-6">
       <div class="flex border-b border-gray-700">
         <button class="flex-1 py-3 text-center" [ngClass]="{'border-b-2 border-primary text-primary': activeTab === 'posts'}" (click)="activeTab = 'posts'">Posts</button>
@@ -23,18 +26,22 @@
       </div>
 
       <div *ngIf="activeTab === 'posts'" class="mt-4">
-        <h2 class="text-xl font-bold">Posts by {{ user.username }}</h2>
         <div *ngFor="let post of userPosts" class="bg-background p-4 rounded-lg border border-gray-700 mt-2">
-          <h4 class="text-lg font-semibold">{{ post.title }}</h4>
+          <a [routerLink]="['/postdetails', post._id]"
+             class="text-primary text-xl font-semibold hover:brightness-90">
+             {{ post.title }}
+          </a>
           <p class="text-gray-400">{{ post.content }}</p>
         </div>
       </div>
 
-      <div *ngIf="activeTab === 'friends'" class="mt-4">
-        <h2 class="text-xl font-bold">Friends</h2>
-        <div *ngFor="let friend of friends" class="flex items-center justify-between bg-background p-4 rounded-lg border border-gray-700 mt-2">
-          <h4 class="text-lg">{{ friend.username }}</h4>
-          <button *ngIf="myProfile" class="jwitterbutton w-auto px-4 py-2" (click)="removeFriend(friend._id)">Remove</button>
+      <div *ngIf="activeTab === 'friends'" class="mt-4 flex flex-col items-center">
+        <div *ngFor="let friend of friends" class="flex items-center justify-between bg-background p-4 rounded-lg border border-primary mt-2 w-1/2">
+          <a [routerLink]="['/userdetails', friend._id]" 
+             class="text-xl hover:text-primary">
+             {{ friend.username }}
+          </a>
+          <button *ngIf="myProfile" class="py-3 px-5 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors;" (click)="removeFriend(friend._id)">Remove</button>
         </div>
       </div>
     </div>
