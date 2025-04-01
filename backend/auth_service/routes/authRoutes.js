@@ -1,5 +1,5 @@
 const express = require("express");
-const { loginUser, registerUser, getUser } = require("../controllers/authController");
+const { loginUser, registerUser, getUser, deleteProfile } = require("../controllers/authController");
 
 const router = express.Router();
 
@@ -20,5 +20,10 @@ router.post("/login", loginUser);
  * @desc Get user by ID
  */
 router.get("/user/:id", getUser);
+
+/**
+ * 
+ */
+router.post("/deleteProfile", deleteProfile);
 
 module.exports = router;

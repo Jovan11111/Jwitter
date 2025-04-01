@@ -31,7 +31,7 @@ const server = require('http').createServer(app);
 const io = socketIo(server, {
   cors: {
     origin: "*", 
-    methods: ["GET", "POST"]
+    methods: ["GET", "POST", "DELETE"]
   }
 });
 

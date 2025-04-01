@@ -136,6 +136,9 @@ const deleteChat = async (req, res) => {
     }
 };
 
+/**
+ * 
+ */
 const getUserChats = async (req, res) => {
     try {
         const user = req.params.id;
@@ -158,7 +161,23 @@ const getUserChats = async (req, res) => {
         }));
 
         return res.status(200).json(chatters);
-    } catch {
+    } catch (error) {
+        return res.status(500).json({ message: "Server error: " + error.message });
+    }
+}
+
+/**
+ * 
+ */
+const deleteUserMessages = async (req, res) => {
+    try{
+        const user = req.params.id;
+        await Message.deleteMany({$or: [{sender: user}, {receiver: user}]});
+
+        console.log("deleted messages");
+        
+        return res.status(200).json({message: "Successfully deleted user messages"});
+    } catch (error){
         return res.status(500).json({ message: "Server error: " + error.message });
     }
 }
@@ -169,5 +188,6 @@ module.exports = {
     editMessage,
     deleteMessage,
     deleteChat,
-    getUserChats
+    getUserChats,
+    deleteUserMessages
 };

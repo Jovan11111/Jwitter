@@ -168,6 +168,20 @@ const dislikePost = async (req, res) => {
     }
 };
 
+const deleteUserPosts = async (req, res) => {
+    try {
+        const user = req.params.id;
+
+        await Reaction.deleteMany({user: user});
+        await Post.deleteMany({user: user});
+        console.log("posts are deleted");
+        
+        return res.status(200).json({ message: "User's posts and reactions deleted successfully" });
+    } catch (error) {
+        return res.status(500).json({ message: "Server error: " + error.message });
+    }
+}
+
 
 module.exports = {
     allPosts,
@@ -176,5 +190,6 @@ module.exports = {
     getPost,
     userPosts,
     likePost,
-    dislikePost
+    dislikePost,
+    deleteUserPosts
 }

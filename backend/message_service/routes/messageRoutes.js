@@ -5,7 +5,8 @@ const {
   editMessage,
   deleteMessage,
   deleteChat,
-  getUserChats
+  getUserChats,
+  deleteUserMessages
 } = require("../controllers/messageController");
 
 const router = express.Router();
@@ -47,5 +48,10 @@ router.delete('/deleteChat/:id1/:id2', deleteChat);
  * 
  */
 router.get('/getChatters/:id', getUserChats);
+
+/**
+ * 
+ */
+router.delete('/deleteUserMessages/:id', deleteUserMessages);
 
 module.exports = router;

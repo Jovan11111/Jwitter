@@ -30,4 +30,12 @@ export class UserServiceService {
   getUserById(userId: string) {
     return this.http.get<User>(`${this.apiUrl}/user/${userId}`);
   }
+
+  /**
+   * 
+   */
+  deleteProfile(userId: string, pass: string){
+    console.log(userId, pass);
+    return this.http.post(`${this.apiUrl}/deleteProfile`, {userr: userId, passwordd: pass});
+  }
 }

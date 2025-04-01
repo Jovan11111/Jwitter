@@ -230,6 +230,21 @@ const removeFriend = async (req, res) => {
     }
 };
 
+const deleteUserFrReqsAndFrShips = async (req, res) => {
+    try {
+        const user = req.params.id;
+
+        await Friendship.deleteMany({$or: [{user1: user}, {user2: user}]});
+        await FriendshipRequest.deleteMany({$or: [{sender: user}, {receiver: user}]});
+        
+        console.log("frreqs are deleted");
+        
+        return res.status(200).json({message: 'Deleted all freindship stuff successfully'})
+    } catch (error) {
+        return res.status(500).json({ message: `Server error: ${error.message}` });  
+    }
+}
+
 module.exports = {
     sendFrReq,
     acceptFrReq,
@@ -237,5 +252,6 @@ module.exports = {
     getPendingFrReq,
     getUserFriends,
     areTheyFriends,
-    removeFriend
+    removeFriend,
+    deleteUserFrReqsAndFrShips
 };

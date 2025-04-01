@@ -98,11 +98,24 @@ const getCommentById = async(req, res) => {
     }
 }
 
+const deleteUserComments = async(req, res) => {
+    try {
+        const user = req.params.id;
+
+        await Comment.deleteMany({user: user});
+        console.log("comments are deleted");
+        return res.status(200).json({message: "Deleted user comments successfully"});
+    } catch (error){
+        return res.status(500).json({message: "Server error: " + error.message});
+    }
+}
+
 module.exports = {
     addComment,
     deleteComment,
     replyToComment,
     getPostComments,
     getUserComments,
-    getCommentById
+    getCommentById,
+    deleteUserComments
 }

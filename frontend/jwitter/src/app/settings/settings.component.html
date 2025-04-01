@@ -1,0 +1,8 @@
+<button (click) = "openChangePasswordModal()">Change Password</button>
+<button (click) = "openDeleteProfileModal()">Delete Profile</button>
+
+<app-deleteprofilemodal
+    *ngIf="deleteProfileModalOpen"
+    [loggedInUserId]="loggedInUserId"
+    (closeModal)="closeDeleteProfileModal()"
+></app-deleteprofilemodal>

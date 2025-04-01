@@ -8,7 +8,9 @@
           <h2 class="text-2xl font-bold text-primary">{{ user.username }}</h2>
           <h5 class="text-gray-400">{{ user.email }}</h5>
         </div>
-    
+        <a *ngIf="myProfile" [routerLink]="['/settings']" class="jwitterbutton px-5">
+          Settings
+        </a>
         <div *ngIf="!myProfile">
           <button *ngIf="showAddFriendButton" class="jwitterbutton px-5" (click)="sendFriendRequest()">
             Send Friend Request
@@ -16,6 +18,7 @@
           <a *ngIf="!showAddFriendButton" [routerLink]="['/messages', userId]" class="jwitterbutton px-5">
             Send Message
           </a>
+          
         </div>
       </div>
     </div>

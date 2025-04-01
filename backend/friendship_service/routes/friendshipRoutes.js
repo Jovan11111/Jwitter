@@ -6,7 +6,8 @@ const {
     getPendingFrReq, 
     getUserFriends, 
     areTheyFriends, 
-    removeFriend 
+    removeFriend,
+    deleteUserFrReqsAndFrShips
 } = require("../controllers/friendshipController");
 
 const router = express.Router();
@@ -53,4 +54,8 @@ router.get("/areTheyFriends/:id1/:id2", areTheyFriends);
  */
 router.delete("/removeFriend/:id1/:id2", removeFriend);
 
+/**
+ * 
+ */
+router.delete("/deleteUserFrReqsAndFrShips/:id", deleteUserFrReqsAndFrShips);
 module.exports = router;

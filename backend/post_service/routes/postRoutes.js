@@ -1,5 +1,5 @@
 const express = require('express');
-const { allPosts, deletePost, createPost, getPost, userPosts, likePost, dislikePost } = require("../controllers/postController");
+const { allPosts, deletePost, createPost, getPost, userPosts, likePost, dislikePost, deleteUserPosts } = require("../controllers/postController");
 
 const router = express.Router();
  
@@ -51,6 +51,11 @@ router.post('/like', likePost);
  * @access Public
  */
 router.post('/dislike', dislikePost);
+
+/**
+ * 
+ */
+router.delete('/deleteUserPosts/:id', deleteUserPosts);
 
 // Export the router
 module.exports = router;
