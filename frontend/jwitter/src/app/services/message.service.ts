@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Message } from '../models/Message';
 import { io, Socket } from 'socket.io-client';  
 import { Observable } from 'rxjs';
+import { User } from '../models/User';
 
 @Injectable({
   providedIn: 'root',
@@ -51,6 +52,13 @@ export class MessageService {
    */
   deleteChat(userId1: string, userId2: string) {
     return this.http.delete<boolean>(`${this.apiUrl}/deleteChat/${userId1}/${userId2}`);
+  }
+
+  /**
+   * 
+   */
+  getChatters(userId: string){
+    return this.http.get<User[]>(`${this.apiUrl}/getChatters/${userId}`);
   }
 
   listenForMessages(): Observable<Message> {

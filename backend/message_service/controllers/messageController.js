@@ -136,10 +136,38 @@ const deleteChat = async (req, res) => {
     }
 };
 
+const getUserChats = async (req, res) => {
+    try {
+        const user = req.params.id;
+        
+        const allUserMessages = await Message.find({
+            $or: [ {sender: user}, {receiver: user} ]
+        });
+
+        const chatterIds = [...new Set(allUserMessages.map(message => 
+            message.sender.toString() === user ? message.receiver.toString() : message.sender.toString()
+        ))];
+
+        const chatters = await Promise.all(chatterIds.map(async (cid) => {
+            try{
+                const userResp = await axios.get(`http://auth-service:5000/api/auth/user/${cid}`);
+                return userResp.data;
+            } catch{
+                return {username: 'unknown', email: 'unknown', _id: 'unknown'};
+            }
+        }));
+
+        return res.status(200).json(chatters);
+    } catch {
+        return res.status(500).json({ message: "Server error: " + error.message });
+    }
+}
+
 module.exports = {
     sendMessage,
     getMessages,
     editMessage,
     deleteMessage,
-    deleteChat
+    deleteChat,
+    getUserChats
 };

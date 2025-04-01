@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, input, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -18,11 +18,12 @@ interface CustomJwtPayload extends JwtPayload {
   styleUrls: ['./message.component.css'],
   imports: [RouterModule, CommonModule, FormsModule]
 })
-export class MessageComponent implements OnInit {
+export class MessageComponent implements OnInit, OnChanges {
   messages: Message[] = [];
   newContent: string = '';
-  loggedInUserId: string = '';
-  recipientUserId: string = '';
+
+  @Input() recipientUserId !: string;
+  @Input() loggedInUserId !: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -36,19 +37,12 @@ export class MessageComponent implements OnInit {
    * - load message history
    */
   ngOnInit(): void {
-    this.recipientUserId = this.route.snapshot.paramMap.get('id') || '';
-
-    const token = localStorage.getItem('auth_token');
-    if (token) {
-      const decoded = jwtDecode<CustomJwtPayload>(token);
-      this.loggedInUserId = decoded.userId;
-    }
-
+    console.log(this.loggedInUserId);
+    console.log(this.recipientUserId);
+    
     this.loadMessages();
 
     this.messageService.listenForMessages().subscribe((newMsg: Message) => {
-      console.log("DOSLA PORUKA DING DONG");
-      
       if(
         (newMsg.sender === this.loggedInUserId && newMsg.receiver === this.recipientUserId) ||
         (newMsg.sender === this.recipientUserId && newMsg.receiver === this.loggedInUserId)
@@ -57,6 +51,13 @@ export class MessageComponent implements OnInit {
       }
     })
   }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['recipientUserId'] && !changes['recipientUserId'].firstChange) {
+      this.loadMessages();
+    }
+  }
+
 
   /**
    * Fetches messages between logged-in user and recipient.
@@ -75,7 +76,7 @@ export class MessageComponent implements OnInit {
    */
   sendMessage(): void {
     if (!this.newContent.trim()) return;
+    this.messageService.sendMessage(this.loggedInUserId, this.recipientUserId, this.newContent);
     this.newContent = '';
-    this.messageService.sendMessage(this.loggedInUserId, this.recipientUserId, this.newContent)
   }
 }

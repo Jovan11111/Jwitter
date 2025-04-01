@@ -1,20 +1,25 @@
-<h3>Messages</h3>
-<hr />
-
-<!-- Display Messages -->
-<div *ngFor="let msg of messages">
-  <p>{{ msg.content }}</p>
-  <hr />
+<div class="flex flex-col h-full p-4 bg-surface text-white rounded-xl shadow-lg border border-primary max-w-2xl mx-auto">
+  
+  <div class="flex-1 overflow-y-auto space-y-4">
+    <div *ngFor="let msg of messages" class="flex w-full">
+      <div
+        [ngClass]="{'ml-auto bg-primary text-background border border-background': msg.sender === loggedInUserId, 'mr-auto bg-background text-gray-300 border border-primary': msg.sender !== loggedInUserId}"
+        class="max-w-[75%] p-3 rounded-lg shadow-md"
+      >
+        <p class="text-sm">{{ msg.content }}</p>
+      </div>
+    </div>
+  </div>
+  
+  <form (ngSubmit)="sendMessage()" class="mt-4 flex items-center space-x-4">
+    <input
+      type="text"
+      placeholder="Enter a message..."
+      name="newContent"
+      [(ngModel)]="newContent"
+      required
+      class="jwitterinput flex-1"
+    />
+    <button type="submit" class="py-3 px-5 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors">Send</button>
+  </form>
 </div>
-
-<!-- Send a Message -->
-<form (ngSubmit)="sendMessage()">
-  <input
-    type="text"
-    name="newContent"
-    placeholder="Enter a message"
-    [(ngModel)]="newContent"
-    required
-  />
-  <button type="submit">Send</button>
-</form>

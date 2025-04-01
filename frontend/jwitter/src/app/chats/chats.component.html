@@ -1,0 +1,30 @@
+<div class="flex h-screen">
+    <app-sidebar class="fixed"></app-sidebar>
+  
+    <div class="flex-1 max-w-5xl mx-auto p-6 flex">
+
+        <div class="w-2/3 border-l border-gray-700 pr-4" *ngIf="showmsgs">
+            <app-message 
+                [loggedInUserId]="loggedInUserId" 
+                [recipientUserId]="selectedChatterId">
+            </app-message>
+        </div>
+
+        <div class="w-1/3 pl-4">
+            <h2 class="text-2xl font-semibold text-primary mb-4">Chats</h2>
+
+            <div class="space-y-4">
+                <div *ngFor="let user of chatters" 
+                     class="flex justify-between items-center p-4 bg-surface rounded-lg border border-gray-700">
+                    <span class="text-gray-300 text-lg">{{ user.username }}</span>
+                    <button (click)="showchat(user._id)" 
+                            class="py-3 px-5 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors">
+                        Open Chat
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  </div>
+  

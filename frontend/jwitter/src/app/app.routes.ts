@@ -7,6 +7,7 @@ import { UserDetailsComponent } from './userdetails/userdetails.component';
 import { MessageComponent } from './message/message.component';
 import { PostdetailsComponent } from './postdetails/postdetails.component';
 import { LogoutComponent } from './logout/logout.component';
+import { ChatsComponent } from './chats/chats.component';
 
 export const routes: Routes = [
 
@@ -17,5 +18,6 @@ export const routes: Routes = [
     {path : 'main', component: MainComponent},
     {path : 'messages/:id', component: MessageComponent},
     {path : 'userdetails/:id', component: UserDetailsComponent},
-    {path : 'postdetails/:id', component: PostdetailsComponent}
+    {path : 'postdetails/:id', component: PostdetailsComponent},
+    {path : 'chats', component: ChatsComponent}
 ];
