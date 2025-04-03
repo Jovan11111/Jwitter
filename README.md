@@ -6,10 +6,12 @@
 ## Auth
 - Used for dealing with login, registration, getting user info
 ## Post
-- Used for getting, creating and deleting posts
+- Used for getting, creating and deleting posts. Added like dislike posts
 ## Friendship
 - Used for managind friendships and friendship requests
 ## Message
 - Used for private messaging between 2 users
 ## Comment
 - Used for leaving comments and replies to posts
+## Settings
+- USer can change password, delteprofile, select who can see its posts
