@@ -1,8 +1,72 @@
-<button (click) = "openChangePasswordModal()">Change Password</button>
-<button (click) = "openDeleteProfileModal()">Delete Profile</button>
-
-<app-deleteprofilemodal
+<div class="flex">
+    <app-sidebar [loggedInUserId]="loggedInUserId" class="fixed"></app-sidebar>
+  
+    <div class="flex-1 p-6 max-w-2xl mx-auto">
+      <div class="bg-background p-6 rounded-lg border border-primary shadow-lg w-500 space-y-6">
+        <button
+          class="py-3 px-5 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors"
+          (click)="openChangePasswordModal()"
+        >
+          Change Password
+        </button>
+  
+        <div class="space-y-4">
+          <h2 class="text-xl font-semibold text-primary">Privacy Settings</h2>
+  
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-400">Who can see my posts?</label>
+            <select
+              class="w-full p-2 border border-gray-700 rounded-lg bg-background text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <option value="everyone">Everyone</option>
+              <option value="friends">Friends</option>
+              <option value="nobody">Nobody</option>
+              </select>
+          </div>
+  
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-400">Who can see my likes?</label>
+            <select
+              class="w-full p-2 border border-gray-700 rounded-lg bg-background text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <option value="everyone">Everyone</option>
+              <option value="friends">Friends</option>
+              <option value="nobody">Nobody</option>
+            </select>
+          </div>
+  
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-400">Who can see my friend list?</label>
+            <select
+              class="w-full p-2 border border-gray-700 rounded-lg bg-background text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <option value="everyone">Everyone</option>
+              <option value="friends">Friends</option>
+              <option value="nobody">Nobody</option>
+            </select>
+          </div>
+          <button class="py-3 px-5 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors">Save privacy settings</button>
+        </div>
+        <hr class="color-gray-700">
+        <button
+          class="py-3 px-5 bg-background border border-error text-error rounded-lg hover:bg-surface transition-colors"
+          (click)="openDeleteProfileModal()"
+        >
+          Delete Profile
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <app-deleteprofilemodal
     *ngIf="deleteProfileModalOpen"
     [loggedInUserId]="loggedInUserId"
     (closeModal)="closeDeleteProfileModal()"
-></app-deleteprofilemodal>
+  ></app-deleteprofilemodal>
+  
+  <app-changepasswordmodal
+    *ngIf="changePasswordModalOpen"
+    [loggedInUserId]="loggedInUserId"
+    (closeModal)="closeChangePasswordModal()"
+  ></app-changepasswordmodal>
+  

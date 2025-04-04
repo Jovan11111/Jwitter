@@ -59,4 +59,11 @@ export class PostService {
   dislikePost(user: string, post: string){
     return this.http.post(`${this.apiUrl}/dislike`, {userId: user, postId: post});
   }
+
+  /**
+   * 
+   */
+  getUserLikes(user: string){
+    return this.http.get<Post[]>(`${this.apiUrl}/getUserLikes/${user}`);
+  }
 }

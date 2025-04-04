@@ -21,7 +21,7 @@
       <li><a routerLink="/logout" class="sidebar-link">Logout</a></li>
       <li>
         <button (click)="toggleRequestsPanel()" class="sidebar-link">
-          Friendship Requests
+          Friendship Requests &nbsp; &nbsp;<span class="text-primary" *ngIf="friendshipRequests.length > 0">◉</span>
         </button>
       </li>
     </ul>

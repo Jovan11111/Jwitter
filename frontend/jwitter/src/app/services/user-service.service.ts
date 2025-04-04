@@ -35,7 +35,27 @@ export class UserServiceService {
    * 
    */
   deleteProfile(userId: string, pass: string){
-    console.log(userId, pass);
     return this.http.post(`${this.apiUrl}/deleteProfile`, {userr: userId, passwordd: pass});
+  }
+
+  /**
+   * 
+   */
+  changePassword(user: string, pass: string){
+    return this.http.post(`${this.apiUrl}/changePassword`, {userId: user, newPass: pass});
+  }
+
+  /**
+   * 
+   */
+  forgotPassword(mail: string){
+    return this.http.post(`${this.apiUrl}/forgotPassword`, {email: mail});
+  }
+
+  /**
+   * 
+   */
+  resetPassword(token: string, newpass: string){
+    return this.http.post(`${this.apiUrl}/resetPassword/${token}`, {newPassword: newpass});
   }
 }

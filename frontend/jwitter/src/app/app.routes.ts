@@ -9,6 +9,7 @@ import { PostdetailsComponent } from './postdetails/postdetails.component';
 import { LogoutComponent } from './logout/logout.component';
 import { ChatsComponent } from './chats/chats.component';
 import { SettingsComponent } from './settings/settings.component';
+import { ResetpasswordComponent } from './resetpassword/resetpassword.component';
 
 export const routes: Routes = [
 
@@ -21,5 +22,6 @@ export const routes: Routes = [
     {path : 'userdetails/:id', component: UserDetailsComponent},
     {path : 'postdetails/:id', component: PostdetailsComponent},
     {path : 'chats', component: ChatsComponent},
-    {path : 'settings', component: SettingsComponent}
+    {path : 'settings', component: SettingsComponent},
+    {path : 'reset-password/:token', component: ResetpasswordComponent}
 ];

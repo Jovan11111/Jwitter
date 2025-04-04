@@ -8,14 +8,14 @@
           <h2 class="text-2xl font-bold text-primary">{{ user.username }}</h2>
           <h5 class="text-gray-400">{{ user.email }}</h5>
         </div>
-        <a *ngIf="myProfile" [routerLink]="['/settings']" class="jwitterbutton px-5">
+        <a *ngIf="myProfile" [routerLink]="['/settings']" class="py-3 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors px-5">
           Settings
         </a>
         <div *ngIf="!myProfile">
-          <button *ngIf="showAddFriendButton" class="jwitterbutton px-5" (click)="sendFriendRequest()">
+          <button *ngIf="showAddFriendButton" class="py-3 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors px-5" (click)="sendFriendRequest()">
             Send Friend Request
           </button>
-          <a *ngIf="!showAddFriendButton" [routerLink]="['/messages', userId]" class="jwitterbutton px-5">
+          <a *ngIf="!showAddFriendButton" [routerLink]="['/messages', userId]" class="py-3 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors px-5">
             Send Message
           </a>
           
@@ -25,11 +25,22 @@
     <div class="mt-6">
       <div class="flex border-b border-gray-700">
         <button class="flex-1 py-3 text-center" [ngClass]="{'border-b-2 border-primary text-primary': activeTab === 'posts'}" (click)="activeTab = 'posts'">Posts</button>
+        <button class="flex-1 py-3 text-center" [ngClass]="{'border-b-2 border-primary text-primary': activeTab === 'likes'}" (click)="activeTab = 'likes'">Likes</button>
         <button class="flex-1 py-3 text-center" [ngClass]="{'border-b-2 border-primary text-primary': activeTab === 'friends'}" (click)="activeTab = 'friends'">Friends</button>
       </div>
 
       <div *ngIf="activeTab === 'posts'" class="mt-4">
         <div *ngFor="let post of userPosts" class="bg-background p-4 rounded-lg border border-gray-700 mt-2">
+          <a [routerLink]="['/postdetails', post._id]"
+             class="text-primary text-xl font-semibold hover:brightness-90">
+             {{ post.title }}
+          </a>
+          <p class="text-gray-400">{{ post.content }}</p>
+        </div>
+      </div>
+      
+      <div *ngIf="activeTab === 'likes'" class="mt-4">
+        <div *ngFor="let post of userLikes" class="bg-background p-4 rounded-lg border border-gray-700 mt-2">
           <a [routerLink]="['/postdetails', post._id]"
              class="text-primary text-xl font-semibold hover:brightness-90">
              {{ post.title }}

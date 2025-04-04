@@ -25,6 +25,7 @@ export class UserDetailsComponent implements OnInit {
   loggedInUserId: string = '';
   user: User = new User();
   userPosts: Post[] = [];
+  userLikes: Post[] = [];
   friends: User[] = [];
   showAddFriendButton: boolean = true;
   myProfile: boolean = false;
@@ -57,6 +58,7 @@ export class UserDetailsComponent implements OnInit {
   
       this.loadUserDetails();
       this.loadUserPosts();
+      this.loadUserLikes();
       this.loadFriendshipStatus();
       this.loadUserFriends();
     });
@@ -80,6 +82,16 @@ export class UserDetailsComponent implements OnInit {
       next: (posts: Post[]) => (this.userPosts = posts),
       error: (err) => console.error('Failed to load user posts', err)
     });
+  }
+
+  /**
+   * 
+   */
+  private loadUserLikes(): void {
+    this.postService.getUserLikes(this.userId).subscribe({
+      next: (posts: Post[]) => (this.userLikes = posts),
+      error: (err) => console.error('Failed to load user likes', err)
+    })
   }
 
   /**

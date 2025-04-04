@@ -1,5 +1,5 @@
 const express = require('express');
-const { allPosts, deletePost, createPost, getPost, userPosts, likePost, dislikePost, deleteUserPosts } = require("../controllers/postController");
+const { allPosts, deletePost, createPost, getPost, userPosts, likePost, dislikePost, deleteUserPosts, getUserLikes } = require("../controllers/postController");
 
 const router = express.Router();
  
@@ -56,6 +56,11 @@ router.post('/dislike', dislikePost);
  * 
  */
 router.delete('/deleteUserPosts/:id', deleteUserPosts);
+
+/**
+ * 
+ */
+router.get('/getUserLikes/:id', getUserLikes);
 
 // Export the router
 module.exports = router;

@@ -2,6 +2,8 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
+const crypto = require("crypto");
+const { sendResetEmail } = require("../utils/email");
 
 /**
  * Registers a new user.
@@ -112,10 +114,77 @@ const deleteProfile = async (req, res) => {
     }
 };
 
+const changePassword = async(req, res) => {
+    try {
+        const {userId, newPass} = req.body;
+        const hashedPassword = await bcrypt.hash(newPass, 10);
+        await User.findByIdAndUpdate(userId, {password: hashedPassword});
+        return res.status(200).json({message: "Changed password succesfully"});
+    } catch(error){
+        return res.status(500).json({ message: `Server error: ${error.message}` });
+    }
+};
+
+/**
+ * 
+ */
+const forgotPassword = async (req, res) => {
+    try{
+        const { email } = req.body;
+
+        const user = await User.findOne({ email });
+        if (!user) return res.status(404).json({ message: "User not found" });
+    
+        const token = crypto.randomBytes(32).toString("hex");
+        console.log(token);
+        
+        await user.updateOne({resetToken: token});
+        
+        const updatedUser = await User.findOne({ email });
+
+        await sendResetEmail(email, updatedUser.resetToken);
+
+        console.log(updatedUser.resetToken);
+        
+        return res.status(200).json({ message: "Reset email sent" });
+    }catch(error){
+        return res.status(500).json({ message: `Server error: ${error.message}` });
+    }
+};
+
+/**
+ * 
+ */
+const resetPassword = async (req, res) => {
+    try{
+        const token = req.params.token;
+        const { newPassword } = req.body;
+        console.log(token);
+        
+        const user = await User.findOne({
+            resetToken: token,
+        });
+    
+        if (!user) return res.status(400).json({ message: "Invalid or expired token" });
+        
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        await user.updateOne({
+            password: hashedPassword,
+            resetToken: ""
+        });
+        return res.status(200).json({ message: "Password successfully reset" });
+    } catch(error){
+        return res.status(500).json({ message: `Server error: ${error.message}` });
+    }
+};
+
 
 module.exports = {
     registerUser,
     loginUser,
     getUser,
-    deleteProfile
+    deleteProfile,
+    changePassword,
+    forgotPassword,
+    resetPassword
 };

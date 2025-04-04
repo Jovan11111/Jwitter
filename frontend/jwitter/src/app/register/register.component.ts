@@ -13,6 +13,7 @@ import { FormsModule } from '@angular/forms';
 export class RegisterComponent {
   username: string = '';
   password: string = '';
+  passwordConf: string = '';
   email: string = '';
   message: string = '';
 
@@ -27,15 +28,19 @@ export class RegisterComponent {
    * On failure, displays an error message.
    */
   register(): void {
-    this.userService.register(this.username, this.password, this.email).subscribe(
-      (response: any) => {
-        console.log('Registration successful:', response.message);
-        this.router.navigate(['/login']);
-      },
-      (error) => {
-        console.error('Failed to register:', error);
-        this.message = error.error.message || 'Registration failed. Please try again.';
-      }
-    );
+    if(this.password === this.passwordConf){
+      this.userService.register(this.username, this.password, this.email).subscribe(
+        (response: any) => {
+          console.log('Registration successful:', response.message);
+          this.router.navigate(['/login']);
+        },
+        (error) => {
+          console.error('Failed to register:', error);
+          this.message = error.error.message || 'Registration failed. Please try again.';
+        }
+      );
+    } else{
+      this.message = "Password confirmation does not match the pasword"
+    }
   }
 }

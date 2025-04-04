@@ -35,5 +35,14 @@
       Don't have an account?
       <a routerLink="/register" class="text-primary hover:underline">Register</a>
     </p>
+    <p class="mt-6 text-center text-gray-400">
+      <a (click)="openForgotPasswordModal()" class="text-primary hover:underline">Forgot password?</a>
+    </p>
   </div>
 </div>
+<app-forgot-password-modal
+  *ngIf="forgotPasswordModalOpen"
+  (closeModal)="closeForgotPasswordModal()"
+></app-forgot-password-modal>
+
+

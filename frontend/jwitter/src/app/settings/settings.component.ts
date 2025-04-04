@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { DeleteprofilemodalComponent } from '../deleteprofilemodal/deleteprofilemodal.component';
+import { ChangepasswordmodalComponent } from '../changepasswordmodal/changepasswordmodal.component';
+import { SidebarComponent } from '../sidebar/sidebar.component';
 
 interface CustomJwtPayload extends JwtPayload {
   userId: string;
@@ -11,7 +13,7 @@ interface CustomJwtPayload extends JwtPayload {
 
 @Component({
   selector: 'app-settings',
-  imports: [CommonModule, FormsModule, RouterModule, DeleteprofilemodalComponent],
+  imports: [CommonModule, FormsModule, RouterModule, DeleteprofilemodalComponent, ChangepasswordmodalComponent, SidebarComponent],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.css'
 })
@@ -44,6 +46,9 @@ export class SettingsComponent implements OnInit{
   }
   closeDeleteProfileModal(): void {
     this.deleteProfileModalOpen = false;
+  }
+  closeChangePasswordModal(): void {
+    this.changePasswordModalOpen = false
   }
 
 }

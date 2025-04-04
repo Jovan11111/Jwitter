@@ -182,6 +182,21 @@ const deleteUserPosts = async (req, res) => {
     }
 }
 
+const getUserLikes = async (req, res) => {
+    try {
+        const userId = req.params.id;
+
+        const reactions = await Reaction.find({ user: userId, reaction: "liked" });
+
+        const postIds = reactions.map(reaction => reaction.post);
+
+        const likedPosts = await Post.find({ _id: { $in: postIds } });
+
+        return res.status(200).json(likedPosts);
+    } catch (error) {
+        return res.status(500).json({ message: "Server error: " + error.message });
+    }
+};
 
 module.exports = {
     allPosts,
@@ -191,5 +206,6 @@ module.exports = {
     userPosts,
     likePost,
     dislikePost,
-    deleteUserPosts
+    deleteUserPosts,
+    getUserLikes
 }

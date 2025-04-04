@@ -4,17 +4,19 @@ import { UserServiceService } from '../services/user-service.service';
 import { jwtDecode } from 'jwt-decode';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ForgotPasswordModalComponent } from '../forgot-password-modal/forgot-password-modal.component';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  imports: [RouterLink, FormsModule, CommonModule],
+  imports: [RouterLink, FormsModule, CommonModule, ForgotPasswordModalComponent],
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
   username: string = '';
   password: string = '';
   message: string = '';
+  forgotPasswordModalOpen: boolean = false;
 
   constructor(
     private userService: UserServiceService,
@@ -47,5 +49,12 @@ export class LoginComponent implements OnInit {
         this.message = error.error.message || 'Login failed. Please try again.';
       }
     );
+  }
+
+  openForgotPasswordModal(): void{
+    this.forgotPasswordModalOpen = true;
+  }
+  closeForgotPasswordModal(): void{
+    this.forgotPasswordModalOpen = false;
   }
 }
