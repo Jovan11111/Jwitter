@@ -21,7 +21,7 @@ export const routes: Routes = [
     {path : 'messages/:id', component: MessageComponent},
     {path : 'userdetails/:id', component: UserDetailsComponent},
     {path : 'postdetails/:id', component: PostdetailsComponent},
-    {path : 'chats', component: ChatsComponent},
+    {path : 'chats/:id', component: ChatsComponent},
     {path : 'settings', component: SettingsComponent},
     {path : 'reset-password/:token', component: ResetpasswordComponent}
 ];

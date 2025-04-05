@@ -15,7 +15,7 @@
           <button *ngIf="showAddFriendButton" class="py-3 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors px-5" (click)="sendFriendRequest()">
             Send Friend Request
           </button>
-          <a *ngIf="!showAddFriendButton" [routerLink]="['/messages', userId]" class="py-3 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors px-5">
+          <a *ngIf="!showAddFriendButton" [routerLink]="['/chats', userId]" class="py-3 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors px-5">
             Send Message
           </a>
           

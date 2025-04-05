@@ -136,7 +136,6 @@ const forgotPassword = async (req, res) => {
         if (!user) return res.status(404).json({ message: "User not found" });
     
         const token = crypto.randomBytes(32).toString("hex");
-        console.log(token);
         
         await user.updateOne({resetToken: token});
         

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MessageComponent } from '../message/message.component';
 import { MessageService } from '../services/message.service';
 import { User } from '../models/User';
@@ -20,7 +20,7 @@ interface CustomJwtPayload extends JwtPayload {
 })
 export class ChatsComponent implements OnInit{
 
-  constructor(private messageService: MessageService){}
+  constructor(private messageService: MessageService, private route: ActivatedRoute){}
 
   chatters: User[] = [];
   loggedInUserId: string = '';
@@ -28,6 +28,8 @@ export class ChatsComponent implements OnInit{
   selectedChatterId: string = '';
 
   ngOnInit(): void {
+    this.selectedChatterId = this.route.snapshot.paramMap.get('id') ?? '';
+    if(this.selectedChatterId != "0") this.showmsgs = true;
     this.decodeToken();
     this.getChats();
   }
@@ -54,8 +56,6 @@ export class ChatsComponent implements OnInit{
   showchat(other: string){
     this.showmsgs = true;
     this.selectedChatterId = other;
-    console.log("ODREDJNO OVO SRANJE ");
-    
   }
 
 }
