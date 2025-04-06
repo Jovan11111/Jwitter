@@ -12,7 +12,7 @@ const sendResetEmail = async (to, token) => {
     const resetLink = `http://localhost:3000/reset-password/${token}`;
 
     const mailOptions = {
-        from: '"Jwitter" <your-email@gmail.com>',
+        from: '"Jwitter"',
         to,
         subject: "Password Reset Request",
         html: `

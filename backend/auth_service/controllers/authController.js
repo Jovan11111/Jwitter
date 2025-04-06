@@ -177,6 +177,30 @@ const resetPassword = async (req, res) => {
     }
 };
 
+/**
+ * 
+ */
+const saveNotificationSettings = async (req, res) => {
+    try{
+        const userId = req.params.id
+        const {frreq, msg} = req.body
+        await User.findByIdAndUpdate(userId, {frReqNotifs: frreq, messageNotifs: msg});
+        return res.status(200).json({message: "Updated notification settings"}); 
+    } catch(error){
+        return res.status(500).json({ message: `Server error: ${error.message}` });
+    }
+};
+
+const saveVisibilitySettings = async (req, res) => {
+    try{
+        const userId = req.params.id;
+        const {post, like, friend, email} = req.body
+        await User.findByIdAndUpdate(userId, {postVisibility: post, likeVisibility: like, friendVisibility: friend, emailVisibility: email});
+        return res.status(200).json({message: "Updated visibility settings"});
+    } catch (error){
+        return res.status(500).json({ message: `Server error: ${error.message}` });
+    }
+}
 
 module.exports = {
     registerUser,
@@ -185,5 +209,7 @@ module.exports = {
     deleteProfile,
     changePassword,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    saveNotificationSettings,
+    saveVisibilitySettings
 };

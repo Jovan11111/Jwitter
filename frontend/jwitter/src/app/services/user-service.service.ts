@@ -58,4 +58,15 @@ export class UserServiceService {
   resetPassword(token: string, newpass: string){
     return this.http.post(`${this.apiUrl}/resetPassword/${token}`, {newPassword: newpass});
   }
+
+  /**
+   * 
+   */
+  saveNotificationSettings(user: string, frReqNotifs: boolean, messageNotifs: boolean){
+    return this.http.post(`${this.apiUrl}/saveNotificationSettings/${user}`, {frreq: frReqNotifs, msg: messageNotifs});
+  }
+
+  saveVisibilitySettings(user: string, postV: string, likeV: string, friendV: string, emailV: string){
+    return this.http.post(`${this.apiUrl}/saveVisibilitySettings/${user}`, {post: postV, like: likeV, friend: friendV, email: emailV});
+  }
 }

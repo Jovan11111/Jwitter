@@ -8,6 +8,7 @@
 const axios = require('axios');
 const FriendshipRequest = require('../models/FriendshipRequest');
 const Friendship = require('../models/Friendship');
+const { sendFrReqEmail } = require('../utils/email');
 
 /**
  * Sends a friend request from one user to another.
@@ -19,7 +20,6 @@ const sendFrReq = async (req, res) => {
         const sender = req.params.sender;
         const receiver = req.params.receiver;
 
-        // Check if a friend request or friendship already exists
         const frreqExists = await FriendshipRequest.findOne({
             $or: [
                 { sender, receiver },
@@ -31,7 +31,15 @@ const sendFrReq = async (req, res) => {
             return res.status(400).json({ message: 'Friendship already exists' });
         }
 
-        // Create and save a new friend request
+
+        const userResp = await axios.get(`http://auth-service:5000/api/auth/user/${receiver}`);
+        
+        const receiverUser = userResp.data;
+
+        if(receiverUser.frReqNotifs){
+            await sendFrReqEmail(receiverUser.email);
+        }
+
         const newFrReq = new FriendshipRequest({ sender, receiver });
         await newFrReq.save();
 

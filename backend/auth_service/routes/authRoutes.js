@@ -1,5 +1,14 @@
 const express = require("express");
-const { loginUser, registerUser, getUser, deleteProfile, changePassword, forgotPassword, resetPassword } = require("../controllers/authController");
+const { loginUser, 
+        registerUser, 
+        getUser, 
+        deleteProfile, 
+        changePassword, 
+        forgotPassword, 
+        resetPassword, 
+        saveNotificationSettings, 
+        saveVisibilitySettings 
+    } = require("../controllers/authController");
 
 const router = express.Router();
 
@@ -40,4 +49,14 @@ router.post("/forgotPassword", forgotPassword);
  * 
  */
 router.post("/resetPassword/:token", resetPassword);
+
+/**
+ * 
+ */
+router.post("/saveNotificationSettings/:id", saveNotificationSettings);
+
+/**
+ * 
+ */
+router.post("/saveVisibilitySettings/:id", saveVisibilitySettings);
 module.exports = router;

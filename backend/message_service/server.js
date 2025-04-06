@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const cors = require('cors');
 const bodyParser = require("body-parser");
 const socketIo = require('socket.io')
+const axios = require('axios')
+const { sendNewMsgEmail } = require('./utils/email');
 
 dotenv.config();
 
@@ -43,6 +45,16 @@ io.on('connection', (socket) => {
     await newMsg.save();
 
     io.emit('newMsg', newMsg);
+    const senderUserResp = await axios.get(`http://auth-service:5000/api/auth/user/${sender}`);
+    const receiverUserResp = await axios.get(`http://auth-service:5000/api/auth/user/${receiver}`);
+    const senderUser = senderUserResp.data;
+    const receiverUser = receiverUserResp.data;
+    console.log("KONTROLER");
+            
+    if(receiverUser.messageNotifs){
+      console.log("USAO U IF");
+      await sendNewMsgEmail(receiverUser.email, senderUser.username, content);
+    }
   });
 
   socket.on('disconnect', () => {

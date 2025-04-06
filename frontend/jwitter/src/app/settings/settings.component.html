@@ -16,6 +16,7 @@
           <div class="space-y-2">
             <label class="block text-sm font-medium text-gray-400">Who can see my posts?</label>
             <select
+              [(ngModel)]="postVisibility"
               class="w-full p-2 border border-gray-700 rounded-lg bg-background text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="everyone">Everyone</option>
@@ -27,6 +28,7 @@
           <div class="space-y-2">
             <label class="block text-sm font-medium text-gray-400">Who can see my likes?</label>
             <select
+            [(ngModel)]="likeVisibility"
               class="w-full p-2 border border-gray-700 rounded-lg bg-background text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="everyone">Everyone</option>
@@ -38,6 +40,7 @@
           <div class="space-y-2">
             <label class="block text-sm font-medium text-gray-400">Who can see my friend list?</label>
             <select
+            [(ngModel)]="friendVisibility"
               class="w-full p-2 border border-gray-700 rounded-lg bg-background text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="everyone">Everyone</option>
@@ -45,8 +48,66 @@
               <option value="nobody">Nobody</option>
             </select>
           </div>
-          <button class="py-3 px-5 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors">Save privacy settings</button>
+
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-400">Who can see my email?</label>
+            <select
+              [(ngModel)]="emailVisibility"
+              class="w-full p-2 border border-gray-700 rounded-lg bg-background text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <option value="everyone">Everyone</option>
+              <option value="friends">Friends</option>
+              <option value="nobody">Nobody</option>
+            </select>
+          </div>
+          <button class="py-3 px-5 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors" (click)="saveVisibilitySettings()">Save privacy settings</button>
         </div>
+
+        <div class="space-y-4">
+          <h2 class="text-xl font-semibold text-primary">Notification Settings</h2>
+        
+          <div class="flex justify-between items-center">
+            <label class="text-sm font-medium text-gray-400">Friendship request notifications</label>
+            <button
+              (click)="toggleFriendshipNotifications()"
+              [ngClass]="{
+                'bg-error/20 translate-start': !friendshipNotifications,
+                'bg-primary/20 justify-end': friendshipNotifications
+              }"
+              class="w-16 h-6 flex items-center rounded-full transition-colors px-1"
+            >
+              <div
+                [ngClass]="{
+                  'bg-error': !friendshipNotifications,
+                  'bg-primary': friendshipNotifications
+                  }"
+                class="w-4 h-4 rounded-full transition-transform"
+              ></div>
+            </button>
+          </div>
+        
+          <div class="flex justify-between items-center">
+            <label class="text-sm font-medium text-gray-400">Message notifications</label>
+            <button
+              (click)="toggleMessageNotifications()"
+              [ngClass]="{
+                'bg-error/20 justify-start': !messageNotifications,
+                'bg-primary/20 justify-end': messageNotifications
+              }"
+              class="w-16 h-6 flex items-center rounded-full transition-colors px-1"
+            >
+                <div
+                  [ngClass]="{
+                    'bg-error': !messageNotifications,
+                    'bg-primary': messageNotifications
+                  }"
+                  class="w-4 h-4 rounded-full transition-transform"
+                ></div>
+            </button>
+          </div>
+          <button class="py-3 px-5 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors" (click) = "saveNotificationSettings()">Save privacy settings</button>
+        </div>
+        
         <hr class="color-gray-700">
         <button
           class="py-3 px-5 bg-background border border-error text-error rounded-lg hover:bg-surface transition-colors"

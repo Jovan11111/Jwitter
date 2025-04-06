@@ -3,4 +3,10 @@ export class User{
     username: string = ""
     password: string = ""
     email: string = ""
+    frReqNotifs: boolean = true
+    messageNotifs: boolean = true
+    postVisibility: string = ""
+    likeVisibility: string = ""
+    friendVisibility: string = ""
+    emailVisibility: string = ""
 }

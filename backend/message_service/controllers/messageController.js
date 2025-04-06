@@ -1,5 +1,6 @@
 const axios = require("axios");
 const Message = require("../models/Message");
+const { sendNewMsgEmail } = require('../utils/email');
 
 /**
  * Send a new message from one user to another.
@@ -19,6 +20,17 @@ const sendMessage = async (req, res) => {
             receiver,
             content
         });
+
+        const senderUserResp = await axios.get(`http://auth-service:5000/api/auth/user/${sender}`);
+        const receiverUserResp = await axios.get(`http://auth-service:5000/api/auth/user/${receiver}`);
+        const senderUser = senderUserResp.data;
+        const receiverUser = receiverUserResp.data;
+        console.log("KONTROLER");
+        
+        if(receiverUser.messageNotifs){
+            console.log("USAO U IF");
+            await sendNewMsgEmail(receiverUser.email, senderUser.username, content);
+        }
 
         await newMessage.save();
         res.status(201).json(newMessage);

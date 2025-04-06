@@ -17,7 +17,8 @@ export class LoginComponent implements OnInit {
   password: string = '';
   message: string = '';
   forgotPasswordModalOpen: boolean = false;
-
+  showPassword: boolean = false;
+  
   constructor(
     private userService: UserServiceService,
     private router: Router
