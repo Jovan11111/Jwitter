@@ -1,5 +1,4 @@
 <div class="max-w-2xl mx-auto bg-surface text-white rounded-xl shadow-lg p-6 space-y-4 mb-6 border border-primary">
-    <!-- Header -->
     <div class="flex justify-between items-center">
       <div>
         <a [routerLink]="['/postdetails', post._id]" 
@@ -17,21 +16,18 @@
         <button (click)="deletePost(post._id)" class="text-red-500 hover:text-red-400">✖</button>
       </ng-container>
     </div>
-  
-    <!-- Content -->
-    <p class="text-gray-300 text-base">
-      {{ post.content }}
-    </p>
-  
-    <!-- Footer (Likes & Dislikes) -->
+    <div *ngIf="showWholePost" class="text-gray-300 text-base whitespace-pre-wrap break-words max-h-96 overflow-auto">{{post.content}} </div>
+    <div *ngIf="!showWholePost && !(post.content.length > 280)" class="text-gray-300 text-base whitespace-pre-wrap break-words max-h-96 overflow-auto">{{post.content}} </div>
+    <div *ngIf="!showWholePost && post.content.length > 280" class="text-gray-300 text-base whitespace-pre-wrap break-words max-h-96 overflow-auto"> {{ post.content | slice:0:280 }}<a [routerLink]="['/postdetails', post._id]" class="text-primary ml-2">Read more</a>
+ </div>  
     <div class="flex justify-between items-center border-t border-gray-700 pt-4">
       <span class="text-gray-400 text-sm">Likes: {{ post.numLikes }} | Dislikes: {{ post.numDislikes }}</span>
       <div class="flex space-x-4">
         <button (click)="likePost(post._id)" class="text-gray-400 hover:text-primary">
-          👍
+          <img src="assets/like.png" alt="Like" class="w-6 h-6 opacity-70 hover:opacity-100 transition" />
         </button>
         <button (click)="dislikePost(post._id)" class="text-gray-400 hover:text-red-500">
-          👎
+          <img src="assets/dislike.png" alt="Dislike" class="w-6 h-6 opacity-70 hover:opacity-100 transition" />
         </button>
       </div>
     </div>

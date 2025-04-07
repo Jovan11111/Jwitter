@@ -7,6 +7,7 @@
     [post]="openedPost"
     [loggedInUserId]="loggedInUserId"
     (refresh)="ngOnInit()"
+    [showWholePost]="showWholePost"
   > </app-postcard>
     
     <div *ngIf="showAddComment" class="mt-6">

@@ -38,6 +38,7 @@ export class MainComponent implements OnInit {
   loggedInUserId: string = '';
   sidebarCollapsed = false;
   modalOpen = false;
+  showWholePost: boolean = false;
 
   constructor(
     private postService: PostService,

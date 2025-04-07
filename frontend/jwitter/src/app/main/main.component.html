@@ -4,7 +4,8 @@
   <app-addpostmodal 
     *ngIf="modalOpen" 
     (closeModal)="closeModal()" 
-    (submitPost)="submitPostFromModal($event)">
+    (submitPost)="submitPostFromModal($event)"
+    >
   </app-addpostmodal>
   
   <div class="flex-1 p-6">
@@ -13,6 +14,7 @@
         [post]="post" 
         [loggedInUserId]="loggedInUserId" 
         (refresh)="ngOnInit()"
+        [showWholePost]="showWholePost"
       >
       </app-postcard>
     </div>

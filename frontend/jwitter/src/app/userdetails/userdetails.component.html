@@ -35,7 +35,8 @@
              class="text-primary text-xl font-semibold hover:brightness-90">
              {{ post.title }}
           </a>
-          <p class="text-gray-400">{{ post.content }}</p>
+          <div *ngIf="post.content.length > 100" class="text-gray-300 text-base whitespace-pre-wrap break-words max-h-96 overflow-auto">{{post.content | slice:0:100}} ...</div>
+          <div *ngIf="!(post.content.length > 100)" class="text-gray-300 text-base whitespace-pre-wrap break-words max-h-96 overflow-auto">{{post.content}}</div>
         </div>
       </div>
       

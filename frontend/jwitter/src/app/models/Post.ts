@@ -9,5 +9,6 @@ export class Post{
     username: string = ""
     numLikes: number = 0
     numDislikes: number = 0
+    userReaction: string = ""
 }
 

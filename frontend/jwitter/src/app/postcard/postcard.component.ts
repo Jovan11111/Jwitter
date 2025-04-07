@@ -18,7 +18,7 @@ export class PostcardComponent{
   
   @Input() post !: Post;
   @Input() loggedInUserId !: string;
-
+  @Input() showWholePost !: boolean;
 
   @Output() refresh = new EventEmitter<void>();
   

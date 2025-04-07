@@ -29,6 +29,7 @@ export class PostdetailsComponent implements OnInit{
   comments: Comment[] = [];
   newCommentContent: string = "";
   showAddComment: boolean = false;
+  showWholePost: boolean = true;
 
   constructor(
     private route: ActivatedRoute,
