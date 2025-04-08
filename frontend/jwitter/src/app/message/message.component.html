@@ -1,6 +1,6 @@
 <div class="flex flex-col h-full p-4 bg-surface text-white rounded-xl shadow-lg border border-primary max-w-2xl mx-auto">
   
-  <div class="flex-1 overflow-y-auto space-y-4">
+  <div #scrollContainer class="flex-1 overflow-y-auto space-y-4">
     <div *ngFor="let msg of messages" class="flex w-full">
       <div
         [ngClass]="{'ml-auto bg-primary text-background border border-background': msg.sender === loggedInUserId, 'mr-auto bg-background text-gray-300 border border-primary': msg.sender !== loggedInUserId}"

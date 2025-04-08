@@ -5,12 +5,15 @@ const Reaction = require("../models/Reaction");
 
 const allPosts = async(req, res) => {
     try {
+        loggedUserId = req.params.id;
         const posts = await Post.find();
         const postsWithUserNames = await Promise.all(posts.map(async (post) => {
             try {
                 const userResp = await axios.get(`http://auth-service:5000/api/auth/user/${post.user}`)
                 const username = userResp.data.username
-                
+                const userReaction = await Reaction.findOne({user:loggedUserId, post: post});
+                const userReactionString = userReaction ? userReaction.reaction : "no";
+
                 return {
                     _id: post._id,
                     _v: post._v,
@@ -20,7 +23,8 @@ const allPosts = async(req, res) => {
                     createdAt: post.createdAt,
                     username: username,
                     numLikes: post.numLikes,
-                    numDislikes: post.numDislikes
+                    numDislikes: post.numDislikes,
+                    userReaction: userReactionString
                 }
             }catch{
                 console.log("Failed to find user");
@@ -33,7 +37,8 @@ const allPosts = async(req, res) => {
                     createdAt: post.createdAt,
                     username: "Unknown user",
                     numLikes: post.numLikes,
-                    numDislikes: post.numDislikes
+                    numDislikes: post.numDislikes,
+                    userReaction: "unknown"
 
                 }
             }

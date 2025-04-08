@@ -17,6 +17,9 @@ export class ChangepasswordmodalComponent {
   oldPass: string = "";
   newPass: string = "";
   newPassConf: string = "";
+  showPassword1: boolean = false;
+  showPassword2: boolean = false;
+  showPassword3: boolean = false;
 
   @Input() loggedInUserId !: string;
   @Output() closeModal = new EventEmitter<void>();

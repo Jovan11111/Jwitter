@@ -13,8 +13,8 @@ export class PostService {
   /**
    * Retrieves all posts.
    */
-  getAllPosts() {
-    return this.http.get<Post[]>(`${this.apiUrl}/allPosts`);
+  getAllPosts(id: string) {
+    return this.http.get<Post[]>(`${this.apiUrl}/allPosts/${id}`);
   }
 
   /**

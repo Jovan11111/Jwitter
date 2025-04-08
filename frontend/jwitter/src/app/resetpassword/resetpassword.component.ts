@@ -16,6 +16,8 @@ export class ResetpasswordComponent {
   confirmPassword: string = '';
   token: string = '';
   message: string = '';
+  showPassword1: boolean = false;
+  showPassword2: boolean = false;
 
   constructor(private route: ActivatedRoute, private userService: UserServiceService, private router: Router) {}
 

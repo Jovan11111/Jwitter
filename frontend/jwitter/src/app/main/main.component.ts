@@ -36,7 +36,6 @@ export class MainComponent implements OnInit {
   newPostTitle: string = '';
   newPostContent: string = '';
   loggedInUserId: string = '';
-  sidebarCollapsed = false;
   modalOpen = false;
   showWholePost: boolean = false;
 
@@ -71,7 +70,7 @@ export class MainComponent implements OnInit {
    * Loads all posts from backend.
    */
   private loadPosts(): void {
-    this.postService.getAllPosts().subscribe({
+    this.postService.getAllPosts(this.loggedInUserId).subscribe({
       next: (posts: Post[]) => (this.posts = posts),
       error: (err) => console.error('Error fetching posts:', err)
     });

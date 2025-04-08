@@ -11,24 +11,43 @@
         required
         class="jwitterinput"
       />
+      <div class="relative">
+        <input
+          [type]="showPassword1 ? 'text' : 'password'"
+          name="password"
+          [(ngModel)]="password"
+          placeholder="Password"
+          required
+          class="jwitterinput"
+        />
+        <button
+        type="button"
+          (mousedown)="showPassword1 = true"
+          (mouseup)="showPassword1 = false"
+          (mouseleave)="showPassword1 = false"
+          class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+        >👁️</button>
+      </div>
+      <div class="relative">
+        <input
+          [type]="showPassword2 ? 'text' : 'password'"
+          name="password"
+          [(ngModel)]="passwordConf"
+          placeholder="Password again"
+          required
+          class="jwitterinput"
+        />
+        <button
+          type="button"
+          (mousedown)="showPassword2 = true"
+          (mouseup)="showPassword2 = false"
+          (mouseleave)="showPassword2 = false"
+          class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+        >👁️</button>
+      </div>
+      
 
-      <input
-        type="password"
-        name="password"
-        [(ngModel)]="password"
-        placeholder="Password"
-        required
-        class="jwitterinput"
-      />
-
-      <input
-      type="password"
-      name="password"
-      [(ngModel)]="passwordConf"
-      placeholder="Password again"
-      required
-      class="jwitterinput"
-      />
+      
 
       <input
         type="email"

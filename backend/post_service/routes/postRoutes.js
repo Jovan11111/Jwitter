@@ -8,7 +8,7 @@ const router = express.Router();
  * @desc Get all posts
  * @access Public
  */
-router.get('/allPosts', allPosts); // Get all posts
+router.get('/allPosts/:id', allPosts); // Get all posts
 
 /**
  * @route GET /api/post/getPost/:id

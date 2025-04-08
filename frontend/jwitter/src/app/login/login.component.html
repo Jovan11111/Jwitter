@@ -11,16 +11,23 @@
         required
         class="jwitterinput"
       />
-
-      <input
-        type="password"
+      <div class="relative">
+        <input
+        [type]="showPassword ? 'text' : 'password'"
         name="password"
         [(ngModel)]="password"
         placeholder="Password"
         required
         class="jwitterinput"
-      />
-
+        />
+        <button
+          type="button"
+          (mousedown)="showPassword = true"
+          (mouseup)="showPassword = false"
+          (mouseleave)="showPassword = false"
+          class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+        >👁️</button>
+      </div>
       <button
         type="submit"
         class="jwitterbutton"

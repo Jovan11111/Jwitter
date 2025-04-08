@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FriendshipRequest } from '../models/FriendshipRequest';
 import { FriendshipService } from '../services/friendship.service';
@@ -10,7 +10,7 @@ import { FriendshipService } from '../services/friendship.service';
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css'
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit{
   @Input() loggedInUserId!: string;
   sidebarCollapsed = false;
   requestsPanelOpen = false;
@@ -20,12 +20,31 @@ export class SidebarComponent {
 
   ngOnInit(): void {
     this.loadFriendRequests();
+    this.loadSidebarState();
+  }
+
+  private loadSidebarState(): void {
+    const sdbrst = localStorage.getItem('sidebarState')
+    if(sdbrst){
+      if(sdbrst === "false"){
+        this.sidebarCollapsed = false;
+      } else{
+        this.sidebarCollapsed = true
+      }
+    } else{
+      this.sidebarCollapsed = false
+    }
   }
 
   toggleSidebar() {
     this.sidebarCollapsed = !this.sidebarCollapsed;
     if(this.sidebarCollapsed){
       this.requestsPanelOpen = false;
+    }
+    if(this.sidebarCollapsed){
+      localStorage.setItem('sidebarState', "true");
+    } else{
+      localStorage.setItem('sidebarState', "false");
     }
   }
 

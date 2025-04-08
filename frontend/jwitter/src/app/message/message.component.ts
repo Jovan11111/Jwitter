@@ -1,4 +1,4 @@
-import { Component, input, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, input, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -25,6 +25,8 @@ export class MessageComponent implements OnInit, OnChanges {
   @Input() recipientUserId !: string;
   @Input() loggedInUserId !: string;
 
+  @ViewChild('scrollContainer') scrollContainer !: ElementRef;
+
   constructor(
     private route: ActivatedRoute,
     private messageService: MessageService
@@ -48,6 +50,7 @@ export class MessageComponent implements OnInit, OnChanges {
         (newMsg.sender === this.recipientUserId && newMsg.receiver === this.loggedInUserId)
       ) {
         this.messages.push(newMsg);
+        this.scrollToBottom()
       }
     })
   }
@@ -66,7 +69,12 @@ export class MessageComponent implements OnInit, OnChanges {
     this.messageService
       .getMessages(this.recipientUserId, this.loggedInUserId)
       .subscribe({
-        next: (msgs: Message[]) => (this.messages = msgs),
+        next: (msgs: Message[]) => {
+          this.messages = msgs; 
+          setTimeout(() => {
+            this.scrollToBottom();
+          }, 0);
+        },
         error: (err) => console.error('Failed to load messages:', err)
       });
   }
@@ -78,5 +86,19 @@ export class MessageComponent implements OnInit, OnChanges {
     if (!this.newContent.trim()) return;
     this.messageService.sendMessage(this.loggedInUserId, this.recipientUserId, this.newContent);
     this.newContent = '';
+    this.scrollToBottom();
+  }
+
+  /**
+   * 
+   */
+  private scrollToBottom(): void {
+    try{
+      setTimeout(() =>{
+        this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight
+      }, 0);
+    } catch{
+      console.log("Failed to scroll");
+    }
   }
 }

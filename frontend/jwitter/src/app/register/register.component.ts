@@ -16,6 +16,8 @@ export class RegisterComponent {
   passwordConf: string = '';
   email: string = '';
   message: string = '';
+  showPassword1: boolean = false;
+  showPassword2: boolean = false;
 
   constructor(
     private userService: UserServiceService,

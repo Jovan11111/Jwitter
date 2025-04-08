@@ -24,10 +24,12 @@
       <span class="text-gray-400 text-sm">Likes: {{ post.numLikes }} | Dislikes: {{ post.numDislikes }}</span>
       <div class="flex space-x-4">
         <button (click)="likePost(post._id)" class="text-gray-400 hover:text-primary">
-          <img src="assets/like.png" alt="Like" class="w-6 h-6 opacity-70 hover:opacity-100 transition" />
+          <img *ngIf="post.userReaction === 'no' || post.userReaction === 'disliked'" src="assets/like.png" alt="Like" class="w-6 h-6 opacity-70 hover:opacity-100 transition" />
+          <img *ngIf="post.userReaction === 'liked'" src="assets/liked.png" alt="Like" class="w-6 h-6 opacity-70 hover:opacity-100 transition" />
         </button>
         <button (click)="dislikePost(post._id)" class="text-gray-400 hover:text-red-500">
-          <img src="assets/dislike.png" alt="Dislike" class="w-6 h-6 opacity-70 hover:opacity-100 transition" />
+          <img *ngIf="post.userReaction === 'no' || post.userReaction === 'liked'" src="assets/dislike.png" alt="Dislike" class="w-6 h-6 opacity-70 hover:opacity-100 transition" />
+          <img *ngIf="post.userReaction === 'disliked'" src="assets/disliked.png" alt="Dislike" class="w-6 h-6 opacity-70 hover:opacity-100 transition" />
         </button>
       </div>
     </div>

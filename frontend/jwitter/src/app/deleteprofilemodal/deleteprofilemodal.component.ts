@@ -15,7 +15,7 @@ export class DeleteprofilemodalComponent {
   constructor(private userService: UserServiceService, private router: Router){}
 
   password: string = ""
-
+  showPassword: boolean = false;
   @Input() loggedInUserId !: string;
   @Output() closeModal = new EventEmitter<void>();
 
