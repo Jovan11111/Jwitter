@@ -3,7 +3,7 @@
     'w-80': !sidebarCollapsed, 
     'w-4': sidebarCollapsed,
   }" 
-  class="relative bg-surface h-screen flex-shrink-0 transition-all duration-300"
+  class="relative bg-background h-screen flex-shrink-0 transition-all duration-300 border-r border-primary"
 >
   <button 
     class="absolute top-6 right-[-30px] bg-background border border-primary text-primary rounded-full w-16 h-16 shadow-md flex items-center justify-center hover:bg-surface transition-colors"
@@ -13,25 +13,38 @@
   </button>
 
   <div *ngIf="!sidebarCollapsed">
-    <h2 class="text-primary text-xl font-bold p-4">Jwitter</h2>
-    <ul class="space-y-4 p-4">
-      <li><a routerLink="/main" class="sidebar-link">Home</a></li>
-      <li><a routerLink="/userdetails/{{loggedInUserId}}" class="sidebar-link">Profile</a></li>
-      <li><a routerLink="/chats/0" class="sidebar-link">Messages</a></li>
-      <li><a routerLink="/logout" class="sidebar-link">Logout</a></li>
+    <h1 class="text-primary text-3xl font-bold p-4">Jwitter</h1>
+    <ul class="space-y-4 p-4 text-lg text-gray-400">
+      <li><a routerLink="/main" class="sidebar-link items-center">
+        <img src="assets/main.png" alt="" class="w-5 h-5 opacity-70 hover:opacity-100 transition mr-4" /> Home
+      </a></li>
+      <li><a routerLink="/userdetails/{{loggedInUserId}}" class="sidebar-link">
+        <img src="assets/myprofile.png" alt="" class="w-5 h-5 opacity-70 hover:opacity-100 transition mr-4" /> Profile
+      </a></li>
+      <li><a routerLink="/chats/0" class="sidebar-link items-center">
+        <img src="assets/messages.png" alt="" class="w-5 h-5 opacity-70 hover:opacity-100 transition mr-4" /> Messages
+      </a></li>
+      <li><a routerLink="/logout" class="sidebar-link items-center">
+        <img src="assets/logout.png" alt="" class="w-5 h-5 opacity-70 hover:opacity-100 transition mr-4" /> Logout
+      </a></li>
       <li>
-        <button (click)="toggleRequestsPanel()" class="sidebar-link">
-          Friendship Requests &nbsp; &nbsp;<span class="text-primary" *ngIf="friendshipRequests.length > 0">◉</span>
+        <button (click)="toggleRequestsPanel()" class="sidebar-link items-center">
+          <img src="assets/frreq.png" alt="" class="w-5 h-5 opacity-70 hover:opacity-100 transition mr-4" /> Friendship Requests &nbsp; &nbsp;<span class="text-primary" *ngIf="friendshipRequests.length > 0">◉</span>
         </button>
       </li>
-      <li><a routerLink="/nowhere" class="sidebar-link">Games</a></li>
+      <li><a routerLink="/nowhere" class="sidebar-link items-center">
+        <img src="assets/games.png" alt="" class="w-5 h-5 opacity-70 hover:opacity-100 transition mr-4" /> Games</a>
+      </li>
+      <li><a routerLink="/nowhere" class="sidebar-link items-center">
+        <img src="assets/admin.png" alt="" class="w-5 h-5 opacity-70 hover:opacity-100 transition mr-4" /> Admin</a>
+      </li>
     </ul>
   </div>
 </div>
 
 <div 
   *ngIf="requestsPanelOpen" 
-  class="absolute top-0 left-48 h-screen w-64 bg-surface shadow-lg p-4 transition-all duration-300"
+  class="absolute top-0 left-48 h-screen w-64 bg-background shadow-lg p-4 transition-all duration-300 border-r border-primary"
 >
   <button 
   class="absolute top-6 left-[224px] bg-background border border-primary text-primary rounded-full w-16 h-16 shadow-md flex items-center justify-center hover:bg-surface transition-colors"
