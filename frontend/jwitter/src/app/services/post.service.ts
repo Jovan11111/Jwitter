@@ -66,4 +66,11 @@ export class PostService {
   getUserLikes(user: string){
     return this.http.get<Post[]>(`${this.apiUrl}/getUserLikes/${user}`);
   }
+
+  /**
+   * 
+   */
+  reportPost(post: string){
+    return this.http.post(`${this.apiUrl}/reportPost/${post}`, null);
+  }
 }

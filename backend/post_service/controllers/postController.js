@@ -203,6 +203,16 @@ const getUserLikes = async (req, res) => {
     }
 };
 
+const reportPost = async (req, res) => {
+    try {
+        postId = req.params.id;
+        await Post.findByIdAndUpdate(postId, { $inc:{numReports:1}});
+        return res.status(200).json({message: "Reported a post"});
+    } catch (error) {
+        return res.status(500).json({ message: "Server error: " + error.message });
+    }
+}
+
 module.exports = {
     allPosts,
     deletePost,
@@ -212,5 +222,6 @@ module.exports = {
     likePost,
     dislikePost,
     deleteUserPosts,
-    getUserLikes
+    getUserLikes,
+    reportPost
 }

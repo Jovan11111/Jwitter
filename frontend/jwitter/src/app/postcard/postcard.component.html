@@ -12,9 +12,27 @@
           </a>
         </span>
       </div>
-      <ng-container *ngIf="isOwner()">
-        <button (click)="deletePost(post._id)" class="text-red-500 hover:text-red-400">✖</button>
-      </ng-container>
+      <div class="relative">
+        <button (click)="toggleMenu(post._id)" class="text-gray-400 hover:text-primary text-xl px-2">
+          ⋮
+        </button>
+      
+        <div *ngIf="showMenu === post._id"
+             class="absolute right-0 z-10 mt-2 w-36 bg-surface border border-gray-700 rounded shadow-lg">
+          <ng-container *ngIf="isOwner(); else reportOption">
+            <button (click)="deletePost(post._id); closeMenu()"
+                    class="block w-full text-left px-4 py-2 text-red-500 rounded hover:border hover:border-error">
+              Delete Post
+            </button>
+          </ng-container>
+          <ng-template #reportOption>
+            <button (click)="reportPost(post._id); closeMenu()"
+                    class="block w-full text-left px-4 py-2 text-sm text-yellow-400 rounded hover:border hover:border-yellow-400">
+              Report Post
+            </button>
+          </ng-template>
+        </div>
+      </div>
     </div>
     <div *ngIf="showWholePost" class="text-gray-300 text-base whitespace-pre-wrap break-words max-h-96 overflow-auto">{{post.content}} </div>
     <div *ngIf="!showWholePost && !(post.content.length > 280)" class="text-gray-300 text-base whitespace-pre-wrap break-words max-h-96 overflow-auto">{{post.content}} </div>
