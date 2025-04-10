@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from model import analyze_post
+from .model import analyze_post
 
 app = FastAPI()
 

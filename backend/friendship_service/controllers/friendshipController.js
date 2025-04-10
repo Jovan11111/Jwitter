@@ -8,7 +8,6 @@
 const axios = require('axios');
 const FriendshipRequest = require('../models/FriendshipRequest');
 const Friendship = require('../models/Friendship');
-const { sendFrReqEmail } = require('../utils/email');
 
 /**
  * Sends a friend request from one user to another.
@@ -37,7 +36,7 @@ const sendFrReq = async (req, res) => {
         const receiverUser = userResp.data;
 
         if(receiverUser.frReqNotifs){
-            await sendFrReqEmail(receiverUser.email);
+            await axios.post('http://email-service:5005/api/email/frreq', {to: receiverUser.email});
         }
 
         const newFrReq = new FriendshipRequest({ sender, receiver });

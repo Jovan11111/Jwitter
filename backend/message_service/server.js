@@ -5,17 +5,14 @@ const cors = require('cors');
 const bodyParser = require("body-parser");
 const socketIo = require('socket.io')
 const axios = require('axios')
-const { sendNewMsgEmail } = require('./utils/email');
 
 dotenv.config();
 
 const app = express();
 
-// Middleware setup
 app.use(cors());
 app.use(bodyParser.json());
 
-// Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log("Connected to the database");
@@ -24,7 +21,6 @@ mongoose.connect(process.env.MONGO_URI)
     console.log("Failed to connect to the database", err);
   });
 
-// Import routes
 const messageRoutes = require("./routes/messageRoutes");
 const Message = require("./models/Message");
 app.use('/api/message', messageRoutes);
@@ -49,11 +45,9 @@ io.on('connection', (socket) => {
     const receiverUserResp = await axios.get(`http://auth-service:5000/api/auth/user/${receiver}`);
     const senderUser = senderUserResp.data;
     const receiverUser = receiverUserResp.data;
-    console.log("KONTROLER");
             
     if(receiverUser.messageNotifs){
-      console.log("USAO U IF");
-      await sendNewMsgEmail(receiverUser.email, senderUser.username, content);
+      await axios.post('http://email-service:5005/api/email/msg', {to: receiverUser.email, sender: senderUser.username, content: content});
     }
   });
 
@@ -62,7 +56,6 @@ io.on('connection', (socket) => {
   });
 });
 
-// Set up the server to listen on the specified port
 const port = process.env.PORT || 5003;
 
 server.listen(port, () =>{

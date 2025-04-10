@@ -23,6 +23,8 @@ services:
       - "5002:5002"
     environment:
       - MONGO_URI=mongodb://mongo:27017/jwitter_db_friends
+    depends_on:
+      - mongo
     
   message-service:
     build: ./backend/message_service
@@ -30,6 +32,8 @@ services:
       - "5003:5003"
     environment:
       - MONGO_URI=mongodb://mongo:27017/jwitter_db_messages
+    depends_on:
+      - mongo
   
   comment-service:
     build: ./backend/comment_service
@@ -37,6 +41,18 @@ services:
       - "5004:5004"
     environment:
       - MONGO_URI=mongodb://mongo:27017/jwitter_db_comments
+    depends_on:
+      - mongo
+  
+  aireporting-service:
+    build: ./backend/aireporting_service
+    ports:
+      - "8000:8000"
+  
+  email-service:
+    build: ./backend/email_service
+    ports:
+      - "5005:5005"
       
   frontend:
     build: ./frontend/jwitter
@@ -46,6 +62,9 @@ services:
       - auth-service
       - post-service
       - friendship-service
+      - message-service
+      - comment-service
+      - aireporting-service
   mongo:
     image: mongo
     container_name: mongo

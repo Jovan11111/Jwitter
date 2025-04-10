@@ -26,7 +26,7 @@ const postSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    numReports: {
+    reportScore: {
         type: Number,
         default: 0
     }

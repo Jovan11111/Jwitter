@@ -13,7 +13,6 @@ const allPosts = async(req, res) => {
                 const username = userResp.data.username
                 const userReaction = await Reaction.findOne({user:loggedUserId, post: post});
                 const userReactionString = userReaction ? userReaction.reaction : "no";
-
                 return {
                     _id: post._id,
                     _v: post._v,
@@ -206,7 +205,18 @@ const getUserLikes = async (req, res) => {
 const reportPost = async (req, res) => {
     try {
         postId = req.params.id;
-        await Post.findByIdAndUpdate(postId, { $inc:{numReports:1}});
+        const post = await Post.findById(postId)
+        const aiResponse = await axios.post('http://aireporting-service:8000/rate', {title: post.title, content: post.content})
+        score = aiResponse.data.score
+        console.log("SCORE: ", score);
+        if (score + post.reportScore > 50){
+            const userResp = await axios.get(`http://auth-service:5000/api/auth/user/${post.user}`)
+            const email = userResp.data.email;
+            await axios.post('http://email-service:5005/api/email/delpost', {to:email, title: post.title, content:post.content});
+            await Post.findByIdAndDelete(postId);
+        } else{
+            await Post.findByIdAndUpdate(postId, { $inc: {reportScore: score}})
+        }
         return res.status(200).json({message: "Reported a post"});
     } catch (error) {
         return res.status(500).json({ message: "Server error: " + error.message });

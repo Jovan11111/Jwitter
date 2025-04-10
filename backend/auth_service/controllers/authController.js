@@ -3,7 +3,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
 const crypto = require("crypto");
-const { sendResetEmail } = require("../utils/email");
 
 /**
  * Registers a new user.
@@ -141,10 +140,8 @@ const forgotPassword = async (req, res) => {
         
         const updatedUser = await User.findOne({ email });
 
-        await sendResetEmail(email, updatedUser.resetToken);
+        await axios.post("http://email-service:5005/api/email/reset", {to:email, token:updatedUser.resetToken});
 
-        console.log(updatedUser.resetToken);
-        
         return res.status(200).json({ message: "Reset email sent" });
     }catch(error){
         return res.status(500).json({ message: `Server error: ${error.message}` });
