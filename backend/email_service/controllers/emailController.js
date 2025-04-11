@@ -2,7 +2,8 @@ const {
     sendResetEmail,
     sendFrReqEmail,
     sendNewMsgEmail,
-    sendDeletedPostEmail
+    sendDeletedPostEmail,
+    sendDeletedAccountEmail
 } = require("../utils/emails")
 
 /**
@@ -65,20 +66,35 @@ const sendFrReqEmailC = async (req, res) => {
 const sendDeletedPostEmailC = async (req, res) => {
     try {
         const {to, title, content} = req.body
-        console.log("USAO U KONTROLER");
         
         await sendDeletedPostEmail(to, title, content);
 
         return res.status(200).json({message: "Deleted post email was sent"});
     } catch (error){
         res.status(500).json({ message: `Server error: ${error.message}` });        
-
     }
+}
+
+/**
+ * 
+ */
+const sendDeletedAccountEmailC = async (req, res) => {
+    try {
+        const {to, username} = req.body
+
+        await sendDeletedAccountEmail(to, username);
+    
+        return res.status(200).json({message: "Deleted account email was sent"});
+    } catch(error){
+        res.status(500).json({ message: `Server error: ${error.message}` });        
+    }
+    
 }
 
 module.exports = {
     sendResetEmailC,
     sendNewMsgEmailC,
     sendFrReqEmailC,
-    sendDeletedPostEmailC
+    sendDeletedPostEmailC,
+    sendDeletedAccountEmailC
 }

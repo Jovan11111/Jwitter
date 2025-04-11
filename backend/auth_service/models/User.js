@@ -55,6 +55,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ["everyone", "friends", "nobody"],
         default: "everyone"
+    },
+    reportScore: {
+        type: Number,
+        default: 0
     }
 });
 

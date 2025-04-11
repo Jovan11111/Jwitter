@@ -70,7 +70,8 @@ export class PostService {
   /**
    * 
    */
-  reportPost(post: string){
-    return this.http.post(`${this.apiUrl}/reportPost/${post}`, null);
+  reportPost(post: string, user: string){
+    console.log("BLABLA", user);
+    return this.http.post(`${this.apiUrl}/reportPost/${post}`, {reportedBy: user});
   }
 }

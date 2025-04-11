@@ -87,7 +87,11 @@ const getUser = async (req, res) => {
 
 const deleteProfile = async (req, res) => {
     try {
+        console.log(req.body);
+        
         const { userr, passwordd } = req.body;
+        
+        console.log(user, passwordd);
         
         const user = await User.findById(userr);
 
@@ -104,6 +108,31 @@ const deleteProfile = async (req, res) => {
         await axios.delete(`http://friendship-service:5002/api/friend/deleteUserFrReqsAndFrShips/${userr}`);
         await axios.delete(`http://message-service:5003/api/message/deleteUserMessages/${userr}`);
         await axios.delete(`http://post-service:5001/api/post/deleteUserPosts/${userr}`);
+
+        await User.findByIdAndDelete(userr);
+
+        return res.status(200).json({ message: "Deleted user successfully" });
+
+    } catch (error) {
+        return res.status(500).json({ message: `Server error: ${error.message}` });
+    }
+};
+
+const deleteProfileNoPass  = async (req, res) => {
+    try {
+        const { userr } = req.body;
+        
+        const user = await User.findById(userr);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        await axios.delete(`http://comment-service:5004/api/comment/deleteUserComments/${userr}`);
+        await axios.delete(`http://friendship-service:5002/api/friend/deleteUserFrReqsAndFrShips/${userr}`);
+        await axios.delete(`http://message-service:5003/api/message/deleteUserMessages/${userr}`);
+        await axios.delete(`http://post-service:5001/api/post/deleteUserPosts/${userr}`);
+
         await User.findByIdAndDelete(userr);
 
         return res.status(200).json({ message: "Deleted user successfully" });
@@ -199,6 +228,20 @@ const saveVisibilitySettings = async (req, res) => {
     }
 }
 
+const reportUser = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const {scoree} = req.body;
+        await User.findByIdAndUpdate(userId, {$inc: {reportScore: scoree}});
+        
+        const user = await User.findById(userId);
+        console.log(user);
+        return res.status(200).json({message: "Reported user"});
+    } catch(error){
+        return res.status(500).json({ message: `Server error: ${error.message}` });
+    }
+}
+
 module.exports = {
     registerUser,
     loginUser,
@@ -208,5 +251,7 @@ module.exports = {
     forgotPassword,
     resetPassword,
     saveNotificationSettings,
-    saveVisibilitySettings
+    saveVisibilitySettings,
+    reportUser,
+    deleteProfileNoPass
 };

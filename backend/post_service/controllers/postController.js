@@ -2,6 +2,8 @@ const Post = require("../models/Post");
 const axios = require('axios');
 const mongoose = require('mongoose');
 const Reaction = require("../models/Reaction");
+const bcrypt = require("bcryptjs");
+const Report = require("../models/Report")
 
 const allPosts = async(req, res) => {
     try {
@@ -205,18 +207,31 @@ const getUserLikes = async (req, res) => {
 const reportPost = async (req, res) => {
     try {
         postId = req.params.id;
-        const post = await Post.findById(postId)
+        const {reportedBy} = req.body;
+        const alreadyReported = await Report.findOne({user:reportedBy, post: postId});
+        if(alreadyReported){
+            return res.status(200).json({message: "Already reported this post"});
+        } 
+        await Report.create({user: reportedBy, post: postId});
+        const post = await Post.findById(postId);
         const aiResponse = await axios.post('http://aireporting-service:8000/rate', {title: post.title, content: post.content})
         score = aiResponse.data.score
-        console.log("SCORE: ", score);
+        const userResp = await axios.get(`http://auth-service:5000/api/auth/user/${post.user}`)
         if (score + post.reportScore > 50){
-            const userResp = await axios.get(`http://auth-service:5000/api/auth/user/${post.user}`)
             const email = userResp.data.email;
             await axios.post('http://email-service:5005/api/email/delpost', {to:email, title: post.title, content:post.content});
             await Post.findByIdAndDelete(postId);
         } else{
             await Post.findByIdAndUpdate(postId, { $inc: {reportScore: score}})
         }
+
+        if (score + userResp.data.reportScore > 100){
+            await axios.post('http://email-service:5005/api/email/delacc', {to: userResp.data.email, username: userResp.data.username});
+            await axios.post('http://auth-service:5000/api/auth/deleteProfileNoPass', {userr: post.user});
+        } else {
+            await axios.post(`http://auth-service:5000/api/auth/reportUser/${post.user}`, {scoree: score});
+        }
+
         return res.status(200).json({message: "Reported a post"});
     } catch (error) {
         return res.status(500).json({ message: "Server error: " + error.message });

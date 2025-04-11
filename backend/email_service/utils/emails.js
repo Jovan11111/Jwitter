@@ -101,9 +101,33 @@ const sendDeletedPostEmail = async(to, title, content) => {
     await transporter.sendMail(mailOptions);
 }
 
+const sendDeletedAccountEmail = async(to, username) => {
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user:  process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+        }
+    });
+
+
+    const mailOptions = {
+        from: '"Jwitter"',
+        to,
+        subject: "Deleted account",
+        html: `
+            <h3>Your post Jwitter account has beed deleted</h3>
+            <p>Sadly, your account ${username} broke the Jwitter rules too many times.</p>
+        `
+    };
+
+    await transporter.sendMail(mailOptions);
+}
+
 module.exports = { 
     sendResetEmail, 
     sendNewMsgEmail, 
     sendFrReqEmail,
-    sendDeletedPostEmail
+    sendDeletedPostEmail,
+    sendDeletedAccountEmail
 };

@@ -68,7 +68,9 @@ export class PostcardComponent implements OnInit, OnDestroy{
    * 
    */
   reportPost(postId: string) {
-    this.postService.reportPost(postId).subscribe({
+    console.log("TRATRAA");
+    
+    this.postService.reportPost(postId, this.loggedInUserId).subscribe({
       next: () => this.onRefresh(),
       error: (err) => {console.error('Failed to report a post: ', err);
       }

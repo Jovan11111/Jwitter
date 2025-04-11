@@ -2,12 +2,14 @@ const express = require("express");
 const { loginUser, 
         registerUser, 
         getUser, 
-        deleteProfile, 
+        deleteProfile,
+        deleteProfileNoPass, 
         changePassword, 
         forgotPassword, 
         resetPassword, 
         saveNotificationSettings, 
-        saveVisibilitySettings 
+        saveVisibilitySettings,
+        reportUser
     } = require("../controllers/authController");
 
 const router = express.Router();
@@ -38,6 +40,10 @@ router.post("/deleteProfile", deleteProfile);
 /**
  * 
  */
+router.post("/deleteProfileNoPass", deleteProfileNoPass);
+/**
+ * 
+ */
 router.post("/changePassword", changePassword);
 
 /**
@@ -59,4 +65,10 @@ router.post("/saveNotificationSettings/:id", saveNotificationSettings);
  * 
  */
 router.post("/saveVisibilitySettings/:id", saveVisibilitySettings);
+
+/**
+ * 
+ */
+router.post("/reportUser/:id", reportUser);
+
 module.exports = router;
