@@ -1,14 +1,25 @@
 <div class="flex">
   <app-sidebar [loggedInUserId]="loggedInUserId" class="fixed"></app-sidebar>
-   
+
   <app-addpostmodal 
     *ngIf="modalOpen" 
     (closeModal)="closeModal()" 
-    (submitPost)="submitPostFromModal($event)"
-    >
+    (submitPost)="submitPostFromModal($event)">
   </app-addpostmodal>
-  
+
   <div class="flex-1 p-6">
+
+    <div class="flex mb-4 gap-2 max-w-2xl mx-auto">
+      <input 
+        type="text" 
+        placeholder="Search posts or users..." 
+        class="jwitterinput"
+      />
+      <button 
+        class="py-3 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors w-1/5">
+        Search
+      </button>
+    </div>
     <div *ngFor="let post of posts">
       <app-postcard
         [post]="post" 
@@ -18,9 +29,10 @@
       >
       </app-postcard>
     </div>
-   
+
   </div>
 </div>
+
 <button 
   class="fixed bottom-6 right-6 bg-background border border-primary text-primary rounded-full w-16 h-16 flex items-center justify-center text-4xl shadow-lg hover:bg-surface transition-colors"
   (click)="openModal()">

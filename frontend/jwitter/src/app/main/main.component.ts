@@ -51,8 +51,6 @@ export class MainComponent implements OnInit {
    * - Fetches incoming friend requests
    */
   ngOnInit(): void {
-    console.log("JLAJLA");
-    
     this.decodeToken();
     this.loadPosts();
   }
