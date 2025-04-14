@@ -9,7 +9,8 @@ const { loginUser,
         resetPassword, 
         saveNotificationSettings, 
         saveVisibilitySettings,
-        reportUser
+        reportUser,
+        searchUsers
     } = require("../controllers/authController");
 
 const router = express.Router();
@@ -70,5 +71,10 @@ router.post("/saveVisibilitySettings/:id", saveVisibilitySettings);
  * 
  */
 router.post("/reportUser/:id", reportUser);
+
+/**
+ * 
+ */
+router.get('/searchUsers/:query', searchUsers);
 
 module.exports = router;

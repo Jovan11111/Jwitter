@@ -242,6 +242,21 @@ const reportUser = async (req, res) => {
     }
 }
 
+/**
+ * 
+ */
+const searchUsers = async (req, res) => {
+    try {
+        const query = req.params.query;
+        const safeQuery = query.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        const users = await User.find({username: {$regex: safeQuery, $options: "i"}})
+
+        return res.status(200).json(users)
+    } catch(error){
+        return res.status(500).json({ message: `Server error: ${error.message}` });
+    }
+}
+
 module.exports = {
     registerUser,
     loginUser,
@@ -253,5 +268,6 @@ module.exports = {
     saveNotificationSettings,
     saveVisibilitySettings,
     reportUser,
-    deleteProfileNoPass
+    deleteProfileNoPass,
+    searchUsers
 };

@@ -238,6 +238,20 @@ const reportPost = async (req, res) => {
     }
 }
 
+/**
+ * 
+ */
+const searchPosts = async(req, res) => {
+    try {
+        const query = req.params.query;
+        const safeQuery = query.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        const posts = await Post.find({title: {$regex: safeQuery, $options: "i"}});
+        return res.status(200).json(posts);
+    } catch(error){
+        return res.status(500).json({ message: "Server error: " + error.message });
+    }
+}
+
 module.exports = {
     allPosts,
     deletePost,
@@ -248,5 +262,6 @@ module.exports = {
     dislikePost,
     deleteUserPosts,
     getUserLikes,
-    reportPost
+    reportPost,
+    searchPosts
 }

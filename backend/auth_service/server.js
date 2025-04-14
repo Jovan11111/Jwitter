@@ -8,21 +8,22 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
-app.use(cors());
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+  }));
+  
 app.use(bodyParser.json());
 
-// Database Connection
 mongoose
     .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log("Connected to the database"))
     .catch((err) => console.error("Database connection failed:", err));
 
-// Routes
 const authRoutes = require("./routes/authRoutes");
 app.use("/api/auth", authRoutes);
 
-// Server Setup
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);

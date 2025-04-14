@@ -11,6 +11,7 @@ import { LogoutComponent } from '../logout/logout.component';
 import { PostcardComponent } from '../postcard/postcard.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { AddpostmodalComponent } from '../addpostmodal/addpostmodal.component';
+import { SearchResultsComponent } from '../search-results/search-results.component';
 
 interface CustomJwtPayload extends JwtPayload {
   userId: string;
@@ -27,7 +28,8 @@ interface CustomJwtPayload extends JwtPayload {
     RouterModule,
     PostcardComponent,
     SidebarComponent,
-    AddpostmodalComponent
+    AddpostmodalComponent,
+    SearchResultsComponent
   ]
 })
 export class MainComponent implements OnInit {
@@ -38,6 +40,9 @@ export class MainComponent implements OnInit {
   loggedInUserId: string = '';
   modalOpen = false;
   showWholePost: boolean = false;
+  showSearchResults: boolean = false;
+  queryInput: string = "";
+  query: string = "";
 
   constructor(
     private postService: PostService,
@@ -124,6 +129,11 @@ export class MainComponent implements OnInit {
         },
         error: (err) => console.error('Error creating post:', err)
       });
+  }
+
+  search(){
+    this.showSearchResults = true
+    this.query = this.queryInput;
   }
   
 }

@@ -66,7 +66,14 @@ export class UserServiceService {
     return this.http.post(`${this.apiUrl}/saveNotificationSettings/${user}`, {frreq: frReqNotifs, msg: messageNotifs});
   }
 
+  /**
+   * 
+   */
   saveVisibilitySettings(user: string, postV: string, likeV: string, friendV: string, emailV: string){
     return this.http.post(`${this.apiUrl}/saveVisibilitySettings/${user}`, {post: postV, like: likeV, friend: friendV, email: emailV});
+  }
+
+  searchUsers(query: string) {
+    return this.http.get<User[]>(`${this.apiUrl}/searchUsers/${query}`);
   }
 }

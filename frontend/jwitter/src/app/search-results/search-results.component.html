@@ -1,0 +1,28 @@
+<div class="mt-6 max-w-2xl mx-auto">
+    <div class="flex border-b border-gray-700">
+      <button class="flex-1 py-3 text-center" [ngClass]="{'border-b-2 border-primary text-primary': activeTab === 'posts'}" (click)="activeTab = 'posts'">Posts</button>
+      <button class="flex-1 py-3 text-center" [ngClass]="{'border-b-2 border-primary text-primary': activeTab === 'users'}" (click)="activeTab = 'users'">Users</button>
+    </div>
+
+    <div *ngIf="activeTab === 'posts'" class="mt-4">
+        <div *ngFor="let post of posts">
+            <app-postcard
+              [post]="post" 
+              [loggedInUserId]="loggedInUserId" 
+              (refresh)="ngOnInit()"
+              [showWholePost]="showWholePost"
+            >
+            </app-postcard>
+        </div>
+    </div>
+    
+    <div *ngIf="activeTab === 'users'" class="mt-4">
+        <div *ngFor="let user of users" class="max-w-2xl mx-auto bg-surface text-white rounded-xl shadow-lg p-6 space-y-4 mb-6 border border-primary">
+            <a [routerLink]="['/userdetails', user._id]" 
+               class="text-xl hover:text-primary">
+               {{ user.username }}
+            </a>
+        </div>
+    </div>
+
+  </div>

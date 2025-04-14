@@ -14,21 +14,35 @@
         type="text" 
         placeholder="Search posts or users..." 
         class="jwitterinput"
+        [(ngModel)]="queryInput"
+        name="queryInput"
+        (keydown.enter)="search()"
       />
       <button 
-        class="py-3 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors w-1/5">
+        class="py-3 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors w-1/5" (click)="search()">
         Search
       </button>
     </div>
-    <div *ngFor="let post of posts">
-      <app-postcard
-        [post]="post" 
-        [loggedInUserId]="loggedInUserId" 
-        (refresh)="ngOnInit()"
-        [showWholePost]="showWholePost"
-      >
-      </app-postcard>
+
+    <app-search-results
+      *ngIf="showSearchResults"
+      [query]="query"
+      [loggedInUserId]="loggedInUserId"
+    >
+
+    </app-search-results>
+    <div *ngIf="!showSearchResults">
+      <div *ngFor="let post of posts">
+        <app-postcard
+          [post]="post" 
+          [loggedInUserId]="loggedInUserId" 
+          (refresh)="ngOnInit()"
+          [showWholePost]="showWholePost"
+        >
+        </app-postcard>
+      </div>
     </div>
+    
 
   </div>
 </div>

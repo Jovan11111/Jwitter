@@ -8,7 +8,8 @@ const { allPosts,
         dislikePost, 
         deleteUserPosts, 
         getUserLikes, 
-        reportPost 
+        reportPost,
+        searchPosts 
     } = require("../controllers/postController");
 
 const router = express.Router();
@@ -76,6 +77,11 @@ router.get('/getUserLikes/:id', getUserLikes);
  * 
  */
 router.post('/reportPost/:id', reportPost);
+
+/**
+ * 
+ */
+router.get('/searchPosts/:query', searchPosts);
 
 // Export the router
 module.exports = router;

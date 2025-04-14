@@ -71,7 +71,13 @@ export class PostService {
    * 
    */
   reportPost(post: string, user: string){
-    console.log("BLABLA", user);
     return this.http.post(`${this.apiUrl}/reportPost/${post}`, {reportedBy: user});
+  }
+
+  /**
+   * 
+   */
+  searchPosts(query: string){
+    return this.http.get<Post[]>(`${this.apiUrl}/searchPosts/${query}`);
   }
 }
