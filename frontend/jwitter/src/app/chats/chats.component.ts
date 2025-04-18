@@ -7,6 +7,7 @@ import { MessageService } from '../services/message.service';
 import { User } from '../models/User';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { SidebarComponent } from '../sidebar/sidebar.component';
+import { FriendshipService } from '../services/friendship.service';
 
 interface CustomJwtPayload extends JwtPayload {
   userId: string;
@@ -20,18 +21,27 @@ interface CustomJwtPayload extends JwtPayload {
 })
 export class ChatsComponent implements OnInit{
 
-  constructor(private messageService: MessageService, private route: ActivatedRoute){}
+  constructor(
+    private messageService: MessageService, 
+    private route: ActivatedRoute,
+    private friendService: FriendshipService
+  ){}
 
   chatters: User[] = [];
+  friends: User[] = [];
   loggedInUserId: string = '';
   showmsgs = false;
   selectedChatterId: string = '';
+  searchTerm: string = '';
+  filteredFriends: User[] = [];
+  showSearchResults: boolean = false;
 
   ngOnInit(): void {
     this.selectedChatterId = this.route.snapshot.paramMap.get('id') ?? '';
-    if(this.selectedChatterId != "0") this.showmsgs = true;
+    this.showmsgs = true;
     this.decodeToken();
     this.getChats();
+    this.getFriends();
   }
 
   private decodeToken(): void {
@@ -53,9 +63,29 @@ export class ChatsComponent implements OnInit{
     });
   }
 
+  private getFriends(): void{
+    this.friendService.getUserFriends(this.loggedInUserId).subscribe({
+      next: (usrs: User[]) => {
+        this.friends = usrs;
+        this.filteredFriends = usrs;
+      },
+      error: (err) => {
+        console.error('Failed to load friends: ', err);
+      }
+    })
+  }
+
   showchat(other: string){
-    this.showmsgs = true;
     this.selectedChatterId = other;
   }
+
+  onSearchChange(): void {
+    const term = this.searchTerm.toLowerCase().trim();
+    this.filteredFriends = this.friends.filter(friend =>
+      friend.username.toLowerCase().includes(term)
+    );
+    this.showSearchResults = term.length > 0;
+  }
+  
 
 }

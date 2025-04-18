@@ -51,9 +51,12 @@ const sendNewMsgEmailC = async (req, res) => {
 const sendFrReqEmailC = async (req, res) => {
     try {
         const {to} = req.body
+        console.log("Dosao do slanja mejla u backendu ", to);
         
         await sendFrReqEmail(to);
 
+        console.log("Uspeo da posalje mejl");
+        
         return res.status(200).json({message: "New Freind request email sent"});
     } catch (error){
         res.status(500).json({ message: `Server error: ${error.message}` });        
@@ -65,9 +68,9 @@ const sendFrReqEmailC = async (req, res) => {
  */
 const sendDeletedPostEmailC = async (req, res) => {
     try {
-        const {to, title, content} = req.body
+        const {to, title, pid, uid} = req.body
         
-        await sendDeletedPostEmail(to, title, content);
+        await sendDeletedPostEmail(to, title, pid, uid);
 
         return res.status(200).json({message: "Deleted post email was sent"});
     } catch (error){

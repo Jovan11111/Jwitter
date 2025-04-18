@@ -29,16 +29,19 @@ const sendFrReq = async (req, res) => {
         if (frreqExists) {
             return res.status(400).json({ message: 'Friendship already exists' });
         }
-
-
+        console.log("dosao do send frreq u backendu");
+        
         const userResp = await axios.get(`http://auth-service:5000/api/auth/user/${receiver}`);
         
         const receiverUser = userResp.data;
-
+        console.log("dohati korisnika ", receiverUser);
+        
         if(receiverUser.frReqNotifs){
             await axios.post('http://email-service:5005/api/email/frreq', {to: receiverUser.email});
         }
 
+        console.log("poslao mejl");
+        
         const newFrReq = new FriendshipRequest({ sender, receiver });
         await newFrReq.save();
 

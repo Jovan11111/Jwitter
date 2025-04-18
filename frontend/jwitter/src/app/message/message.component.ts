@@ -39,8 +39,6 @@ export class MessageComponent implements OnInit, OnChanges {
    * - load message history
    */
   ngOnInit(): void {
-    console.log(this.loggedInUserId);
-    console.log(this.recipientUserId);
     
     this.loadMessages();
 

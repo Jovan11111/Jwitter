@@ -128,7 +128,7 @@ export class UserDetailsComponent implements OnInit {
    */
   sendFriendRequest(): void {
     this.friendshipService.sendFriendRequest(this.loggedInUserId, this.userId).subscribe({
-      next: () => this.ngOnInit(), // refresh state
+      next: () => this.ngOnInit(), 
       error: (err) => console.error('Failed to send friend request', err)
     });
   }
@@ -139,7 +139,7 @@ export class UserDetailsComponent implements OnInit {
    */
   removeFriend(friendId: string): void {
     this.friendshipService.removeFriend(this.loggedInUserId, friendId).subscribe({
-      next: () => this.ngOnInit(), // refresh state
+      next: () => this.ngOnInit(), 
       error: (err) => console.error('Failed to remove friend', err)
     });
   }

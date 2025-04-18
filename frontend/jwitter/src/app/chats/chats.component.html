@@ -1,30 +1,52 @@
 <div class="flex h-screen">
     <app-sidebar [loggedInUserId]="loggedInUserId" class="fixed"></app-sidebar>
   
-    <div class="flex-1 max-w-5xl mx-auto p-6 flex">
+    <div class="flex-1 p-6 flex overflow-hidden">
+  
+      <div class="w-3/4 pr-4 border-r border-gray-700">
+        <app-message 
+          [loggedInUserId]="loggedInUserId" 
+          [recipientUserId]="selectedChatterId">
+        </app-message>
+      </div>
+  
+      <div class="w-1/4 pl-4 pr-4 flex flex-col overflow-y-auto">
+        <h2 class="text-2xl font-semibold text-primary mb-2">Chats</h2>
+  
+            <input 
+              type="text" 
+              placeholder="Search friends..." 
+              [(ngModel)]="searchTerm" 
+              (ngModelChange)="onSearchChange()"
+              class="jwitterinput mb-4"
+            />
 
-        <div class="w-2/3 border-l border-gray-700 pr-4" *ngIf="showmsgs">
-            <app-message 
-                [loggedInUserId]="loggedInUserId" 
-                [recipientUserId]="selectedChatterId">
-            </app-message>
-        </div>
-
-        <div class="w-1/3 pl-4">
-            <h2 class="text-2xl font-semibold text-primary mb-4">Chats</h2>
-
-            <div class="space-y-4">
-                <div *ngFor="let user of chatters" 
-                     class="flex justify-between items-center p-4 bg-surface rounded-lg border border-gray-700">
+            <div 
+             *ngIf="showSearchResults" 
+             class="absolute top-[130px] right-8 w-1/4 bg-background p-2 rounded-lg shadow-lg z-20 max-h-[70vh] overflow-y-auto border border-primary"
+            >
+                <div *ngFor="let user of filteredFriends" 
+                              class="flex justify-between items-center p-3 mb-2 bg-surface rounded-lg border border-gray-700">
                     <span class="text-gray-300 text-lg">{{ user.username }}</span>
                     <button (click)="showchat(user._id)" 
-                            class="py-3 px-5 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors">
+                                    class="py-2 px-4 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors">
                         Open Chat
                     </button>
                 </div>
             </div>
-        </div>
-    </div>
 
+        <div class="space-y-4 overflow-y-auto">
+        <div *ngFor="let user of chatters" 
+            class="flex justify-between items-center p-4 bg-surface rounded-lg border border-gray-700">
+            <span class="text-gray-300 text-lg">{{ user.username }}</span>
+            <button (click)="showchat(user._id)" 
+                    class="py-2 px-4 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors">
+            Open Chat
+            </button>
+        </div>
+        </div>
+
+      </div>
+    </div>
   </div>
   

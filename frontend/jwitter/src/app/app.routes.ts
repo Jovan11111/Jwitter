@@ -10,6 +10,7 @@ import { LogoutComponent } from './logout/logout.component';
 import { ChatsComponent } from './chats/chats.component';
 import { SettingsComponent } from './settings/settings.component';
 import { ResetpasswordComponent } from './resetpassword/resetpassword.component';
+import { AppealdeletedpostComponent } from './appealdeletedpost/appealdeletedpost.component';
 
 export const routes: Routes = [
 
@@ -23,5 +24,6 @@ export const routes: Routes = [
     {path : 'postdetails/:id', component: PostdetailsComponent},
     {path : 'chats/:id', component: ChatsComponent},
     {path : 'settings', component: SettingsComponent},
-    {path : 'reset-password/:token', component: ResetpasswordComponent}
+    {path : 'reset-password/:token', component: ResetpasswordComponent},
+    {path : 'appeal-deleted-post/:pid/:uid', component: AppealdeletedpostComponent}
 ];

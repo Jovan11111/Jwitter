@@ -23,7 +23,11 @@ const sendResetEmail = async (to, token) => {
         `,
     };
 
-    await transporter.sendMail(mailOptions);
+    try{
+        await transporter.sendMail(mailOptions);
+    } catch(error){
+        console.log("Receiver email is invalid: ", error);
+    }
 };
 
 const sendNewMsgEmail = async (to, sender, content) => {
@@ -35,7 +39,6 @@ const sendNewMsgEmail = async (to, sender, content) => {
         }
     });
 
-    const siteLink = 'http://localhost:3000/';
 
     const mailOptions = {
         from: '"Jwitter"',
@@ -47,9 +50,12 @@ const sendNewMsgEmail = async (to, sender, content) => {
             message: ${content}
         `
     };
-    console.log("DOSAO OVDE");
     
-    await transporter.sendMail(mailOptions);
+    try{
+        await transporter.sendMail(mailOptions);
+    } catch(error){
+        console.log("Receiver email is invalid: ", error);
+    }
 }
 
 const sendFrReqEmail = async (to) => {
@@ -74,10 +80,15 @@ const sendFrReqEmail = async (to) => {
         `
     };
 
-    await transporter.sendMail(mailOptions);
+    try{
+        await transporter.sendMail(mailOptions);
+    } catch(error){
+        console.log("Receiver email is invalid: ", error);
+    }
+    
 };
 
-const sendDeletedPostEmail = async(to, title, content) => {
+const sendDeletedPostEmail = async(to, title, pid, uid) => {
     const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
@@ -86,6 +97,7 @@ const sendDeletedPostEmail = async(to, title, content) => {
         }
     });
 
+    appealLink = `http://localhost:3000/appeal-deleted-post/${pid}/${uid}`;
 
     const mailOptions = {
         from: '"Jwitter"',
@@ -94,12 +106,17 @@ const sendDeletedPostEmail = async(to, title, content) => {
         html: `
             <h3>Your post ${title} has beed deleted</h3>
             <p>Sadly, this post was deemed too offensive and not in line with Jwitter</p>
-            <p>post content: ${content}</p>
+            <p>If you don't agree, please appeal so the post can be returned</p>
+            <a href="${appealLink}">Appeal Here</a>
         `
     };
 
-    await transporter.sendMail(mailOptions);
-}
+    try{
+        await transporter.sendMail(mailOptions);
+    } catch(error){
+        console.log("Receiver email is invalid: ", error);
+    }
+};
 
 const sendDeletedAccountEmail = async(to, username) => {
     const transporter = nodemailer.createTransport({
@@ -120,9 +137,15 @@ const sendDeletedAccountEmail = async(to, username) => {
             <p>Sadly, your account ${username} broke the Jwitter rules too many times.</p>
         `
     };
-
-    await transporter.sendMail(mailOptions);
-}
+    console.log("IDEMO AJMMO SAD MOZES TI TO");
+    
+    try{
+        await transporter.sendMail(mailOptions);
+    } catch(error){
+        console.log("Receiver email is invalid: ", error);
+    }
+    
+};
 
 module.exports = { 
     sendResetEmail, 

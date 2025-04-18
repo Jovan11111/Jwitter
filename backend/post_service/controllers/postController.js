@@ -219,7 +219,7 @@ const reportPost = async (req, res) => {
         const userResp = await axios.get(`http://auth-service:5000/api/auth/user/${post.user}`)
         if (score + post.reportScore > 50){
             const email = userResp.data.email;
-            await axios.post('http://email-service:5005/api/email/delpost', {to:email, title: post.title, content:post.content});
+            await axios.post('http://email-service:5005/api/email/delpost', {to:email, title: post.title, pid: post._id, uid: post.user});
             await Post.findByIdAndDelete(postId);
         } else{
             await Post.findByIdAndUpdate(postId, { $inc: {reportScore: score}})

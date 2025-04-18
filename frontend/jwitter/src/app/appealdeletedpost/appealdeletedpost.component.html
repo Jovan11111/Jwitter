@@ -1,0 +1,21 @@
+<div class="flex justify-center items-center min-h-screen">
+    <div class="bg-background p-6 rounded-lg border border-primary shadow-lg w-full max-w-md">
+       <h2 class="text-xl font-bold mb-4 text-primary">Deleted post appeal</h2>
+       <p class="text-sm text-gray-500 mb-4">This is a post that got deleted</p>
+       <app-postcard
+          [post]="deletedPost" 
+          [loggedInUserId]="loggedInUserId" 
+          (refresh)="ngOnInit()"
+          [showWholePost]="showWholePost"
+        >
+        </app-postcard>
+        <p class="text-sm text-gray-500 mb-4">If this post should not have been deleted, click the button bellow</p>
+        <div *ngIf="appealSubmitted">
+            <p class="text-sm text-gray-500 mb-4">Appeal has been submitted</p>
+        </div>
+        <div *ngIf="!appealSubmitted">
+            <button class="jwitterbutton" (click)="appeal()">Appeal</button>
+        </div>
+    </div>
+  </div>
+  

@@ -35,7 +35,6 @@ export class SearchResultsComponent implements OnInit, OnChanges{
     if (changes['query'] && !changes['query'].firstChange) {
       this.ngOnInit();
     }
-
   }
 
   ngOnInit(): void {
