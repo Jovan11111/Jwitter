@@ -8,7 +8,7 @@ const Report = require("../models/Report")
 const allPosts = async(req, res) => {
     try {
         loggedUserId = req.params.id;
-        const posts = await Post.find();
+        const posts = await Post.find({reportStatus: "clear"});
         const postsWithUserNames = await Promise.all(posts.map(async (post) => {
             try {
                 const userResp = await axios.get(`http://auth-service:5000/api/auth/user/${post.user}`)
@@ -220,7 +220,7 @@ const reportPost = async (req, res) => {
         if (score + post.reportScore > 50){
             const email = userResp.data.email;
             await axios.post('http://email-service:5005/api/email/delpost', {to:email, title: post.title, pid: post._id, uid: post.user});
-            await Post.findByIdAndDelete(postId);
+            await Post.findByIdAndUpdate(postId, {reportStatus: "deleted"});
         } else{
             await Post.findByIdAndUpdate(postId, { $inc: {reportScore: score}})
         }
@@ -252,6 +252,65 @@ const searchPosts = async(req, res) => {
     }
 }
 
+/**
+ * 
+ */
+const appealPost = async(req, res) => {
+    try {
+        const pid = req.params.id;
+        await Post.findByIdAndUpdate(pid, {reportStatus: "appealed"});
+        return res.status(200).json({message: "Appaeal succesfully sent"});
+    } catch(error){
+        return res.status(500).json({message: "Server error: " + error.message})
+    }
+}
+
+/**
+ * 
+ */
+const getAppealedPosts = async (req, res) => {
+    try {
+        const posts = await Post.find({reportStatus: "appealed"});
+        return res.status(200).json(posts);
+    } catch(error){
+        return res.status(500).json({message: "Server error: " + error.message})
+    }
+}
+
+const acceptAppeal = async (req, res) => {
+    try {
+        const pid = req.params.id;
+        const post = Post.findById(pid);
+        
+        const userResp = await axios.get(`http://auth-service:5000/api/auth/user/${post.user}`)
+
+        await axios.post('http://email-service:5005/api/email/acceptapp', {to: userResp.data.email, title: post.title});
+
+        await Post.findByIdAndUpdate(pid, {reportScore: 0, reportStatus: "clear"})
+
+        return res.status(200).json({message: "Post report status has been cleared"});
+    } catch (error){
+        return res.status(500).json({message: "Server error: " + error.message})
+    }
+}
+
+const declineAppeal = async (req, res) => {
+    try {
+        const pid = req.params.id;
+        const post = Post.findById(pid);
+        
+        const userResp = await axios.get(`http://auth-service:5000/api/auth/user/${post.user}`)
+
+        await axios.post('http://email-service:5005/api/email/declineapp', {to: userResp.data.email, title: post.title});
+
+        await Post.findByIdAndDelete(pid);
+
+        return res.status(200).json({message: "Post has been perminately deleted"});
+    } catch (error){
+        return res.status(500).json({message: "Server error: " + error.message})
+    }
+}
+
 module.exports = {
     allPosts,
     deletePost,
@@ -263,5 +322,9 @@ module.exports = {
     deleteUserPosts,
     getUserLikes,
     reportPost,
-    searchPosts
+    searchPosts,
+    appealPost,
+    getAppealedPosts,
+    acceptAppeal,
+    declineAppeal
 }

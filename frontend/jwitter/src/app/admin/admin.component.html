@@ -1,1 +1,11 @@
-<p>admin works!</p>
+<div *ngFor="let post of appealedPosts">
+    <app-postcard
+      [post]="post" 
+      [loggedInUserId]="loggedInUserId" 
+      (refresh)="ngOnInit()"
+      [showWholePost]="showWholePost"
+    >
+    </app-postcard>
+    <button class="jwitterbutton" (click)="accept(post._id)">Accept</button>
+    <button class="jwitterbutton" (click)="decline(post._id)">Decline</button>
+  </div>

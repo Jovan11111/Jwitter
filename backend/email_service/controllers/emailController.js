@@ -3,7 +3,9 @@ const {
     sendFrReqEmail,
     sendNewMsgEmail,
     sendDeletedPostEmail,
-    sendDeletedAccountEmail
+    sendDeletedAccountEmail,
+    sendDeclineAppealEmail,
+    sendAcceptAppealEmail
 } = require("../utils/emails")
 
 /**
@@ -94,10 +96,42 @@ const sendDeletedAccountEmailC = async (req, res) => {
     
 }
 
+/**
+ * 
+ */
+const sendDeclineAppealEmailC = async (req, res) => {
+    try {
+        const {to, title} = req.body;
+
+        await sendDeclineAppealEmail(to, title);
+
+        return res.status(200).json({message: "Decline Appeal email sent"});
+    } catch(error){
+        res.status(500).json({ message: `Server error: ${error.message}` });        
+    }
+}
+
+/**
+ * 
+ */
+const sendAcceptAppealEmailC = async (req, res) => {
+    try {
+        const {to, title} = req.body;
+
+        await sendAcceptAppealEmail(to, title);
+
+        return res.status(200).json({message: "Accept Appeal email sent"});
+    } catch(error){
+        res.status(500).json({ message: `Server error: ${error.message}` });        
+    }
+}
+
 module.exports = {
     sendResetEmailC,
     sendNewMsgEmailC,
     sendFrReqEmailC,
     sendDeletedPostEmailC,
-    sendDeletedAccountEmailC
+    sendDeletedAccountEmailC,
+    sendDeclineAppealEmailC,
+    sendAcceptAppealEmailC
 }

@@ -1,6 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Post } from '../models/Post';
+import { pid } from 'node:process';
 
 @Injectable({
   providedIn: 'root',
@@ -79,5 +80,33 @@ export class PostService {
    */
   searchPosts(query: string){
     return this.http.get<Post[]>(`${this.apiUrl}/searchPosts/${query}`);
+  }
+
+  /**
+   * 
+   */
+  appealPost(postId: string){
+    return this.http.post(`${this.apiUrl}/appeal/${postId}`, null);
+  }
+
+  /**
+   * 
+   */
+  acceptAppeal(postId: string){
+    return this.http.post(`${this.apiUrl}/acceptAppeal/${postId}`, null);
+  }
+
+  /**
+   * 
+   */
+  declineAppeal(postId: string){
+    return this.http.post(`${this.apiUrl}/declineAppeal/${postId}`, null);
+  }
+
+  /**
+   * 
+   */
+  getAppealedPosts(){
+    return this.http.get<Post[]>(`${this.apiUrl}/getAppealedPosts`);
   }
 }

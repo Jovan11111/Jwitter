@@ -29,6 +29,11 @@ const postSchema = new mongoose.Schema({
     reportScore: {
         type: Number,
         default: 0
+    },
+    reportStatus: {
+        type: String,
+        enum: ["clear", "deleted", "appealed"],
+        default: "clear"
     }
 });
 

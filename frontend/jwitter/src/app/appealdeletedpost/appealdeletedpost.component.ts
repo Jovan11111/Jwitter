@@ -40,7 +40,15 @@ export class AppealdeletedpostComponent implements OnInit{
   }
 
   appeal(): void {
-    this.appealSubmitted = true;
+    this.postService.appealPost(this.deletedPost._id).subscribe({
+      next: () => {
+        this.appealSubmitted = true;
+      },
+      error: (err) => {
+        console.error("Failed to appeal: ", err);
+      }
+    })
+    
   }
 
 }

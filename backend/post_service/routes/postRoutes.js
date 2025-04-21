@@ -9,7 +9,11 @@ const { allPosts,
         deleteUserPosts, 
         getUserLikes, 
         reportPost,
-        searchPosts 
+        searchPosts,
+        appealPost,
+        acceptAppeal,
+        declineAppeal,
+        getAppealedPosts
     } = require("../controllers/postController");
 
 const router = express.Router();
@@ -82,6 +86,26 @@ router.post('/reportPost/:id', reportPost);
  * 
  */
 router.get('/searchPosts/:query', searchPosts);
+
+/**
+ * 
+ */
+router.post('/appeal/:id', appealPost);
+
+/**
+ * 
+ */
+router.post('/acceptAppeal/:id', acceptAppeal);
+
+/**
+ * 
+ */
+router.post('/declineAppeal/:id', declineAppeal);
+
+/**
+ * 
+ */
+router.get('/getAppealedPosts', getAppealedPosts);
 
 // Export the router
 module.exports = router;

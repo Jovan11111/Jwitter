@@ -11,6 +11,7 @@ import { ChatsComponent } from './chats/chats.component';
 import { SettingsComponent } from './settings/settings.component';
 import { ResetpasswordComponent } from './resetpassword/resetpassword.component';
 import { AppealdeletedpostComponent } from './appealdeletedpost/appealdeletedpost.component';
+import { AdminComponent } from './admin/admin.component';
 
 export const routes: Routes = [
 
@@ -25,5 +26,6 @@ export const routes: Routes = [
     {path : 'chats/:id', component: ChatsComponent},
     {path : 'settings', component: SettingsComponent},
     {path : 'reset-password/:token', component: ResetpasswordComponent},
-    {path : 'appeal-deleted-post/:pid/:uid', component: AppealdeletedpostComponent}
+    {path : 'appeal-deleted-post/:pid/:uid', component: AppealdeletedpostComponent},
+    {path : 'admin', component: AdminComponent}
 ];

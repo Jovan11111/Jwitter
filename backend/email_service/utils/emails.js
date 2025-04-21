@@ -127,7 +127,6 @@ const sendDeletedAccountEmail = async(to, username) => {
         }
     });
 
-
     const mailOptions = {
         from: '"Jwitter"',
         to,
@@ -137,20 +136,73 @@ const sendDeletedAccountEmail = async(to, username) => {
             <p>Sadly, your account ${username} broke the Jwitter rules too many times.</p>
         `
     };
-    console.log("IDEMO AJMMO SAD MOZES TI TO");
     
     try{
         await transporter.sendMail(mailOptions);
     } catch(error){
         console.log("Receiver email is invalid: ", error);
     }
-    
 };
 
+const sendDeclineAppealEmail = async (to, title) => {
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user:  process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+        }
+    });
+
+    const mailOptions = {
+        from: '"Jwitter"',
+        to,
+        subject: "Post appeal has been declined",
+        html: `
+            <h3>The appeal you submitted has been declined</h3>
+            <p>Sadly, the post with the title ${title} has been reviewed, and it has been decided that post post should stay deleted.</p>
+        `
+    };
+    
+    try{
+        await transporter.sendMail(mailOptions);
+    } catch(error){
+        console.log("Receiver email is invalid: ", error);
+    }
+}
+
+const sendAcceptAppealEmail = async (to, title) => {
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user:  process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+        }
+    });
+
+
+    const mailOptions = {
+        from: '"Jwitter"',
+        to,
+        subject: "Appeal has been accepted",
+        html: `
+            <h3>The appeal that you submitted has been accepted</h3>
+            <p>The post with the title ${title} has been reviewed, and it has been decided that it did not break the Jwitter rules</p>
+            <p>Thank you for appealing, and sorry for the incovinience</p>
+        `
+    };
+    
+    try{
+        await transporter.sendMail(mailOptions);
+    } catch(error){
+        console.log("Receiver email is invalid: ", error);
+    }
+}
 module.exports = { 
     sendResetEmail, 
     sendNewMsgEmail, 
     sendFrReqEmail,
     sendDeletedPostEmail,
-    sendDeletedAccountEmail
+    sendDeletedAccountEmail,
+    sendDeclineAppealEmail,
+    sendAcceptAppealEmail
 };

@@ -4,7 +4,9 @@ const {
         sendNewMsgEmailC,
         sendFrReqEmailC,
         sendDeletedPostEmailC,
-        sendDeletedAccountEmailC
+        sendDeletedAccountEmailC,
+        sendDeclineAppealEmailC,
+        sendAcceptAppealEmailC
     } = require("../controllers/emailController");
 
 const router = express.Router();
@@ -31,6 +33,16 @@ router.post("/delpost", sendDeletedPostEmailC);
  * 
  */
 router.post('/delacc', sendDeletedAccountEmailC);
+
+/**
+ * 
+ */
+router.post('/declineapp', sendDeclineAppealEmailC);
+
+/**
+ * 
+ */
+router.post('/acceptapp', sendAcceptAppealEmailC);
 
 module.exports = router
 
