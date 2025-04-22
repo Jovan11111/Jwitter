@@ -3,6 +3,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FriendshipRequest } from '../models/FriendshipRequest';
 import { FriendshipService } from '../services/friendship.service';
+import { UserServiceService } from '../services/user-service.service';
+import { User } from '../models/User';
 
 @Component({
   selector: 'app-sidebar',
@@ -15,12 +17,25 @@ export class SidebarComponent implements OnInit{
   sidebarCollapsed = false;
   requestsPanelOpen = false;
   friendshipRequests: FriendshipRequest[] = [];
+  user: User = new User();
 
-  constructor(private friendshipService: FriendshipService) {}
+  constructor(private friendshipService: FriendshipService, private userService: UserServiceService) {}
 
   ngOnInit(): void {
     this.loadFriendRequests();
     this.loadSidebarState();
+    this.loadUser();
+  }
+
+  private loadUser(): void {
+    this.userService.getUserById(this.loggedInUserId).subscribe({
+      next: (usr: User) => {
+        this.user = usr;
+      },
+      error: (err) => {
+        console.error("Failed to get user: ", err);
+      }
+    })
   }
 
   private loadSidebarState(): void {

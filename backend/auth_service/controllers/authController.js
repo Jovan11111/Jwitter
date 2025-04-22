@@ -87,14 +87,12 @@ const getUser = async (req, res) => {
 
 const deleteProfile = async (req, res) => {
     try {
-        console.log(req.body);
-        
         const { userr, passwordd } = req.body;
-        
-        console.log(user, passwordd);
-        
+                
         const user = await User.findById(userr);
 
+        console.log(user);
+        
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
@@ -108,6 +106,7 @@ const deleteProfile = async (req, res) => {
         await axios.delete(`http://friendship-service:5002/api/friend/deleteUserFrReqsAndFrShips/${userr}`);
         await axios.delete(`http://message-service:5003/api/message/deleteUserMessages/${userr}`);
         await axios.delete(`http://post-service:5001/api/post/deleteUserPosts/${userr}`);
+
 
         await User.findByIdAndDelete(userr);
 
@@ -257,6 +256,48 @@ const searchUsers = async (req, res) => {
     }
 }
 
+/**
+ * 
+ */
+const acceptAppeal = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        
+        await User.findByIdAndUpdate(userId, {$inc: {reportScore: -50}});
+
+        return res.status(200).json({message: "User cleared of the blocked post"});
+    } catch (error) {
+        return res.status(500).json({ message: `Server error: ${error.message}` });
+    }
+}
+
+/**
+ * 
+ */
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find();
+        return res.status(200).json(users)
+    } catch (error){
+        return res.status(500).json({ message: `Server error: ${error.message}` });
+    }
+}
+
+/**
+ * 
+ */
+const switchUserRole = async (req, res) => {
+    try {
+        const {userId, userRole} = req.body;
+        
+        await User.findByIdAndUpdate(userId, {role: userRole});
+
+        return res.status(200).json({message: "Switched user role"});
+    } catch(error) {
+        return res.status(500).json({ message: `Server error: ${error.message}` });
+    }
+}
+
 module.exports = {
     registerUser,
     loginUser,
@@ -269,5 +310,8 @@ module.exports = {
     saveVisibilitySettings,
     reportUser,
     deleteProfileNoPass,
-    searchUsers
+    searchUsers,
+    acceptAppeal,
+    getAllUsers,
+    switchUserRole
 };

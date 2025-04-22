@@ -1,5 +1,5 @@
 const express = require('express');
-const { allPosts, 
+const { visiblePosts, 
         deletePost, 
         createPost, 
         getPost, 
@@ -13,17 +13,18 @@ const { allPosts,
         appealPost,
         acceptAppeal,
         declineAppeal,
-        getAppealedPosts
+        getAppealedPosts,
+        allPosts
     } = require("../controllers/postController");
 
 const router = express.Router();
  
 /**
- * @route GET /api/post/allPosts
+ * @route GET /api/post/visiblePosts
  * @desc Get all posts
  * @access Public
  */
-router.get('/allPosts/:id', allPosts); // Get all posts
+router.get('/visiblePosts/:id', visiblePosts); // Get all posts
 
 /**
  * @route GET /api/post/getPost/:id
@@ -106,6 +107,11 @@ router.post('/declineAppeal/:id', declineAppeal);
  * 
  */
 router.get('/getAppealedPosts', getAppealedPosts);
+
+/**
+ * 
+ */
+router.get('/allPosts', allPosts);
 
 // Export the router
 module.exports = router;

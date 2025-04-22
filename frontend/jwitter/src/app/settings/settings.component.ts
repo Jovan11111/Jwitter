@@ -56,9 +56,7 @@ export class SettingsComponent implements OnInit{
 
   private getUser(){
     this.userService.getUserById(this.loggedInUserId).subscribe({
-      next: (usr: User) =>{
-        console.log(usr);
-        
+      next: (usr: User) =>{        
         this.user = usr;
         this.friendshipNotifications = usr.frReqNotifs;
         this.messageNotifications = usr.messageNotifs;

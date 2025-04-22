@@ -73,7 +73,26 @@ export class UserServiceService {
     return this.http.post(`${this.apiUrl}/saveVisibilitySettings/${user}`, {post: postV, like: likeV, friend: friendV, email: emailV});
   }
 
+  /**
+   * 
+   * @param query 
+   * @returns 
+   */
   searchUsers(query: string) {
     return this.http.get<User[]>(`${this.apiUrl}/searchUsers/${query}`);
+  }
+
+  /**
+   * 
+   */
+  getAllUsers(){
+    return this.http.get<User[]>(`${this.apiUrl}/getAllUsers`);
+  }
+
+  /**
+   *
+   */
+  switchUserRole(uid: string, role: string) {
+    return this.http.post(`${this.apiUrl}/switchUserRole`, {userId: uid, userRole: role});
   }
 }

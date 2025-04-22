@@ -14,8 +14,8 @@ export class PostService {
   /**
    * Retrieves all posts.
    */
-  getAllPosts(id: string) {
-    return this.http.get<Post[]>(`${this.apiUrl}/allPosts/${id}`);
+  getVisiblePosts(id: string) {
+    return this.http.get<Post[]>(`${this.apiUrl}/visiblePosts/${id}`);
   }
 
   /**
@@ -108,5 +108,12 @@ export class PostService {
    */
   getAppealedPosts(){
     return this.http.get<Post[]>(`${this.apiUrl}/getAppealedPosts`);
+  }
+
+  /**
+   * 
+   */
+  allPosts(){
+    return this.http.get<Post[]>(`${this.apiUrl}/allPosts`);
   }
 }

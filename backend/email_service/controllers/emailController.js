@@ -118,6 +118,8 @@ const sendAcceptAppealEmailC = async (req, res) => {
     try {
         const {to, title} = req.body;
 
+        console.log("Pokupio podatke: ", to, title);
+        
         await sendAcceptAppealEmail(to, title);
 
         return res.status(200).json({message: "Accept Appeal email sent"});

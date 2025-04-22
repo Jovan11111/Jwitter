@@ -10,7 +10,10 @@ const { loginUser,
         saveNotificationSettings, 
         saveVisibilitySettings,
         reportUser,
-        searchUsers
+        searchUsers,
+        acceptAppeal,
+        getAllUsers,
+        switchUserRole
     } = require("../controllers/authController");
 
 const router = express.Router();
@@ -76,5 +79,20 @@ router.post("/reportUser/:id", reportUser);
  * 
  */
 router.get('/searchUsers/:query', searchUsers);
+
+/**
+ * 
+ */
+router.get('/acceptAppeal/:id', acceptAppeal);
+
+/**
+ * 
+ */
+router.get('/getAllUsers', getAllUsers);
+
+/**
+ * 
+ */
+router.post('/switchUserRole', switchUserRole);
 
 module.exports = router;

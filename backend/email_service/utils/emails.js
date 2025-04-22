@@ -171,6 +171,8 @@ const sendDeclineAppealEmail = async (to, title) => {
 }
 
 const sendAcceptAppealEmail = async (to, title) => {
+    console.log("Vreme je za slanje mejla");
+    
     const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
