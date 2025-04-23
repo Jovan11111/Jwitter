@@ -9,7 +9,7 @@ import { Post } from '../models/Post';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { User } from '../models/User';
 import { UserServiceService } from '../services/user-service.service';
-import { error } from 'console';
+import { SendEmailModalComponent } from '../send-email-modal/send-email-modal.component';
 
 interface CustomJwtPayload extends JwtPayload {
   userId: string;
@@ -22,7 +22,8 @@ interface CustomJwtPayload extends JwtPayload {
     CommonModule,
     RouterModule,
     PostcardComponent,
-    SidebarComponent
+    SidebarComponent,
+    SendEmailModalComponent
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
@@ -35,8 +36,10 @@ export class AdminComponent implements OnInit{
   appealedPosts: Post[] = [];
   loggedInUserId: string = "";
   showWholePost: boolean = true;
+  sendEmailModalOpen: boolean = false;
   allUsers: User[] = [];
   allPosts: Post[] = [];
+  emails: string[] = [];
   activeTab: string = "posts";
 
   ngOnInit(): void {
@@ -117,5 +120,19 @@ export class AdminComponent implements OnInit{
         console.error("Failed to decline appeal: ", err);
       }
     })
+  }
+
+  openSendEmailModal(email: string): void {
+    this.emails = [email];
+    this.sendEmailModalOpen = true;
+  }
+
+  openSendEmailModalSettings(): void {
+    this.emails = this.allUsers.map(user => user.email);
+    this.sendEmailModalOpen = true;
+  }
+
+  closeSendEmailModal(): void {
+    this.sendEmailModalOpen = false;
   }
 }

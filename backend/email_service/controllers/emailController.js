@@ -5,7 +5,8 @@ const {
     sendDeletedPostEmail,
     sendDeletedAccountEmail,
     sendDeclineAppealEmail,
-    sendAcceptAppealEmail
+    sendAcceptAppealEmail,
+    sendEmail
 } = require("../utils/emails")
 
 /**
@@ -118,11 +119,26 @@ const sendAcceptAppealEmailC = async (req, res) => {
     try {
         const {to, title} = req.body;
 
-        console.log("Pokupio podatke: ", to, title);
-        
         await sendAcceptAppealEmail(to, title);
 
         return res.status(200).json({message: "Accept Appeal email sent"});
+    } catch(error){
+        res.status(500).json({ message: `Server error: ${error.message}` });        
+    }
+}
+
+/**
+ * 
+ */
+const sendEmailC = async (req, res) => {
+    try {
+        const {to, title, content} = req.body;
+
+        await Promise.all(
+            to.map(email => sendEmail(email, title, content))
+        );
+        
+        return res.status(200).json({message: "Email sent"});
     } catch(error){
         res.status(500).json({ message: `Server error: ${error.message}` });        
     }
@@ -135,5 +151,6 @@ module.exports = {
     sendDeletedPostEmailC,
     sendDeletedAccountEmailC,
     sendDeclineAppealEmailC,
-    sendAcceptAppealEmailC
+    sendAcceptAppealEmailC,
+    sendEmailC
 }

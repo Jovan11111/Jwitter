@@ -6,7 +6,11 @@ import { UserServiceService } from '../services/user-service.service';
 
 @Component({
   selector: 'app-deleteprofilemodal',
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule
+  ],
   templateUrl: './deleteprofilemodal.component.html',
   styleUrl: './deleteprofilemodal.component.css'
 })

@@ -1,6 +1,13 @@
 <div class="flex">
   <app-sidebar [loggedInUserId]="loggedInUserId" class="fixed"></app-sidebar>
 
+  <app-send-email-modal
+    *ngIf="sendEmailModalOpen"
+    [emails]="emails"
+    [loggedInUserId]="loggedInUserId"
+    (closeModal)="closeSendEmailModal()"
+  ></app-send-email-modal>
+
   <div *ngFor="let post of appealedPosts">
     <app-postcard
       [post]="post" 
@@ -49,7 +56,10 @@
             <a [routerLink]="['/userdetails', user._id]" class="text-lg text-primary hover:underline">
               {{ user.username }}
             </a>
-            <button class="text-sm text-gray-400 hover:text-primary transition-colors">
+            <button 
+            class="text-sm text-gray-400 hover:text-primary transition-colors"
+            (click)="openSendEmailModal(user.email)"
+            >
               {{ user.email }}
             </button>
           </div>
@@ -96,8 +106,8 @@
       </div>
 
       <div *ngIf="activeTab === 'settings'" class="mt-4 flex flex-col items-center">
+        <button class="jwitterbutton" (click)="openSendEmailModalSettings()">Send email to all users</button>
       </div>
-
     </div>
   </div>
 </div>

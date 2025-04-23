@@ -171,8 +171,6 @@ const sendDeclineAppealEmail = async (to, title) => {
 }
 
 const sendAcceptAppealEmail = async (to, title) => {
-    console.log("Vreme je za slanje mejla");
-    
     const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
@@ -199,6 +197,30 @@ const sendAcceptAppealEmail = async (to, title) => {
         console.log("Receiver email is invalid: ", error);
     }
 }
+
+const sendEmail = async (to, title, content) => {
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            user:  process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+        }
+    });
+
+    const mailOptions = {
+        from: '"Jwitter"',
+        to,
+        subject: title,
+        html: content
+    };
+    
+    try{
+        await transporter.sendMail(mailOptions);
+    } catch(error){
+        console.log("Receiver email is invalid: ", error);
+    }
+}
+
 module.exports = { 
     sendResetEmail, 
     sendNewMsgEmail, 
@@ -206,5 +228,6 @@ module.exports = {
     sendDeletedPostEmail,
     sendDeletedAccountEmail,
     sendDeclineAppealEmail,
-    sendAcceptAppealEmail
+    sendAcceptAppealEmail,
+    sendEmail
 };

@@ -1,7 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Post } from '../models/Post';
-import { pid } from 'node:process';
 
 @Injectable({
   providedIn: 'root',
