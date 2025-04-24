@@ -115,4 +115,11 @@ export class PostService {
   allPosts(){
     return this.http.get<Post[]>(`${this.apiUrl}/allPosts`);
   }
+
+  /**
+   * 
+   */
+  editPost(pid: string, content: string){
+    return this.http.post(`${this.apiUrl}/editPost`, {postId: pid, newCont: content});
+  }
 }

@@ -8,18 +8,28 @@
           <h2 class="text-2xl font-bold text-primary">{{ user.username }}</h2>
           <h5 class="text-gray-400">{{ user.email }}</h5>
         </div>
-        <a *ngIf="myProfile" [routerLink]="['/settings']" class="py-3 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors px-5">
+
+        <button 
+          *ngIf="buttonType === 0" 
+          class="py-3 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors px-5" 
+          (click)="sendFriendRequest()">
+          Send friend request
+        </button>
+        <p *ngIf="buttonType === 1" class="text-primary">
+          Friend request sent
+        </p>
+        <a 
+          *ngIf="buttonType === 2" 
+          [routerLink]="['/chats', userId]" 
+          class="py-3 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors px-5">
+          Send message
+        </a>
+        <a 
+          *ngIf="buttonType === 3" 
+          [routerLink]="['/settings']" 
+          class="py-3 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors px-5">
           Settings
         </a>
-        <div *ngIf="!myProfile">
-          <button *ngIf="showAddFriendButton" class="py-3 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors px-5" (click)="sendFriendRequest()">
-            Send Friend Request
-          </button>
-          <a *ngIf="!showAddFriendButton" [routerLink]="['/chats', userId]" class="py-3 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors px-5">
-            Send Message
-          </a>
-          
-        </div>
       </div>
     </div>
     <div class="mt-6">

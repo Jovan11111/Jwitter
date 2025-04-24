@@ -336,6 +336,20 @@ const allPosts = async (req, res) => {
     }
 }
 
+/**
+ * 
+ */
+const editPost = async(req, res) => {
+    try{
+        const {postId, newCont} = req.body;
+        await Post.findByIdAndUpdate(postId, {content: newCont});
+
+        return res.status(200).json({message: "Edited post succesfully"});
+    } catch (error) {
+        return res.status(500).json({message: "Server error: " + error.message})
+    }
+}
+
 module.exports = {
     visiblePosts,
     deletePost,
@@ -352,5 +366,6 @@ module.exports = {
     getAppealedPosts,
     acceptAppeal,
     declineAppeal,
-    allPosts
+    allPosts,
+    editPost
 }

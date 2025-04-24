@@ -14,7 +14,8 @@ const { visiblePosts,
         acceptAppeal,
         declineAppeal,
         getAppealedPosts,
-        allPosts
+        allPosts,
+        editPost
     } = require("../controllers/postController");
 
 const router = express.Router();
@@ -112,6 +113,11 @@ router.get('/getAppealedPosts', getAppealedPosts);
  * 
  */
 router.get('/allPosts', allPosts);
+
+/**
+ * 
+ */
+router.post('/editPost', editPost);
 
 // Export the router
 module.exports = router;

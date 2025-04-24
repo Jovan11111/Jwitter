@@ -29,6 +29,10 @@ export class PostcardComponent implements OnInit, OnDestroy{
 
   @Output() refresh = new EventEmitter<void>();
   
+  isEditing: boolean = false;
+  editedContent: string = '';
+
+
   onRefresh(): void{
     this.refresh.emit()
   }
@@ -106,5 +110,41 @@ export class PostcardComponent implements OnInit, OnDestroy{
     if (!target.closest('.relative')) {
       this.closeMenu();
     }
+  }
+
+  startEditing() {
+    this.isEditing = true;
+    this.editedContent = this.post.content;
+  
+    setTimeout(() => {
+      const textarea = document.getElementById(`edit-area-${this.post._id}`) as HTMLTextAreaElement;
+      textarea?.focus();
+  
+      const escListener = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          this.cancelEdit();
+        }
+      };
+  
+      textarea?.addEventListener('keydown', escListener);
+    });
+  }
+  
+  cancelEdit() {
+    this.isEditing = false;
+    this.editedContent = '';
+  }
+  
+  saveEdit(post: Post) {
+    post.content = this.editedContent;
+    this.postService.editPost(post._id, this.editedContent).subscribe({
+      next: () =>{
+        this.isEditing = false;
+        this.editedContent = '';
+      }, 
+      error: (err) =>{
+        console.error("Failed to edit post: ", err);
+      }
+    })
   }
 }

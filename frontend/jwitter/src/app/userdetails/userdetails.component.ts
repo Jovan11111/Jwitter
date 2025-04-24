@@ -28,6 +28,14 @@ export class UserDetailsComponent implements OnInit {
   userLikes: Post[] = [];
   friends: User[] = [];
   showAddFriendButton: boolean = true;
+  /**
+   * buttonType meaning: 
+   *  - 0 : show add friend button
+   *  - 1 : show fre req sent text
+   *  - 2 : show send message button
+   *  - 3 : show settings button
+   */
+  buttonType: number = 0;
   myProfile: boolean = false;
   activeTab: string = 'posts';
 
@@ -99,14 +107,16 @@ export class UserDetailsComponent implements OnInit {
    */
   private loadFriendshipStatus(): void {
     if (this.myProfile) {
-      this.showAddFriendButton = false;
+      this.buttonType = 3;
       return;
     }
 
     this.friendshipService.areTheyFriends(this.userId, this.loggedInUserId).subscribe({
       next: (status: any) => {
-        if (status.friendshipExists || status.frReqExists) {
-          this.showAddFriendButton = false;
+        if (status.friendshipExists){
+          this.buttonType = 2;
+        } else if(status.frReqExists){
+          this.buttonType = 1;
         }
       },
       error: (err) => console.error('Failed to check friendship status', err)

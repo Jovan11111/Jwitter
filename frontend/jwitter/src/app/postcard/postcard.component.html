@@ -19,25 +19,44 @@
       
         <div *ngIf="showMenu === post._id"
              class="absolute right-0 z-10 mt-2 w-36 bg-surface border border-gray-700 rounded shadow-lg">
-          <ng-container *ngIf="isOwner(); else reportOption">
-            <button (click)="deletePost(post._id); closeMenu()"
+            <button *ngIf="isOwner();" (click)="deletePost(post._id); closeMenu()"
                     class="block w-full text-left px-4 py-2 text-red-500 rounded hover:border hover:border-error">
               Delete Post
             </button>
-          </ng-container>
-          <ng-template #reportOption>
-            <button (click)="reportPost(post._id); closeMenu()"
-                    class="block w-full text-left px-4 py-2 text-sm text-yellow-400 rounded hover:border hover:border-yellow-400">
+            <button *ngIf="!isOwner();" (click)="reportPost(post._id); closeMenu()"
+                    class="block w-full text-left px-4 py-2 text-yellow-400 rounded hover:border hover:border-yellow-400">
               Report Post
             </button>
-          </ng-template>
+          <button *ngIf="isOwner();" (click)="startEditing(); closeMenu()"
+            class="block w-full text-left px-4 py-2 text-blue-400 rounded hover:border hover:border-blue-400">
+            Edit Post
+          </button>
         </div>
       </div>
     </div>
-    <div *ngIf="showWholePost" class="text-gray-300 text-base whitespace-pre-wrap break-words max-h-96 overflow-auto">{{post.content}} </div>
-    <div *ngIf="!showWholePost && !(post.content.length > 280)" class="text-gray-300 text-base whitespace-pre-wrap break-words max-h-96 overflow-auto">{{post.content}} </div>
-    <div *ngIf="!showWholePost && post.content.length > 280" class="text-gray-300 text-base whitespace-pre-wrap break-words max-h-96 overflow-auto"> {{ post.content | slice:0:280 }}<a [routerLink]="['/postdetails', post._id]" class="text-primary ml-2">Read more</a>
- </div>  
+
+    <div *ngIf="isEditing" class="border border-primary p-2 rounded bg-surface">
+      <textarea 
+        [(ngModel)]="editedContent" 
+        id="edit-area-{{ post._id }}"
+        rows="6"
+        class="w-full bg-surface text-gray-400 p-2 rounded resize-none focus:outline-none">
+      </textarea>
+      <hr class="border-t border-primary">
+      <div class="flex justify-end space-x-2 mt-2">
+        <button (click)="cancelEdit()" class="py-3 bg-background border border-error text-error rounded-lg hover:bg-surface transition-colors w-1/4">Cancel</button>
+        <button (click)="saveEdit(post)" class="py-3 bg-background border border-primary text-primary rounded-lg hover:bg-surface transition-colors w-1/4">Save</button>
+      </div>
+    </div>
+    
+    <div *ngIf="!isEditing">
+      <div *ngIf="showWholePost || !(post.content.length > 280)" class="text-gray-300 text-base whitespace-pre-wrap break-words max-h-96 overflow-auto">
+        {{ post.content }}
+      </div>
+      <div *ngIf="!showWholePost && post.content.length > 280" class="text-gray-300 text-base whitespace-pre-wrap break-words max-h-96 overflow-auto">
+        {{ post.content | slice: 0:280 }}<a [routerLink]="['/postdetails', post._id]" class="text-primary ml-2">Read more</a>
+      </div>
+    </div>
     <div class="flex justify-between items-center border-t border-gray-700 pt-4">
       <span class="text-gray-400 text-sm">Likes: {{ post.numLikes }} | Dislikes: {{ post.numDislikes }}</span>
       <div class="flex space-x-4">
