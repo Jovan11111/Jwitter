@@ -27,7 +27,10 @@ export class UserDetailsComponent implements OnInit {
   userPosts: Post[] = [];
   userLikes: Post[] = [];
   friends: User[] = [];
-  showAddFriendButton: boolean = true;
+  likeVisibility: string = "";
+  postVisibility: string = "";
+  friendVisibility: string = "";
+  emailVisibility: string = "";
   /**
    * buttonType meaning: 
    *  - 0 : show add friend button
@@ -63,12 +66,7 @@ export class UserDetailsComponent implements OnInit {
         this.loggedInUserId = decoded.userId;
         this.myProfile = this.userId === this.loggedInUserId;
       }
-  
       this.loadUserDetails();
-      this.loadUserPosts();
-      this.loadUserLikes();
-      this.loadFriendshipStatus();
-      this.loadUserFriends();
     });
   }
 
@@ -77,7 +75,13 @@ export class UserDetailsComponent implements OnInit {
    */
   private loadUserDetails(): void {
     this.userService.getUserById(this.userId).subscribe({
-      next: (user: User) => (this.user = user),
+      next: (user: User) => {
+        this.user = user
+        this.emailVisibility = this.user.emailVisibility;
+        console.log("Poziva se loadfriendship");
+        
+        this.loadFriendshipStatus();
+      },
       error: (err) => console.error('Failed to load user', err)
     });
   }
@@ -108,6 +112,9 @@ export class UserDetailsComponent implements OnInit {
   private loadFriendshipStatus(): void {
     if (this.myProfile) {
       this.buttonType = 3;
+      this.loadUserPosts();
+      this.loadUserLikes();
+      this.loadUserFriends();
       return;
     }
 
@@ -117,6 +124,23 @@ export class UserDetailsComponent implements OnInit {
           this.buttonType = 2;
         } else if(status.frReqExists){
           this.buttonType = 1;
+        }
+
+        if(this.user.postVisibility === "everyone" || (this.user.postVisibility === "friends" && this.buttonType === 2)){
+          this.loadUserPosts();
+        }
+
+        if(this.user.likeVisibility === "everyone" || (this.user.likeVisibility === "friends" && this.buttonType === 2)){
+          this.loadUserLikes();
+        }
+
+        if(this.user.friendVisibility === "everyone" || (this.user.friendVisibility === "friends" && this.buttonType === 2)){
+          this.loadUserFriends();
+        }
+
+        if(this.user.emailVisibility === "everyone" || this.user.emailVisibility === "friends" && this.buttonType === 2){} 
+        else{
+          this.user.email = "";
         }
       },
       error: (err) => console.error('Failed to check friendship status', err)
