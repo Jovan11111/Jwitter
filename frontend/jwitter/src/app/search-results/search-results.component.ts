@@ -38,7 +38,7 @@ export class SearchResultsComponent implements OnInit, OnChanges{
   }
 
   ngOnInit(): void {
-    this.postService.searchPosts(this.query).subscribe({
+    this.postService.searchPosts(this.query, this.loggedInUserId).subscribe({
       next: (psts: Post[]) => {
         this.posts = psts;
       },

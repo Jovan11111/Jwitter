@@ -78,8 +78,6 @@ export class UserDetailsComponent implements OnInit {
       next: (user: User) => {
         this.user = user
         this.emailVisibility = this.user.emailVisibility;
-        console.log("Poziva se loadfriendship");
-        
         this.loadFriendshipStatus();
       },
       error: (err) => console.error('Failed to load user', err)
@@ -100,7 +98,7 @@ export class UserDetailsComponent implements OnInit {
    * 
    */
   private loadUserLikes(): void {
-    this.postService.getUserLikes(this.userId).subscribe({
+    this.postService.getUserLikes(this.userId, this.loggedInUserId).subscribe({
       next: (posts: Post[]) => (this.userLikes = posts),
       error: (err) => console.error('Failed to load user likes', err)
     })

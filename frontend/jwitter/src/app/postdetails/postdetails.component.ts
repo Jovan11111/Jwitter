@@ -53,7 +53,8 @@ export class PostdetailsComponent implements OnInit{
   }
 
   private loadPost(): void{
-    this.postService.getPostById(this.openedPostId).subscribe({
+    
+    this.postService.getPostById(this.openedPostId, this.loggedInUserId).subscribe({
       next: (post: Post) => {
         this.openedPost = post;
       },

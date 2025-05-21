@@ -7,6 +7,19 @@ services:
       - MONGO_URI=mongodb://mongo:27017/jwitter_db_users
     depends_on:
       - mongo
+  
+  auth-tests:
+    build:
+      context: ./backend/auth_service
+      dockerfile: Dockerfile.test
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/jwitter_db_users_test
+    volumes:
+      - ./backend/auth_service:/app
+    tty: true
+
 
   post-service:
     build: ./backend/post_service

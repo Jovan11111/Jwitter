@@ -28,11 +28,11 @@ const router = express.Router();
 router.get('/visiblePosts/:id', visiblePosts); // Get all posts
 
 /**
- * @route GET /api/post/getPost/:id
+ * @route GET /api/post/getPost/:id/:uid
  * @desc Get a single post by ID
  * @access Public
  */
-router.get('/getPost/:id', getPost); // Get a single post by ID
+router.get('/getPost/:id/:uid', getPost); // Get a single post by ID
 
 /**
  * @route DELETE /api/post/deletePost/:id
@@ -77,7 +77,7 @@ router.delete('/deleteUserPosts/:id', deleteUserPosts);
 /**
  * 
  */
-router.get('/getUserLikes/:id', getUserLikes);
+router.get('/getUserLikes/:id/:lid', getUserLikes);
 
 /**
  * 
@@ -87,7 +87,7 @@ router.post('/reportPost/:id', reportPost);
 /**
  * 
  */
-router.get('/searchPosts/:query', searchPosts);
+router.get('/searchPosts/:query/:id', searchPosts);
 
 /**
  * 

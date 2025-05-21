@@ -29,7 +29,7 @@ export class AppealdeletedpostComponent implements OnInit{
   ngOnInit(): void {
     const deletedPostId = this.activatedRoute.snapshot.paramMap.get('pid') || ''
     this.loggedInUserId = this.activatedRoute.snapshot.paramMap.get('uid') || ''
-    this.postService.getPostById(deletedPostId).subscribe({
+    this.postService.getPostById(deletedPostId, this.loggedInUserId).subscribe({
       next: (p: Post) =>{
         this.deletedPost = p;
       },

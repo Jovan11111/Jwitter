@@ -20,8 +20,9 @@ export class PostService {
   /**
    * Retrieves a specific post by its ID.
    */
-  getPostById(postId: string) {
-    return this.http.get<Post>(`${this.apiUrl}/getPost/${postId}`);
+  getPostById(postId: string, loggedInUserId: string) {
+    
+    return this.http.get<Post>(`${this.apiUrl}/getPost/${postId}/${loggedInUserId}`);
   }
 
   /**
@@ -63,8 +64,8 @@ export class PostService {
   /**
    * 
    */
-  getUserLikes(user: string){
-    return this.http.get<Post[]>(`${this.apiUrl}/getUserLikes/${user}`);
+  getUserLikes(user: string, loggedInUserId: string){
+    return this.http.get<Post[]>(`${this.apiUrl}/getUserLikes/${user}/${loggedInUserId}`);
   }
 
   /**
@@ -77,8 +78,8 @@ export class PostService {
   /**
    * 
    */
-  searchPosts(query: string){
-    return this.http.get<Post[]>(`${this.apiUrl}/searchPosts/${query}`);
+  searchPosts(query: string, loggedInUserId: string){
+    return this.http.get<Post[]>(`${this.apiUrl}/searchPosts/${query}/${loggedInUserId}`);
   }
 
   /**

@@ -7,48 +7,54 @@ const Report = require("../models/Report")
 
 const visiblePosts = async(req, res) => {
     try {
-        loggedUserId = req.params.id;
-        const posts = await Post.find({reportStatus: "clear"});
+        const loggedUserId = req.params.id;
+        const posts = await Post.find({ reportStatus: "clear" });
+
+        const loggedInUserResp = await axios.get(`http://auth-service:5000/api/auth/user/${loggedUserId}`);
+        const loggedUserRole = loggedInUserResp.data.role;
+
         const postsWithUserNames = await Promise.all(posts.map(async (post) => {
             try {
-                const userResp = await axios.get(`http://auth-service:5000/api/auth/user/${post.user}`)
-                const username = userResp.data.username
-                const userReaction = await Reaction.findOne({user:loggedUserId, post: post});
-                const userReactionString = userReaction ? userReaction.reaction : "no";
-                return {
-                    _id: post._id,
-                    _v: post._v,
-                    title: post.title ,
-                    content: post.content, 
-                    user: post.user,
-                    createdAt: post.createdAt,
-                    username: username,
-                    numLikes: post.numLikes,
-                    numDislikes: post.numDislikes,
-                    userReaction: userReactionString
-                }
-            }catch{
-                console.log("Failed to find user");
-                return {
-                    _id: post._id,
-                    _v: post._v,
-                    title: post.title ,
-                    content: post.content, 
-                    user: post.user,
-                    createdAt: post.createdAt,
-                    username: "Unknown user",
-                    numLikes: post.numLikes,
-                    numDislikes: post.numDislikes,
-                    userReaction: "unknown"
+                const userResp = await axios.get(`http://auth-service:5000/api/auth/user/${post.user}`);
+                const user = userResp.data;
+                const username = user.username;
 
+                const userReaction = await Reaction.findOne({ user: loggedUserId, post: post._id });
+                const userReactionString = userReaction ? userReaction.reaction : "no";
+                if (loggedUserRole === "admin" || user.postVisibility === "everyone" || loggedUserId === userResp.data._id) {
+                    return buildPostObj(post, username, userReactionString);
+                } else if (user.postVisibility === "friends") {
+                    const friendshipResp = await axios.get(`http://friendship-service:5002/api/friend/areTheyFriends/${loggedUserId}/${userResp.data._id}`);
+                    
+                    if (friendshipResp.data.friendshipExists === true) {
+                        return buildPostObj(post, username, userReactionString);
+                    }
                 }
+            } catch {
+                return buildPostObj(post, "Unknown user", "unknown");
             }
-        }))
-        res.status(200).json(postsWithUserNames)
-    } catch (error){
+        }));
+
+        const visiblePosts = postsWithUserNames.filter(p => p !== undefined);
+        return res.status(200).json(visiblePosts);
+
+    } catch (error) {
         return res.status(500).json({ message: "Server error: " + error.message });
     }
-}
+};
+
+const buildPostObj = (post, username, userReactionString) => ({
+    _id: post._id,
+    _v: post._v,
+    title: post.title,
+    content: post.content,
+    user: post.user,
+    createdAt: post.createdAt,
+    username: username,
+    numLikes: post.numLikes,
+    numDislikes: post.numDislikes,
+    userReaction: userReactionString
+});
 
 const deletePost = async(req, res) => {
     try {
@@ -87,13 +93,44 @@ const createPost = async(req, res) => {
 
 const getPost = async(req, res) => {
     try {
+        loggedUserId = req.params.uid;
         const post = await Post.findById(req.params.id);
         
         if(!post){
             return res.status(400).json("Could not find post by id")
         }
 
-        res.status(200).json(post);
+        const userResp = await axios.get(`http://auth-service:5000/api/auth/user/${post.user}`)
+        const userReaction = await Reaction.findOne({user:loggedUserId, post: post});
+        const userReactionString = userReaction ? userReaction.reaction : "no";
+        if(userResp){
+            return res.status(200).json({
+                _id: post._id,
+                title: post.title,
+                content: post.content,
+                user: post.user,
+                createdAt: post.createdAt,
+                __v: post._v, 
+                username: userResp.data.username,
+                numLikes: post.numLikes,
+                numDislikes: post.numDislikes,
+                userReaction: userReactionString
+            })
+        } else{
+            return res.status(200).json({
+                _id: post._id,
+                title: post.title,
+                content: post.content,
+                user: post.user,
+                createdAt: post.createdAt,
+                __v: post._v, 
+                username: "Unknown",
+                numLikes: post.numLikes,
+                numDislikes: post.numDislikes,
+                userReaction: "Unknown"
+            })
+        }
+
     } catch (error){
         return res.status(500).json({ message: "Server error: " + error.message });
     }
@@ -191,14 +228,40 @@ const deleteUserPosts = async (req, res) => {
 const getUserLikes = async (req, res) => {
     try {
         const userId = req.params.id;
-
+        const loggedUserId = req.params.lid;
         const reactions = await Reaction.find({ user: userId, reaction: "liked" });
 
         const postIds = reactions.map(reaction => reaction.post);
-
         const likedPosts = await Post.find({ _id: { $in: postIds } });
 
-        return res.status(200).json(likedPosts);
+        const loggedInUserResp = await axios.get(`http://auth-service:5000/api/auth/user/${loggedUserId}`);
+        const loggedUserRole = loggedInUserResp.data.role;
+
+        const postsWithUserNames = await Promise.all(likedPosts.map(async (post) => {
+            try {
+                const userResp = await axios.get(`http://auth-service:5000/api/auth/user/${post.user}`);
+                const user = userResp.data;
+                const username = user.username;
+
+                const userReaction = await Reaction.findOne({ user: loggedUserId, post: post._id });
+                const userReactionString = userReaction ? userReaction.reaction : "no";
+                if (loggedUserRole === "admin" || user.postVisibility === "everyone" || loggedUserId === userResp.data._id) {
+                    return buildPostObj(post, username, userReactionString);
+                } else if (user.postVisibility === "friends") {
+                    const friendshipResp = await axios.get(`http://friendship-service:5002/api/friend/areTheyFriends/${loggedUserId}/${userResp.data._id}`);
+                    
+                    if (friendshipResp.data.friendshipExists === true) {
+                        return buildPostObj(post, username, userReactionString);
+                    }
+                }
+            } catch {
+                return buildPostObj(post, "Unknown user", "unknown");
+            }
+        }));
+
+        const visiblePosts = postsWithUserNames.filter(p => p !== undefined);
+        return res.status(200).json(visiblePosts);
+
     } catch (error) {
         return res.status(500).json({ message: "Server error: " + error.message });
     }
@@ -243,10 +306,38 @@ const reportPost = async (req, res) => {
  */
 const searchPosts = async(req, res) => {
     try {
+        loggedUserId = req.params.id;
         const query = req.params.query;
         const safeQuery = query.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
         const posts = await Post.find({title: {$regex: safeQuery, $options: "i"}});
-        return res.status(200).json(posts);
+
+        const loggedInUserResp = await axios.get(`http://auth-service:5000/api/auth/user/${loggedUserId}`);
+        const loggedUserRole = loggedInUserResp.data.role;
+        
+        const postsWithUserNames = await Promise.all(posts.map(async (post) => {
+            try {
+                const userResp = await axios.get(`http://auth-service:5000/api/auth/user/${post.user}`);
+                const user = userResp.data;
+                const username = user.username;
+
+                const userReaction = await Reaction.findOne({ user: loggedUserId, post: post._id });
+                const userReactionString = userReaction ? userReaction.reaction : "no";
+                if (loggedUserRole === "admin" || user.postVisibility === "everyone" || loggedUserId === userResp.data._id) {
+                    return buildPostObj(post, username, userReactionString);
+                } else if (user.postVisibility === "friends") {
+                    const friendshipResp = await axios.get(`http://friendship-service:5002/api/friend/areTheyFriends/${loggedUserId}/${userResp.data._id}`);
+                    
+                    if (friendshipResp.data.friendshipExists === true) {
+                        return buildPostObj(post, username, userReactionString);
+                    }
+                }
+            } catch {
+                return buildPostObj(post, "Unknown user", "unknown");
+            }
+        }));
+
+        const visiblePosts = postsWithUserNames.filter(p => p !== undefined);
+        return res.status(200).json(visiblePosts);
     } catch(error){
         return res.status(500).json({ message: "Server error: " + error.message });
     }
@@ -271,7 +362,36 @@ const appealPost = async(req, res) => {
 const getAppealedPosts = async (req, res) => {
     try {
         const posts = await Post.find({reportStatus: "appealed"});
-        return res.status(200).json(posts);
+        const postsWithUserNames = await Promise.all(posts.map(async (post) => {
+            try {
+                const userResp = await axios.get(`http://auth-service:5000/api/auth/user/${post.user}`)
+                const username = userResp.data.username
+                return {
+                    _id: post._id,
+                    _v: post._v,
+                    title: post.title ,
+                    content: post.content, 
+                    user: post.user,
+                    createdAt: post.createdAt,
+                    username: username,
+                    numLikes: post.numLikes,
+                    numDislikes: post.numDislikes
+                }
+            }catch{
+                return {
+                    _id: post._id,
+                    _v: post._v,
+                    title: post.title ,
+                    content: post.content, 
+                    user: post.user,
+                    createdAt: post.createdAt,
+                    username: "Unknown user",
+                    numLikes: post.numLikes,
+                    numDislikes: post.numDislikes
+                }
+            }
+        }))
+        return res.status(200).json(postsWithUserNames);
     } catch(error){
         return res.status(500).json({message: "Server error: " + error.message})
     }
@@ -291,11 +411,7 @@ const acceptAppeal = async (req, res) => {
 
         await Post.findByIdAndUpdate(pid, {reportScore: 0, reportStatus: "clear"});
 
-        console.log("uklanjaju se poeni korisnika");
-        
         await axios.get(`http://auth-service:5000/api/auth/acceptAppeal/${post.user}`);
-
-        console.log("poeni uklonjeni");
         
         return res.status(200).json({message: "Post report status has been cleared"});
     } catch (error){
@@ -329,8 +445,36 @@ const declineAppeal = async (req, res) => {
 const allPosts = async (req, res) => {
     try{
         const posts = await Post.find();
-
-        return res.status(200).json(posts);
+        const postsWithUserNames = await Promise.all(posts.map(async (post) => {
+            try {
+                const userResp = await axios.get(`http://auth-service:5000/api/auth/user/${post.user}`)
+                const username = userResp.data.username
+                return {
+                    _id: post._id,
+                    _v: post._v,
+                    title: post.title ,
+                    content: post.content, 
+                    user: post.user,
+                    createdAt: post.createdAt,
+                    username: username,
+                    numLikes: post.numLikes,
+                    numDislikes: post.numDislikes
+                }
+            }catch{
+                return {
+                    _id: post._id,
+                    _v: post._v,
+                    title: post.title ,
+                    content: post.content, 
+                    user: post.user,
+                    createdAt: post.createdAt,
+                    username: "Unknown user",
+                    numLikes: post.numLikes,
+                    numDislikes: post.numDislikes
+                }
+            }
+        }))
+        return res.status(200).json(postsWithUserNames);
     } catch (error) {
         return res.status(500).json({message: "Server error: " + error.message})
     }
