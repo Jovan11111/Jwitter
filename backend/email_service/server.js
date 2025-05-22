@@ -10,10 +10,15 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-const authRoutes = require("./routes/emailRoutes");
-app.use("/api/email", authRoutes);
+const emailRoutes = require("./routes/emailRoutes");
+app.use("/api/email", emailRoutes);
 
-const port = process.env.PORT || 5005;
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-});
+module.exports = app
+
+if (process.env.NODE_ENV !== "test") {
+    const port = process.env.PORT || 5005;
+    app.listen(port, () => {
+        console.log(`Server is running on http://localhost:${port}`);
+    });
+}
+

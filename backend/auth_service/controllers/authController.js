@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
 const crypto = require("crypto");
+const mongoose = require("mongoose")
 
 /**
  * Registers a new user.
@@ -74,6 +75,11 @@ const loginUser = async (req, res) => {
  */
 const getUser = async (req, res) => {
     try {
+
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ error: "Invalid user ID" });
+        }
+
         const user = await User.findById(req.params.id);
 
         if (!user) {
@@ -146,7 +152,17 @@ const changePassword = async(req, res) => {
     try {
         const {userId, newPass} = req.body;
         const hashedPassword = await bcrypt.hash(newPass, 10);
-        await User.findByIdAndUpdate(userId, {password: hashedPassword});
+
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ error: "Invalid user ID" });
+        }
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        user.password = hashedPassword;
+        await user.save();
         return res.status(200).json({message: "Changed password succesfully"});
     } catch(error){
         return res.status(500).json({ message: `Server error: ${error.message}` });
@@ -184,7 +200,6 @@ const resetPassword = async (req, res) => {
     try{
         const token = req.params.token;
         const { newPassword } = req.body;
-        console.log(token);
         
         const user = await User.findOne({
             resetToken: token,
@@ -210,7 +225,25 @@ const saveNotificationSettings = async (req, res) => {
     try{
         const userId = req.params.id
         const {frreq, msg} = req.body
-        await User.findByIdAndUpdate(userId, {frReqNotifs: frreq, messageNotifs: msg});
+        
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ error: "Invalid user ID" });
+        }
+
+        if (typeof frreq !== "boolean" || typeof msg !== "boolean") {
+            return res.status(400).json({ error: "Invalid notification settings" });
+        }
+        
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        user.frReqNotifs = frreq;
+        user.messageNotifs = msg;
+
+        await user.save();
+
         return res.status(200).json({message: "Updated notification settings"}); 
     } catch(error){
         return res.status(500).json({ message: `Server error: ${error.message}` });
@@ -220,8 +253,35 @@ const saveNotificationSettings = async (req, res) => {
 const saveVisibilitySettings = async (req, res) => {
     try{
         const userId = req.params.id;
-        const {post, like, friend, email} = req.body
-        await User.findByIdAndUpdate(userId, {postVisibility: post, likeVisibility: like, friendVisibility: friend, emailVisibility: email});
+        const {post, like, friend, email} = req.body;
+
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ error: "Invalid user ID" });
+        }
+
+        const allowedValues = ["everyone", "friends", "nobody"];
+
+        if (
+            !allowedValues.includes(post) ||
+            !allowedValues.includes(like) ||
+            !allowedValues.includes(friend) ||
+            !allowedValues.includes(email)
+        ) {
+            return res.status(400).json({ error: "Invalid visibility settings" });
+        }
+
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        user.postVisibility = post
+        user.likeVisibility = like
+        user.friendVisibility = friend
+        user.emailVisibility = email
+
+        await user.save();
         return res.status(200).json({message: "Updated visibility settings"});
     } catch (error){
         return res.status(500).json({ message: `Server error: ${error.message}` });
@@ -232,10 +292,23 @@ const reportUser = async (req, res) => {
     try {
         const userId = req.params.id;
         const {scoree} = req.body;
-        await User.findByIdAndUpdate(userId, {$inc: {reportScore: scoree}});
+
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ error: "Invalid user ID" });
+        }
         
+        if(typeof scoree !== "number" || scoree < 0){
+            return res.status(400).json({error: "Invalid score"})
+        } 
+
         const user = await User.findById(userId);
-        console.log(user);
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        user.reportScore = user.reportScore + scoree;
+        await user.save();
+        
         return res.status(200).json({message: "Reported user"});
     } catch(error){
         return res.status(500).json({ message: `Server error: ${error.message}` });
@@ -264,7 +337,17 @@ const acceptAppeal = async (req, res) => {
     try {
         const userId = req.params.id;
         
-        await User.findByIdAndUpdate(userId, {$inc: {reportScore: -50}});
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ error: "Invalid user ID" });
+        }
+        
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        user.reportScore = user.reportScore - 50;
+        await user.save();
 
         return res.status(200).json({message: "User cleared of the blocked post"});
     } catch (error) {
@@ -291,7 +374,27 @@ const switchUserRole = async (req, res) => {
     try {
         const {userId, userRole} = req.body;
         
-        await User.findByIdAndUpdate(userId, {role: userRole});
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ error: "Invalid user ID" });
+        }
+
+        const allowedValues = ["admin", "user"];
+
+        if (
+            !allowedValues.includes(userRole)
+        ) {
+            return res.status(400).json({ error: "Invalid user role" });
+        }
+
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        user.role = userRole;
+
+        await user.save();
 
         return res.status(200).json({message: "Switched user role"});
     } catch(error) {

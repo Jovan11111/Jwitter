@@ -4,6 +4,7 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 
 let server;
+let createdUserId;
 
 beforeAll(async () => {
   await mongoose.connect(process.env.MONGO_URI, {
@@ -13,11 +14,15 @@ beforeAll(async () => {
   
   const hashedPassword = await bcrypt.hash("testpassword", 10);
 
-  await User.create({
+  const user = await User.create({
     username: "testuser",
     email: "testuser@example.com",
-    password: hashedPassword
+    password: hashedPassword,
+    resetToken: "resettoken"
   });
+  createdUserId = user._id;
+
+  global.__USER_ID__ = createdUserId.toString()
 
   server = app.listen(4000);
   global.__SERVER__ = server;

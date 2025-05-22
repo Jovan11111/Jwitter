@@ -66,6 +66,12 @@ services:
     build: ./backend/email_service
     ports:
       - "5005:5005"
+
+  email-tests:
+    build:
+      context: ./backend/email_service
+      dockerfile: Dockerfile.test
+    tty: true
       
   frontend:
     build: ./frontend/jwitter
@@ -78,6 +84,13 @@ services:
       - message-service
       - comment-service
       - aireporting-service
+
+  test:
+    image: alpine:latest
+    command: echo "All tests completed"
+    depends_on:
+      - auth-tests
+      - email-tests
   mongo:
     image: mongo
     container_name: mongo

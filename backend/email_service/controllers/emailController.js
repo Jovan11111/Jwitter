@@ -54,11 +54,8 @@ const sendNewMsgEmailC = async (req, res) => {
 const sendFrReqEmailC = async (req, res) => {
     try {
         const {to} = req.body
-        console.log("Dosao do slanja mejla u backendu ", to);
-        
-        await sendFrReqEmail(to);
 
-        console.log("Uspeo da posalje mejl");
+        await sendFrReqEmail(to);
         
         return res.status(200).json({message: "New Freind request email sent"});
     } catch (error){
@@ -133,7 +130,7 @@ const sendAcceptAppealEmailC = async (req, res) => {
 const sendEmailC = async (req, res) => {
     try {
         const {to, title, content} = req.body;
-
+        
         await Promise.all(
             to.map(email => sendEmail(email, title, content))
         );
