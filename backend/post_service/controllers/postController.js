@@ -58,12 +58,18 @@ const buildPostObj = (post, username, userReactionString) => ({
 
 const deletePost = async(req, res) => {
     try {
+
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ error: "Invalid post ID" });
+        }
+
         const post = await Post.findById(req.params.id);
         if (!post) {
-            return res.status(400).json("Post not found")
+            return res.status(404).json({error: "Post not found"})
         }
         await post.deleteOne();
-        res.status(200).json({message: "Deleted a post"})
+        
+        return res.status(200).json({message: "Post deleted successfully"})
         
     } catch (error){
         return res.status(500).json({ message: "Server error: " + error.message });
@@ -138,6 +144,9 @@ const getPost = async(req, res) => {
 
 const userPosts = async(req, res) => {
     try{
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ error: "Invalid user ID" });
+        }
         const posts = await Post.find({ user: req.params.id });
         return res.status(200).json(posts)
     } catch(error){
@@ -148,8 +157,17 @@ const userPosts = async(req, res) => {
 const likePost = async (req, res) => {
     try {
         const { userId, postId } = req.body;
-
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ error: "Invalid user ID" });
+        }
+        if (!mongoose.Types.ObjectId.isValid(postId)) {
+            return res.status(400).json({ error: "Invalid post ID" });
+        }
         const reaction = await Reaction.findOne({ user: userId, post: postId });
+        const post = await Post.findById(postId);
+        if (! post){
+            return res.status(404).json({error: "Post not found"})
+        }
 
         if (reaction) {
             if (reaction.reaction === "liked") {
@@ -163,7 +181,7 @@ const likePost = async (req, res) => {
 
                 await Post.findByIdAndUpdate(postId, { $inc: { numLikes: 1, numDislikes: -1 } });
 
-                return res.status(200).json({ message: "Liked post successfully" });
+                return res.status(200).json({ message: "Dislike removed, post liked" });
             }
         } else {
             await Post.findByIdAndUpdate(postId, { $inc: { numLikes: 1 } });
@@ -182,8 +200,20 @@ const likePost = async (req, res) => {
 const dislikePost = async (req, res) => {
     try {
         const { userId, postId } = req.body;
-        const reaction = await Reaction.findOne({ user: userId, post: postId });
+        
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ error: "Invalid user ID" });
+        }
+        if (!mongoose.Types.ObjectId.isValid(postId)) {
+            return res.status(400).json({ error: "Invalid post ID" });
+        }
 
+        const reaction = await Reaction.findOne({ user: userId, post: postId });
+        const post = await Post.findById(postId);
+        if (! post){
+            return res.status(404).json({error: "Post not found"})
+        }
+        
         if (reaction) {
             if (reaction.reaction === "disliked") {
                 await Reaction.deleteOne({ _id: reaction._id });
@@ -196,7 +226,7 @@ const dislikePost = async (req, res) => {
 
                 await Post.findByIdAndUpdate(postId, { $inc: { numLikes: -1, numDislikes: 1 } });
 
-                return res.status(200).json({ message: "Disliked post successfully" });
+                return res.status(200).json({ message: "Like removed, post disliked" });
             }
         } else {
             await Post.findByIdAndUpdate(postId, { $inc: { numDislikes: 1 } });
@@ -213,13 +243,16 @@ const dislikePost = async (req, res) => {
 
 const deleteUserPosts = async (req, res) => {
     try {
+
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ error: "Invalid user ID" });
+        }
         const user = req.params.id;
 
         await Reaction.deleteMany({user: user});
         await Post.deleteMany({user: user});
-        console.log("posts are deleted");
         
-        return res.status(200).json({ message: "User's posts and reactions deleted successfully" });
+        return res.status(200).json({ message: "User posts and reactions deleted" });
     } catch (error) {
         return res.status(500).json({ message: "Server error: " + error.message });
     }
@@ -348,8 +381,18 @@ const searchPosts = async(req, res) => {
  */
 const appealPost = async(req, res) => {
     try {
-        const pid = req.params.id;
-        await Post.findByIdAndUpdate(pid, {reportStatus: "appealed"});
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ error: "Invalid post ID" });
+        }
+
+        const post = await Post.findById(req.params.id);
+        if (! post){
+            return res.status(404).json({error: "Post not found"});
+        }
+
+        post.reportStatus = "appealed";
+        await post.save();
+
         return res.status(200).json({message: "Appaeal succesfully sent"});
     } catch(error){
         return res.status(500).json({message: "Server error: " + error.message})
@@ -486,7 +529,18 @@ const allPosts = async (req, res) => {
 const editPost = async(req, res) => {
     try{
         const {postId, newCont} = req.body;
-        await Post.findByIdAndUpdate(postId, {content: newCont});
+
+        if (!mongoose.Types.ObjectId.isValid(postId)) {
+            return res.status(400).json({ error: "Invalid post ID" });
+        }
+
+        const post = await Post.findById(postId);
+        if (! post){
+            return res.status(404).json({error: "Post not found"});
+        }
+
+        post.content = newCont;
+        await post.save();
 
         return res.status(200).json({message: "Edited post succesfully"});
     } catch (error) {

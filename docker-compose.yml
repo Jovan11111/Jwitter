@@ -30,6 +30,18 @@ services:
     depends_on:
       - mongo
   
+  post-tests:
+    build:
+      context: ./backend/post_service
+      dockerfile: Dockerfile.test
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/jwitter_db_posts_test
+    volumes:
+      - ./backend/post_service:/app
+    tty: true
+  
   friendship-service:
     build: ./backend/friendship_service
     ports:
@@ -38,6 +50,18 @@ services:
       - MONGO_URI=mongodb://mongo:27017/jwitter_db_friends
     depends_on:
       - mongo
+
+  friendship-tests:
+    build:
+      context: ./backend/friendship_service
+      dockerfile: Dockerfile.test
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/jwitter_db_friends_test
+    volumes:
+      - ./backend/friendship_service:/app
+    tty: true
     
   message-service:
     build: ./backend/message_service
@@ -56,6 +80,18 @@ services:
       - MONGO_URI=mongodb://mongo:27017/jwitter_db_comments
     depends_on:
       - mongo
+
+  comment-tests:
+    build: 
+      context: ./backend/comment_service
+      dockerfile: Dockerfile.test
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/jwitter_db_comments_test
+    volumes:
+      - ./backend/comment_service:/app
+    tty: true
   
   aireporting-service:
     build: ./backend/aireporting_service
@@ -85,12 +121,6 @@ services:
       - comment-service
       - aireporting-service
 
-  test:
-    image: alpine:latest
-    command: echo "All tests completed"
-    depends_on:
-      - auth-tests
-      - email-tests
   mongo:
     image: mongo
     container_name: mongo
