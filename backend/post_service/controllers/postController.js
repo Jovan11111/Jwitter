@@ -58,7 +58,6 @@ const buildPostObj = (post, username, userReactionString) => ({
 
 const deletePost = async(req, res) => {
     try {
-
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
             return res.status(400).json({ error: "Invalid post ID" });
         }

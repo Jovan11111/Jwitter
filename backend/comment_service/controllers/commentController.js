@@ -1,19 +1,27 @@
 const Comment = require('../models/Comment');
 const axios = require('axios');
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const addComment = async(req, res) => {
     try {
         const {postId, userId, cont} = req.body;
 
         if(!postId || !cont || !userId){
-            return res.status(400).json("Provide needed info for comment");
+            return res.status(400).json({error: "Provide needed info for comment"});
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(postId)) {
+            return res.status(400).json({ error: "Invalid post ID" });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ error: "Invalid user ID" });
         }
 
         const newComment = new Comment({user: userId, post: postId, content: cont});
 
         await newComment.save();
-        res.status(201).json({message: "Created a message successfully"})
+        return res.status(201).json({message: "Comment added successfully", comment: newComment});
     } catch (error){
         return res.status(500).json({message: "Server error: " + error.message});
     }
@@ -21,8 +29,16 @@ const addComment = async(req, res) => {
 
 const deleteComment = async(req, res) => {
     try {
-        await Comment.findByIdAndDelete(req.params.id);
-        res.status(200).json({message: "Deleted a comment"})
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ error: "Invalid comment ID" });
+        }
+        const comment = await Comment.findById(req.params.id);
+        if (! comment) {
+            return res.status(404).json({error: "Comment not found"});
+        }
+        await comment.deleteOne();
+
+        return res.status(200).json({message: "Comment deleted successfully"});
     } catch (error){
         return res.status(500).json({message: "Server error: " + error.message});
     }
@@ -34,12 +50,31 @@ const replyToComment = async(req, res) => {
         const parentId = req.params.id;
 
         if(!postId || !userId || !cont || ! parentId){
-            res.status(400).json({message: 'Provde needed info for a reply'})
+            return res.status(400).json({error: 'Provde needed info for a reply'})
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(postId)) {
+            return res.status(400).json({ error: "Invalid post ID" });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ error: "Invalid user ID" });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(parentId)) {
+            return res.status(400).json({ error: "Invalid parent ID" });
+        }
+
+        parent = await Comment.findById(parentId);
+        if(! parent){
+            return res.status(404).json({error: "Parent comment not found"});
         }
 
         const newComment = new Comment({user: userId, post: postId, content: cont, parent: parentId});
 
         await newComment.save();
+
+        return res.status(201).json({message: "Added reply succefully", reply: newComment});
     } catch (error){
         return res.status(500).json({message: "Server error: " + error.message});
     }
@@ -82,6 +117,9 @@ const getPostComments = async(req, res) => {
 
 const getUserComments = async(req, res) => {
     try {
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ error: "Invalid user ID" });
+        }
         const comments = await Comment.find({user: req.params.id});
         res.status(200).json(comments);
     } catch (error){
@@ -91,8 +129,16 @@ const getUserComments = async(req, res) => {
 
 const getCommentById = async(req, res) => {
     try {
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ error: "Invalid comment ID" });
+        }
+
         const comment = await Comment.findById(req.params.id);
-        res.status(200).json(comment);
+        if(! comment){
+            return res.status(404).json({error: "Comment not found"});
+
+        }
+        res.status(200).json({comment});
     } catch (error){
         return res.status(500).json({message: "Server error: " + error.message});
     }
@@ -100,11 +146,14 @@ const getCommentById = async(req, res) => {
 
 const deleteUserComments = async(req, res) => {
     try {
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ error: "Invalid user ID" });
+        }
+
         const user = req.params.id;
 
         await Comment.deleteMany({user: user});
-        console.log("comments are deleted");
-        return res.status(200).json({message: "Deleted user comments successfully"});
+        return res.status(200).json({message: "User comments deleted successfully"});
     } catch (error){
         return res.status(500).json({message: "Server error: " + error.message});
     }

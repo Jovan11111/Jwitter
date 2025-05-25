@@ -8,6 +8,7 @@
 const axios = require('axios');
 const FriendshipRequest = require('../models/FriendshipRequest');
 const Friendship = require('../models/Friendship');
+const mongoose = require("mongoose");
 
 /**
  * Sends a friend request from one user to another.
@@ -29,19 +30,15 @@ const sendFrReq = async (req, res) => {
         if (frreqExists) {
             return res.status(400).json({ message: 'Friendship already exists' });
         }
-        console.log("dosao do send frreq u backendu");
         
         const userResp = await axios.get(`http://auth-service:5000/api/auth/user/${receiver}`);
         
         const receiverUser = userResp.data;
-        console.log("dohati korisnika ", receiverUser);
         
         if(receiverUser.frReqNotifs){
             await axios.post('http://email-service:5005/api/email/frreq', {to: receiverUser.email});
         }
 
-        console.log("poslao mejl");
-        
         const newFrReq = new FriendshipRequest({ sender, receiver });
         await newFrReq.save();
 
@@ -58,19 +55,23 @@ const sendFrReq = async (req, res) => {
  */
 const acceptFrReq = async (req, res) => {
     try {
-        const frreq = await FriendshipRequest.findById(req.params.id);
-        if (!frreq) {
-            return res.status(404).json({ message: 'Friendship request not found' });
+        
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ error: "Invalid friendship request ID" });
         }
 
-        // Update request status and create a friendship
+        const frreq = await FriendshipRequest.findById(req.params.id);
+        if (!frreq) {
+            return res.status(404).json({ error: 'Friendship request not found' });
+        }
+
         frreq.status = 'accepted';
         await frreq.save();
 
         const newFriendship = new Friendship({ user1: frreq.sender, user2: frreq.receiver });
         await newFriendship.save();
 
-        res.status(200).json(frreq);
+        res.status(200).json({message: "Friendship request accepted succesfully"});
     } catch (error) {
         return res.status(500).json({ message: `Server error: ${error.message}` });
     }
@@ -83,16 +84,20 @@ const acceptFrReq = async (req, res) => {
  */
 const declineFrReq = async (req, res) => {
     try {
-        const frreq = await FriendshipRequest.findById(req.params.id);
-        if (!frreq) {
-            return res.status(404).json({ message: 'Friendship request not found' });
+
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ error: "Invalid friendship requeste ID" });
         }
 
-        // Update request status to declined
+        const frreq = await FriendshipRequest.findById(req.params.id);
+        if (!frreq) {
+            return res.status(404).json({ error: 'Friendship request not found' });
+        }
+
         frreq.status = 'declined';
         await frreq.save();
 
-        res.status(200).json(frreq);
+        res.status(200).json({message: "Friendship request declined"});
     } catch (error) {
         return res.status(500).json({ message: `Server error: ${error.message}` });
     }
@@ -183,6 +188,14 @@ const areTheyFriends = async (req, res) => {
     try {
         const { id1, id2 } = req.params;
         
+        if (!mongoose.Types.ObjectId.isValid(id1)) {
+            return res.status(400).json({ error: "Invalid user ID" });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(id2)) {
+            return res.status(400).json({ error: "Invalid user ID" });
+        }
+        
         const friendshipExists = await Friendship.findOne({
             $or: [
                 { user1: id1, user2: id2 },
@@ -191,7 +204,7 @@ const areTheyFriends = async (req, res) => {
         });
 
         if (friendshipExists) {
-            return res.status(200).json({ friendshipExists: true });
+            return res.status(200).json({ friendshipExists: true, frReqExists: false });
         }
 
         const frReqExists = await FriendshipRequest.findOne({
@@ -201,7 +214,7 @@ const areTheyFriends = async (req, res) => {
             ]
         });
 
-        return res.status(200).json({ frReqExists: Boolean(frReqExists) });
+        return res.status(200).json({ friendshipExists: false, frReqExists: Boolean(frReqExists) });
     } catch (error) {
         return res.status(500).json({ message: `Server error: ${error.message}` });
     }
@@ -215,7 +228,14 @@ const areTheyFriends = async (req, res) => {
 const removeFriend = async (req, res) => {
     try {
         const { id1, id2 } = req.params;
-        
+
+        if (!mongoose.Types.ObjectId.isValid(id1)) {
+            return res.status(400).json({ error: "Invalid user ID" });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(id2)) {
+            return res.status(400).json({ error: "Invalid user ID" });
+        }
         const friendshipExists = await Friendship.findOne({
             $or: [
                 { user1: id1, user2: id2 },
@@ -224,7 +244,7 @@ const removeFriend = async (req, res) => {
         });
 
         if (!friendshipExists) {
-            return res.status(404).json({ message: 'Friendship not found' });
+            return res.status(404).json({ error: 'Friendship not found' });
         }
 
         await Friendship.deleteOne({
@@ -243,13 +263,15 @@ const removeFriend = async (req, res) => {
 const deleteUserFrReqsAndFrShips = async (req, res) => {
     try {
         const user = req.params.id;
+        
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ error: "Invalid user ID" });
+        }
 
         await Friendship.deleteMany({$or: [{user1: user}, {user2: user}]});
         await FriendshipRequest.deleteMany({$or: [{sender: user}, {receiver: user}]});
         
-        console.log("frreqs are deleted");
-        
-        return res.status(200).json({message: 'Deleted all freindship stuff successfully'})
+        return res.status(200).json({message: 'Deleted all freindships and friendship requests successfully'})
     } catch (error) {
         return res.status(500).json({ message: `Server error: ${error.message}` });  
     }
