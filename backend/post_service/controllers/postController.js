@@ -80,7 +80,10 @@ const createPost = async(req, res) => {
         const {title, content, user} = req.body;
         
         if(! title || !content || ! user){
-            return res.status(400).json("Provide needed info for post");
+            return res.status(400).json({error: "Provide needed info for post"});
+        }
+        if (!mongoose.Types.ObjectId.isValid(user)) {
+            return res.status(400).json({ error: "Invalid user ID" });
         }
 
         const userExists =  await axios.get(`http://auth-service:5000/api/auth/user/${user}`)
@@ -99,16 +102,24 @@ const createPost = async(req, res) => {
 const getPost = async(req, res) => {
     try {
         loggedUserId = req.params.uid;
+        
+        if (!mongoose.Types.ObjectId.isValid(loggedUserId)) {
+            return res.status(400).json({ error: "Invalid user ID" });
+        }
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ error: "Invalid post ID" });
+        }
+
         const post = await Post.findById(req.params.id);
         
         if(!post){
-            return res.status(400).json("Could not find post by id")
+            return res.status(404).json("Could not find post by id")
         }
 
         const userResp = await axios.get(`http://auth-service:5000/api/auth/user/${post.user}`)
         const userReaction = await Reaction.findOne({user:loggedUserId, post: post});
         const userReactionString = userReaction ? userReaction.reaction : "no";
-        if(userResp){
+        if(userResp.data){
             return res.status(200).json({
                 _id: post._id,
                 title: post.title,
@@ -405,9 +416,8 @@ const getAppealedPosts = async (req, res) => {
     try {
         const posts = await Post.find({reportStatus: "appealed"});
         const postsWithUserNames = await Promise.all(posts.map(async (post) => {
-            try {
-                const userResp = await axios.get(`http://auth-service:5000/api/auth/user/${post.user}`)
-                const username = userResp.data.username
+            const userResp = await axios.get(`http://auth-service:5000/api/auth/user/${post.user}`)
+            if (userResp.data){
                 return {
                     _id: post._id,
                     _v: post._v,
@@ -415,11 +425,11 @@ const getAppealedPosts = async (req, res) => {
                     content: post.content, 
                     user: post.user,
                     createdAt: post.createdAt,
-                    username: username,
+                    username: userResp.data.username,
                     numLikes: post.numLikes,
                     numDislikes: post.numDislikes
                 }
-            }catch{
+            } else {
                 return {
                     _id: post._id,
                     _v: post._v,

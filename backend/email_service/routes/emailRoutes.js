@@ -1,6 +1,5 @@
 const express = require("express");
-const { 
-        sendResetEmailC,
+const { sendResetEmailC,
         sendNewMsgEmailC,
         sendFrReqEmailC,
         sendDeletedPostEmailC,
