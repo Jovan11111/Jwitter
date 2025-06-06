@@ -21,7 +21,6 @@ The `Report` model is part of the `post` microservice and is used to store infor
 ---
 
 ## Example
-
 ```json
 {
   "user": "64458f2c3a2b4f1d842c7e8e",

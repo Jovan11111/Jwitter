@@ -1,7 +1,7 @@
-# [Microservice Name]
+# Comment Service
 
 ## Overview
-[Microservice Name] is a [brief description of what the microservice does, e.g., "service responsible for managing users"]. It is built using **Node.js**, **Express.js**, and **MongoDB**, and forms part of a larger system [explain context if applicable]. The service is containerized and can be run using Docker.
+The Comment Service is responsible for handling all operations related to comments within the Jwitter platform. It allows users to add comments to posts, reply to other comments (nested commenting), and retrieve or delete comments as needed. The service is built using Node.js, Express.js, and MongoDB, and is fully containerized using Docker for scalable and isolated deployment.
 
 ---
 
@@ -9,37 +9,53 @@
 - [List key functionalities of the microservice, e.g.:]
   - Create, read, update, and delete [resource name, e.g., "users"]
   - [Other distinctive features provided by this microservice]
-
+- Add Comments
+  - Create new comments tied to specific posts.
+  - Reply to existing comments using the parent attribute to support threaded conversations.
+- Read Comments
+  - Retrieve all comments for a given post.
+  - Retrieve all comments made by a specific user.
+  - Fetch individual comments by ID.
+- Delete Comments
+  - Delete a single comment by ID.
+  - Delete all comments associated with a specific user (used during profile deletion).
 ---
 
 ## Endpoints
 
 ### Base URL
+```console
+http://comment-service:5004/api/comment
+```
 
 ### API Endpoints
-| Method | Endpoint               | Description                                      | Input Example              | Output Example             |
-|--------|-------------------------|--------------------------------------------------|----------------------------|----------------------------|
-| GET    | `/endpoint`             | [Brief explanation of what this endpoint does]  | [Input example, if any]    | [Output example, if any]   |
-| POST   | `/endpoint`             | [Brief explanation of what this endpoint does]  | [Input example, if any]    | [Output example, if any]   |
-| PUT    | `/endpoint/{id}`        | [Brief explanation of what this endpoint does]  | [Input example, if any]    | [Output example, if any]   |
-| DELETE | `/endpoint/{id}`        | [Brief explanation of what this endpoint does]  | [Input example, if any]    | [Output example, if any]   |
+| No | Method  | Endpoint                              | Description                                   |
+|----|---------|---------------------------------------|-----------------------------------------------|
+| 1  | POST    | `/api/comment/addComment`             | Adds a new comment to the database            |
+| 2  | DELETE  | `/api/comment/deleteComment/:id`      | Deletes a comment from the database           |
+| 3  | POST    | `/api/comment/replyToComment/:id`     | Adds a new comment that has a parent atribute |
+| 4  | GET     | `/api/comment/getPostComments/:id`    | Returns all comments on some post             |
+| 5  | GET     | `/api/comment/getUserComments/:id`    | Returns all comments from someuser            | 
+| 6  | GET     | `/api/comment/getCommentById/:id`     | Returns a comment with given ID               |
+| 7  | DELETE  | `/api/comment/deleteUserComments/:id` | Deletes all comments from some user           |
 
 ---
 
 ## Data Models
 
-### [Model Name]
+### Comment
 ```json
 {
-  "field1": "data type",
-  "field2": "data type",
-  "field3": "data type",
-  ...
+  "user": "ObjectID",
+  "post": "ObjectID",
+  "content": "string",
+  "parent": "ObjectID",
+  "createdAt": "Date"
 }
 ```
 
 ## Dependencies
 This microservice interacts with the following other microservices:
-- <Name>
-    - Calls the following endpoints
-        - <endpoint>
+- User service
+    - Calls the following endpoint when return comments on some post
+        - http://auth-service:5000/api/auth/user/:id
