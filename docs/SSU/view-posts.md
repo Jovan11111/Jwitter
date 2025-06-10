@@ -41,7 +41,7 @@ This document outlines the functionality for viewing posts on the Jwitter platfo
 
 ## 1.2. Purpose and Audience
 
-This document is intended for self-reference during the development of the view posts functionality. It serves as a guideline for implementation, testing, debugging, and future improvements.
+This document is intended for self-reference during the development of the view posts functionality. It serves as a guideline for implementation, testing, and future improvements.
 
 ## 1.3. Open Issues
 

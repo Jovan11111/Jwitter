@@ -41,7 +41,7 @@ This document outlines the login functionality scenario for the Jwitter platform
 
 ## 1.2. Purpose and Audience
 
-This document is intended for self-reference during the development of the login functionality. It serves as a guideline for implementation, testing, and future improvements of this feature.
+This document is intended for self-reference during the development of the login functionality. It serves as a guideline for implementation, testing, and future improvements.
 
 ## 1.3. Open Issues
 
@@ -89,7 +89,6 @@ The login functionality allows users to authenticate themselves by entering thei
 - The user must fill in both fields (username and password) before attempting to log in.
 - The system must be protected against **SQL injection** and other types of attacks.
 - The functionality must include a **forgot password** modal.
-- The login functionality must be implemented in the first phase of development.
 
 ## 2.4. Preconditions
 

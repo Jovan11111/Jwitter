@@ -41,7 +41,7 @@ This document outlines the registration functionality scenario for the Jwitter p
 
 ## 1.2. Purpose and Audience
 
-This document is intended for self-reference during the development of the registration functionality. It serves as a guideline for implementation, testing, and future improvements of this feature.
+This document is intended for self-reference during the development of the register functionality. It serves as a guideline for implementation, testing, and future improvements.
 
 ## 1.3. Open Issues
 
@@ -93,7 +93,6 @@ The registration functionality allows users to create a new account by providing
 - The username must be unique and properly checked against the database.
 - Passwords must be hashed and stored securely.
 - The system must prevent duplicate entries in the database.
-- The registration functionality must be implemented as part of the first phase of development.
 
 ## 2.4. Preconditions
 
