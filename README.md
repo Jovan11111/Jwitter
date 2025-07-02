@@ -2,7 +2,7 @@
 
 ## 1. Introduction
 
-**Jwitter** is a social networking platform designed to allow users to create posts, interact with others through likes, dislikes, and comments, manage friendships, exchange private messages, and customize privacy settings. The application includes an administrative interface for moderation, mass communication, and user management. Jwitter aims to foster user engagement while ensuring a safe and moderated environment.
+**Jwitter** is a social networking platform designed to allow users to create posts, interact with others through likes, dislikes, and comments, manage friendships, exchange private messages, and customize privacy settings. The application includes an administrative interface for moderation, mass communication, and user management.
 
 ---
 
